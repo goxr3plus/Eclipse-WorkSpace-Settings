@@ -1,0 +1,14 @@
+
+ˆsquid:S00117õ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(†˜˜õ8¦ëº¾ú,H·ÆRMINORZ
+CODE_SMELL
+ksquid:S3655—"7Call "Optional#isPresent()" before accessing the value.(àóÕ ıÿÿÿÿ8ºšÕ”ú,H¸ÆRMAJORZBUG
+ˆsquid:S00117’"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÑÓ´™8¦ëº¾ú,H¹ÆRMINORZ
+CODE_SMELL
+fsquid:S3655–"7Call "Optional#isPresent()" before accessing the value.(ê»ó 8ºšÕ”ú,HºÆRMAJORZBUG
+‹squid:S3776"RRefactor this method to reduce its Cognitive Complexity from 29 to the 15 allowed.(œàˆ‰8°ŒŠú,H»ÆRCRITICALZ
+CODE_SMELL
+‡squid:S00117w"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÑÓ´™8°ŒŠú,H¼ÆRMINORZ
+CODE_SMELL
+ksquid:S3655˜"7Call "Optional#isPresent()" before accessing the value.(‘Ùáùÿÿÿÿ8¦ëº¾ú,H½ÆRMAJORZBUG
+tsquid:S00107ô"=Method has 10 parameters, which is greater than 7 authorized.(÷—Áï8¦ëº¾ú,H¾ÆRMAJORZ
+CODE_SMELL

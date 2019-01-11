@@ -1,0 +1,13 @@
+
+qsquid:S2184W"ECast one of the operands of this subtraction operation to a "double".(¿†›‚úÿÿÿÿH¥ÒRMINORZBUG
+Šsquid:S2629\"\Invoke method(s) only conditionally. Use the built-in formatting to construct this argument.(íºH§ÒRMAJORZ
+CODE_SMELL
+qsquid:S2184M"ECast one of the operands of this subtraction operation to a "double".(¿†›‚úÿÿÿÿH£ÒRMINORZBUG
+qsquid:S2184R"ECast one of the operands of this subtraction operation to a "double".(¿†›‚úÿÿÿÿH¤ÒRMINORZBUG
+tsquid:S3457C"AFormat specifiers should be used instead of string concatenation.(Ò®¶œùÿÿÿÿH¨ÒRMAJORZ
+CODE_SMELL
+qsquid:S2184I"ECast one of the operands of this subtraction operation to a "double".(¿†›‚úÿÿÿÿH¢ÒRMINORZBUG
+xsquid:S44889"JReplace "@RequestMapping(method = RequestMethod.POST)" with "@PostMapping"(û´·£H¦ÒRMINORZ
+CODE_SMELL
+osquid:S3457\"AFormat specifiers should be used instead of string concatenation.(íºH©ÒRMAJORZ
+CODE_SMELL

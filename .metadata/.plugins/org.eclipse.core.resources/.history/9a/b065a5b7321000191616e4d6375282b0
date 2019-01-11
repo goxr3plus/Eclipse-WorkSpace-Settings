@@ -1,0 +1,54 @@
+package com.intralot.l10.ats.manager.configuration;
+
+import java.util.Collections;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import com.intralot.l10.ats.entity.AtsConfiguration;
+import com.intralot.l10.ats.repository.AtsConfigurationRepository;
+
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ConfigurationJPAManagerTest {
+
+	@InjectMocks
+	private ConfigurationJPAManager configurationJPAManager;
+
+	@Mock
+	private AtsConfigurationRepository atsConfigurationRepository;
+
+	/* Mock ATS configuration */
+	private final AtsConfiguration atsConfiguration = new AtsConfiguration();
+
+	@Test
+	public void testGetConfigurationByGameId() {
+
+		when(atsConfigurationRepository.findByGameId(anyInt())).thenReturn(atsConfiguration);
+
+		assert configurationJPAManager.getConfigurationByGameId(anyInt()) == atsConfiguration;
+	}
+
+	@Test
+	public void testGetConfigurationBySystemId() {
+
+		when(atsConfigurationRepository.findBySystemId(anyInt())).thenReturn(atsConfiguration);
+
+		assert configurationJPAManager.getConfigurationBySystemId(anyInt()) == atsConfiguration;
+	}
+
+	@Test
+	public void testFindAll() {
+
+		atsConfiguration.setGameId(5);
+		when(atsConfigurationRepository.findAll()).thenReturn(Collections.singletonList(atsConfiguration));
+
+		assert configurationJPAManager.findAllGameIds().get(0).equals(atsConfiguration.getGameId());
+	}
+
+}

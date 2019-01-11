@@ -1,0 +1,7 @@
+
+ssquid:S1126["AReplace this if-then-else statement by a single return statement.(Œî ³ÿÿÿÿÿH†+RMINORZ
+CODE_SMELL
+Ssquid:S1905F"&Remove this unnecessary cast to "int".(åú™·H‡+RMINORZ
+CODE_SMELL
+Ssquid:S1905G"&Remove this unnecessary cast to "int".(ïž×·Hˆ+RMINORZ
+CODE_SMELL

@@ -1,0 +1,34 @@
+package com.intralot.l10.ats.manager.event;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import com.intralot.l10.ats.repository.AtsEventRepository;
+
+@RunWith(MockitoJUnitRunner.class)
+public class EventJPAManagerTest {
+
+	@InjectMocks
+	private EventJPAManager eventJPAManager;
+
+	@Mock
+	private AtsEventRepository eventRepository;
+
+	@Test
+	public void saveSubmissionPreProcessError() {
+		eventJPAManager.saveSubmissionPreProcessError("errorMessage");
+	}
+
+	@Test
+	public void saveSubmissionPostProcessError() {
+		eventJPAManager.saveSubmissionPostProcessError("errorMessage");
+	}
+
+	@Test
+	public void saveSubmissionPrePrsaveRetrieveCleanupErrorocessError() {
+		eventJPAManager.saveRetrieveCleanupError("errorMessage");
+	}
+}

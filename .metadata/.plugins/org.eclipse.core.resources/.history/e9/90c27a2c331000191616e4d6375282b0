@@ -1,0 +1,42 @@
+package com.intralot.l10.ats.manager.submit;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.core.io.FileSystemResource;
+
+import com.intralot.l10.ats.manager.file.FileOperationsManager;
+
+import static org.junit.Assert.assertSame;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class SubmitDocumentDownloadManagerTest {
+
+	@InjectMocks
+	private SubmitDocumentDownloadManager submitDocumentDownloadManager;
+
+	@Mock
+	private FileOperationsManager fileOperationsManager;
+
+	@Test
+	public void getSubmitDocumentBytes() {
+
+		final byte[] bytes = new byte[55];
+		when(fileOperationsManager.getStoredFileBytes(anyString())).thenReturn(bytes);
+
+		assertSame(submitDocumentDownloadManager.getSubmitDocumentBytes("path", "path"), bytes);
+	}
+
+	@Test
+	public void getSubmitDocumentStream() {
+
+		final FileSystemResource resource = new FileSystemResource("path");
+		when(fileOperationsManager.getStoredFileResource(anyString())).thenReturn(resource);
+
+		assertSame(submitDocumentDownloadManager.getSubmitDocumentStream("path", "path"), resource);
+	}
+}

@@ -1,0 +1,12 @@
+
+Jsquid:S2153i"Remove the boxing to "Double".(à¯ú”øÿÿÿÿHü«RMINORZBUG
+rsquid:S1155€">Use isEmpty() to check whether the collection is empty or not.(Âäï½şÿÿÿÿHı«RMINORZ
+CODE_SMELL
+Osquid:S1643L"Use a StringBuilder instead.(™•ÒüÿÿÿÿHş«RMINORZ
+CODE_SMELL
+Ssquid:S2129i" Remove this "Double" constructor(à¯ú”øÿÿÿÿHÿ«RMAJORZ
+CODE_SMELL
+qsquid:S1155e">Use isEmpty() to check whether the collection is empty or not.(…ÊöøÿÿÿÿH€¬RMINORZ
+CODE_SMELL
+Osquid:S1643N"Use a StringBuilder instead.(Îì¿¹ûÿÿÿÿH¬RMINORZ
+CODE_SMELL

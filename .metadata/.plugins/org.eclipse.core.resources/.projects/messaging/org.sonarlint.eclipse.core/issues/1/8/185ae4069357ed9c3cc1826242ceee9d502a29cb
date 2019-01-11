@@ -1,0 +1,15 @@
+
+qjavascript:S2814""BRename "m" as this name is already used in declaration at line 26.(¿∫ö‚RMAJORZ
+CODE_SMELL
+pjavascript:S2814I"BRename "i" as this name is already used in declaration at line 65.(ßØœRMAJORZ
+CODE_SMELL
+qjavascript:S2814O"BRename "i" as this name is already used in declaration at line 65.(÷†ÈƒRMAJORZ
+CODE_SMELL
+vjavascript:S2814$"GRename "header" as this name is already used in declaration at line 28.(ùΩ√ÏRMAJORZ
+CODE_SMELL
+àjavascript:S2703B"WAdd the "let", "const" or "var" keyword to this declaration of "r" to make it explicit.(ÖΩÆöRBLOCKERZ
+CODE_SMELL
+åjavascript:S2703h"[Add the "let", "const" or "var" keyword to this declaration of "links" to make it explicit.(âÒâÑRBLOCKERZ
+CODE_SMELL
+äjavascript:S2703^"YAdd the "let", "const" or "var" keyword to this declaration of "ids" to make it explicit.(µóöÊRBLOCKERZ
+CODE_SMELL

@@ -1,0 +1,46 @@
+package com.intralot.l10.ats.manager.retrieve.documents;
+
+import javax.persistence.EntityManager;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.iif.core.jpa.SpecificationJPARepository;
+
+import global.config.TestConfig;
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {TestConfig.class, RetrieveDocumentsReportJPAManagerTest.Config.class})
+public class RetrieveDocumentsReportJPAManagerTest {
+
+	@Autowired
+	RetrieveDocumentsReportJPAManager retrieveDocumentsReportJPAManager;
+
+	@MockBean
+	protected SpecificationJPARepository repository;
+
+	@MockBean
+	protected EntityManager em;
+
+	@Test
+	public void init() {
+
+	}
+
+	@Configuration
+	static class Config {
+
+		@Bean(name = "RetrieveDocumentsReportJPAManager")
+		public RetrieveDocumentsReportJPAManager retrieveDocumentsReportJPAManager() {
+
+			return new RetrieveDocumentsReportJPAManager();
+		}
+
+	}
+}

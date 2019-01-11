@@ -1,0 +1,95 @@
+package com.intralot.l10.ats.manager.retrieve.documents;
+
+import java.util.Collections;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import com.intralot.l10.ats.entity.RetrieveDocumentsReport;
+import com.intralot.l10.ats.entity.RetrieveDocumentsRequest;
+import com.intralot.l10.ats.exception.AtsOpapException;
+import com.intralot.l10.ats.manager.evidence.EvidenceFileManager;
+import com.intralot.l10.ats.manager.file.FileCodecsManager;
+import com.intralot.l10.ats.manager.file.FileNamingManager;
+import com.intralot.l10.ats.manager.file.FileOperationsManager;
+import com.intralot.l10.ats.manager.transform.AtsTransformationManager;
+
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class RetrieveDocumentsProcessingManagerTest {
+
+	@InjectMocks
+	private RetrieveDocumentsProcessingManager retrieveDocumentsProcessingManager;
+
+	@Mock
+	private AtsTransformationManager atsTransformationManager;
+
+	@Mock
+	private RetrieveDocumentsJPAManager retrieveDocumentsJPAManager;
+
+	@Mock
+	private FileCodecsManager fileCodecsManager;
+
+	@Mock
+	private FileNamingManager fileNamingManager;
+
+	@Mock
+	private FileOperationsManager fileOperationsManager;
+
+	@Mock
+	private EvidenceFileManager evidenceFileManager;
+
+	@Test
+	public void processRetrieveDocuments() {
+
+		final RetrieveDocumentsRequest retrieveDocumentsRequest = new RetrieveDocumentsRequest();
+		retrieveDocumentsRequest.setDocumentTypeId(1);
+
+		final RetrieveDocumentsReport retrieveDocumentsReport = new RetrieveDocumentsReport();
+		retrieveDocumentsReport.setDrawId(100100);
+		retrieveDocumentsReport.setGameId(5104);
+		retrieveDocumentsRequest.setRetrieveDocumentsReports(Collections.singletonList(retrieveDocumentsReport));
+
+		when(fileNamingManager.evidenceDocumentNameForRetrieve(anyInt(), anyString(), anyInt())).thenReturn("path");
+
+		retrieveDocumentsProcessingManager.processRetrieveDocuments(retrieveDocumentsRequest);
+
+		// TODO add assert?
+	}
+
+	@Test(expected = Exception.class)
+	public void processRetrieveDocumentsException() {
+
+		retrieveDocumentsProcessingManager.processRetrieveDocuments(null);
+	}
+
+	@Test
+	public void processPendingReportId() {
+		retrieveDocumentsProcessingManager.processPendingReportId(5L);
+
+		// TODO add assert?
+	}
+
+	@Test
+	public void processCompleteReportId() {
+		retrieveDocumentsProcessingManager.processCompleteReportId(5L);
+
+		// TODO add assert?
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void processCompleteReportId_throw_error() {
+
+		when(retrieveDocumentsJPAManager.get(anyLong())).thenReturn(null);
+		when(atsTransformationManager.transformRetrieveDocumentsRequestCompleted(null))
+			.thenThrow(new NullPointerException("Error occurred"));
+		retrieveDocumentsProcessingManager.processCompleteReportId(5L);
+	}
+}

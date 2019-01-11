@@ -1,0 +1,179 @@
+package com.intralot.l10.bank.manager;
+
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.bank.manager.file.FileNamingManager;
+import com.intralot.l10.bank.manager.file.FileOperationsManager;
+import com.intralot.l10.bank.manager.message.MessagePersistManager;
+import com.intralot.l10.bank.manager.message.TemplateManager;
+import com.intralot.l10.bank.model.templates.BankFileVo;
+import com.intralot.l10.bank.model.templates.HeaderVo;
+import com.intralot.l10.bank.model.templates.ItemVo;
+import com.intralot.l10.bank.model.templates.MiddleVo;
+
+import static org.junit.Assert.assertTrue;
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {GlobalConfig.class, TestMessagePersistManager.Config.class})
+public class TestMessagePersistManager {
+
+	@Autowired
+	private MessagePersistManager messagePersistManager;
+
+	@Value("${channel.outbound.ftp.local.directory}")
+	private String bankFilesBasePath;
+
+	@Before
+	public void init() throws Exception {
+
+		System.out.println("Creating Base Dir=" + bankFilesBasePath);
+		Files.createDirectories(Paths.get(bankFilesBasePath));
+	}
+
+	@After
+	public void destroy() throws Exception {
+
+		System.out.println("Deleting Base Dir=" + bankFilesBasePath);
+		if (Files.exists(Paths.get(bankFilesBasePath))) {
+			Files.walkFileTree(Paths.get(bankFilesBasePath), new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+
+					Files.delete(file);
+					return FileVisitResult.CONTINUE;
+				}
+
+				@Override
+				public FileVisitResult postVisitDirectory(final Path dir, final IOException e) throws IOException {
+
+					if (e == null) {
+						Files.delete(dir);
+						return FileVisitResult.CONTINUE;
+					} else {
+						throw e;
+					}
+				}
+			});
+		}
+	}
+
+	@Test
+	public void persistBankFileTest() {
+
+		final BankFileVo bankFileVo = this.sampleData();
+		messagePersistManager.persistBankFile("test1", bankFileVo);
+
+		assertTrue(true);
+	}
+
+	private BankFileVo sampleData() {
+
+		final HeaderVo header = new HeaderVo();
+		header.setMsgId("SDD201806920180831015926");
+		header.setCreDtTm("2018-08-31T01:59:26");
+		header.setNbOfTxs(6);
+		header.setCtrlSum("22447.25");
+		header.setNm("ΟΠΑΠ (ΚΥΠΡΟΥ) ΛΤΔ");
+		header.setId("CY31ZZZ0045");
+
+		final MiddleVo middle = new MiddleVo();
+		middle.setPmtInfId("SDD2018069201808310159262018090711");
+		middle.setPmtMtd("DD");
+		middle.setSvcLvlCD("SEPA");
+		middle.setLclInstrmCD("CORE");
+		middle.setSeqTp("FRST");
+		middle.setReqdColltnDt("2018-09-07");
+		middle.setNm("ΟΠΑΠ (ΚΥΠΡΟΥ) ΛΤΔ");
+		middle.setIban("CY58006005250000005255195843");
+		middle.setBic("ETHNCY2N");
+		middle.setId("CY31ZZZ0045");
+		middle.setPrtry("SEPA");
+
+		final ItemVo v1 = new ItemVo();
+		v1.setEndToEndId("D2018069335456");
+		v1.setCcy("EUR");
+		v1.setInstdAmt("4718.42");
+		v1.setMndtId("0045335456003");
+		v1.setDtOfSgntr("2018-08-09");
+		v1.setAmdmntInd("false");
+		v1.setBic("BCYPCY2N");
+		v1.setNm("ΙΦΙΓΕΝΕΙΑ ΜΕΤΤΑ");
+		v1.setIban("CY94002001950000357028305856");
+
+		final ItemVo v2 = new ItemVo();
+		v2.setEndToEndId("D2018069335456");
+		v2.setCcy("EUR");
+		v2.setInstdAmt("4718.42");
+		v2.setMndtId("0045335456003");
+		v2.setDtOfSgntr("2018-08-09");
+		v2.setAmdmntInd("false");
+		v2.setBic("BCYPCY2N");
+		v2.setNm("ΙΦΙΓΕΝΕΙΑ ΜΕΤΤΑ");
+		v2.setIban("CY94002001950000357028305856");
+
+		final ItemVo v3 = new ItemVo();
+		v3.setEndToEndId("D2018069335456");
+		v3.setCcy("EUR");
+		v3.setInstdAmt("4718.42");
+		v3.setMndtId("0045335456003");
+		v3.setDtOfSgntr("2018-08-09");
+		v3.setAmdmntInd("false");
+		v3.setBic("BCYPCY2N");
+		v3.setNm("ΙΦΙΓΕΝΕΙΑ ΜΕΤΤΑ");
+		v3.setIban("CY94002001950000357028305856");
+		final List<ItemVo> items = Arrays.asList(v1, v2, v3);
+
+		return new BankFileVo(header, middle, items);
+	}
+
+	// ---------------------- EXTRA CONFIGURATION ---------------------- //
+
+	@Configuration
+	static class Config {
+
+		@Bean(name = "MessagePersistManager")
+		public MessagePersistManager messagePersistManager() {
+
+			return new MessagePersistManager();
+		}
+
+		@Bean(name = "TemplateManager")
+		public TemplateManager templateManager() {
+
+			return new TemplateManager();
+		}
+
+		@Bean(name = "FileOperationsManager")
+		public FileOperationsManager fileOperationsManager() {
+
+			return new FileOperationsManager();
+		}
+
+		@Bean(name = "FileNamingManager")
+		public FileNamingManager fileNamingManager() {
+
+			return new FileNamingManager();
+		}
+	}
+
+}

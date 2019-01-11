@@ -1,0 +1,29 @@
+package com.intralot.l10.nam.manager.jpa;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import java.util.Optional;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import com.intralot.l10.nam.entity.GamingBalanceRequest;
+import com.intralot.l10.nam.repository.jpa.GamingBalanceRepository;
+
+@RunWith(MockitoJUnitRunner.class)
+public class GamingBalanceJPAManagerTest {
+
+	@InjectMocks
+	private GamingBalanceJPAManager gamingBalanceJPAManager;
+
+	@Mock
+	private GamingBalanceRepository gamingBalanceRepository;
+
+	@Test
+	public void transactionIdExists() {
+		when(gamingBalanceRepository.findByTransactionId(anyLong())).thenReturn(Optional.of(new GamingBalanceRequest()));
+		gamingBalanceJPAManager.transactionIdExists(9L);
+	}
+	
+}

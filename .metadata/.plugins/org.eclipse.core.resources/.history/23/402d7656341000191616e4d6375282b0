@@ -1,0 +1,82 @@
+package com.intralot.l10.nam.manager.validation;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import com.intralot.l10.nam.exception.NamGenericException;
+import com.intralot.l10.nam.manager.jpa.ActionsJPAManager;
+import com.intralot.l10.nam.manager.jpa.CreditLimitJPAManager;
+import com.intralot.l10.nam.manager.jpa.DailyBalanceJPAManager;
+import com.intralot.l10.nam.manager.jpa.GamingBalanceJPAManager;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ValidationManagerTest {
+
+	@InjectMocks
+	private ValidationManager validationManager;
+
+	@Mock
+	GamingBalanceJPAManager gamingBalanceJPAManager;
+
+	@Mock
+	DailyBalanceJPAManager dailyBalanceJPAManager;
+
+	@Mock
+	CreditLimitJPAManager creditLimitJPAManager;
+
+	@Mock
+	ActionsJPAManager actionsJPAManager;
+
+	@Test
+	public void transactionIdNotExistsInGameBalances_TRANSACTION_NOT_EXISTS() {
+		when(gamingBalanceJPAManager.transactionIdExists(anyLong())).thenReturn(false);
+		validationManager.transactionIdNotExistsInGameBalances(5L);
+	}
+
+	@Test(expected = NamGenericException.class)
+	public void transactionIdNotExistsInGameBalances_TRANSACTION_EXISTS() {
+		when(gamingBalanceJPAManager.transactionIdExists(anyLong())).thenReturn(true);
+		validationManager.transactionIdNotExistsInGameBalances(6L);
+	}
+
+	@Test
+	public void transactionIdNotExistsInDailyBalances_TRANSACTION_NOT_EXISTS() {
+		when(dailyBalanceJPAManager.transactionIdExists(anyLong())).thenReturn(false);
+		validationManager.transactionIdNotExistsInDailyBalances(5L);
+	}
+
+	@Test(expected = NamGenericException.class)
+	public void transactionIdNotExistsInDailyBalance_TRANSACTION_EXISTS() {
+		when(dailyBalanceJPAManager.transactionIdExists(anyLong())).thenReturn(true);
+		validationManager.transactionIdNotExistsInDailyBalances(6L);
+	}
+
+	@Test
+	public void transactionIdNotExistsInCreditLimits_TRANSACTION_NOT_EXISTS() {
+		when(creditLimitJPAManager.transactionIdExists(anyLong())).thenReturn(false);
+		validationManager.transactionIdNotExistsInCreditLimits(5L);
+	}
+
+	@Test(expected = NamGenericException.class)
+	public void transactionIdNotExistsInCreditLimits_TRANSACTION_EXISTS() {
+		when(creditLimitJPAManager.transactionIdExists(anyLong())).thenReturn(true);
+		validationManager.transactionIdNotExistsInCreditLimits(6L);
+	}
+
+	@Test
+	public void ttransactionIdNotExistsInActions_TRANSACTION_NOT_EXISTS() {
+		when(actionsJPAManager.transactionIdExists(anyLong())).thenReturn(false);
+		validationManager.transactionIdNotExistsInActions(5L);
+	}
+
+	@Test(expected = NamGenericException.class)
+	public void transactionIdNotExistsInActions_TRANSACTION_EXISTS() {
+		when(actionsJPAManager.transactionIdExists(anyLong())).thenReturn(true);
+		validationManager.transactionIdNotExistsInActions(6L);
+	}
+
+}

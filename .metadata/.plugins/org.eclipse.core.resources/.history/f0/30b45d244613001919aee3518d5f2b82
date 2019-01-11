@@ -1,0 +1,46 @@
+#Info endpoint
+info:
+  app:
+    name: @project.name@
+    description: @project.description@
+    groupId: @project.groupId@
+    artifactId: @project.artifactId@
+    version: @project.version@
+
+spring:
+
+  #App Name
+  application:
+    name: ats-service
+
+  #Database
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      idleTimeout: 60000
+      minimumIdle: 2
+      maximumPoolSize: 20
+      connectionTimeout: 1000
+      poolName: AtsPool
+      connectionTestQuery: SELECT 1
+      autoCommit: false
+
+  #JPA
+  jpa:
+    hibernate:
+#      ddl-auto: validate
+    #database-platform=com.intralot.l10.auditing.MySqlDialect
+    properties:
+      javax.persistence.validation.mode: none
+      hibernate.cache.use_second_level_cache: true
+      javax.persistence.sharedCache.mode: ENABLE_SELECTIVE
+      hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+
+  #Flyway
+  flyway:
+    baseline-version: 0
+    baseline-on-migrate: true
+    table: ATS_SCHEMA_VERSION
+    placeholders.schemaTable: ${spring.flyway.table}

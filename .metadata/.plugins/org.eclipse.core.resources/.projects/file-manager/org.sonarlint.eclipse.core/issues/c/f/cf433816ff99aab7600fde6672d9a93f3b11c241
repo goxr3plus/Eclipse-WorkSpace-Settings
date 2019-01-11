@@ -1,0 +1,15 @@
+
+Qsquid:S2629"$Invoke method(s) only conditionally.(‚ùH RMAJORZ
+CODE_SMELL
+lsquid:S3725":Replace this with a call to the "toFile().exists()" method(ÌïÎÀıÿÿÿÿH RMAJORZ
+CODE_SMELL
+lsquid:S3725!":Replace this with a call to the "toFile().exists()" method(ÌïÎÀıÿÿÿÿH RMAJORZ
+CODE_SMELL
+lsquid:S3725/":Replace this with a call to the "toFile().exists()" method(ò»¥íşÿÿÿÿH RMAJORZ
+CODE_SMELL
+fsquid:S3725X":Replace this with a call to the "toFile().exists()" method(ÄçÇ!H‘ RMAJORZ
+CODE_SMELL
+squid:S3457"aNo need to call "toString()" method as formatting and string conversion is done by the Formatter.(‚ùH’ RMAJORZ
+CODE_SMELL
+squid:S3457("aNo need to call "toString()" method as formatting and string conversion is done by the Formatter.(İÊãÈH“ RMAJORZ
+CODE_SMELL

@@ -1,0 +1,36 @@
+
+€squid:CommentedOutCodeLine<"<This block of commented-out lines of code should be removed.(Ê­Þñ8ñ—Èºú,H‰ßRMAJORZ
+CODE_SMELL
+Hsquid:S1220""Move this file to a named package.HˆßRMINORZ
+CODE_SMELL
+…squid:CommentedOutCodeLine5"<This block of commented-out lines of code should be removed.(ìáÚçúÿÿÿÿ8¯®ß±ü,H†ßRMAJORZ
+CODE_SMELL
+{squid:S2259"HA "NullPointerException" could be thrown; "v_iban_tmp" is nullable here.(¢¸¨Ïýÿÿÿÿ8§£º¶ú,HþÞRMAJORZBUG
+m
+squid:S106"9Replace this use of System.out or System.err by a logger.(¨£‡ˆ8šÖ“¾ú,H‡ßRMAJORZ
+CODE_SMELL
+osquid:UnusedPrivateMethod4",Remove this unused private "rubbish" method.(ŒŸ×þ8šªà±ü,HüÞRMAJORZ
+CODE_SMELL
+€squid:CommentedOutCodeLineD"<This block of commented-out lines of code should be removed.(·ÌÄû8ÅÔþ¹ú,HÿÞRMAJORZ
+CODE_SMELL
+Qsquid:S1643""Use a StringBuilder instead.(Ÿý¢Œ8™„ôçú,H‚ßRMINORZ
+CODE_SMELL
+Œsquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ïí¨„ýÿÿÿÿ8ïÄ¿¶ú,HûÞRMINORZ
+CODE_SMELL
+…squid:CommentedOutCodeLine8"<This block of commented-out lines of code should be removed.(Ó‘„»ûÿÿÿÿ8ä³÷çú,HýÞRMAJORZ
+CODE_SMELL
+…squid:CommentedOutCodeLine:"<This block of commented-out lines of code should be removed.(“ºÊ•úÿÿÿÿ8¯®ß±ü,H€ßRMAJORZ
+CODE_SMELL
+‡squid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(º‰ìò8§£º¶ú,H„ßRMINORZ
+CODE_SMELL
+Œsquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(›È‹Žûÿÿÿÿ8™„ôçú,HúÞRMINORZ
+CODE_SMELL
+€squid:CommentedOutCodeLine@"<This block of commented-out lines of code should be removed.(Ì†ƒ±8„¢þ¹ú,H…ßRMAJORZ
+CODE_SMELL
+r
+squid:S106."9Replace this use of System.out or System.err by a logger.(°ú±»ÿÿÿÿÿ8×³å±ü,HƒßRMAJORZ
+CODE_SMELL
+Qsquid:S1643 "Use a StringBuilder instead.(Ó€çÞ8ºõË¶ú,HßRMINORZ
+CODE_SMELL
+…squid:CommentedOutCodeLineF"<This block of commented-out lines of code should be removed.(Óæèåýÿÿÿÿ8™„ôçú,HŠßRMAJORZ
+CODE_SMELL

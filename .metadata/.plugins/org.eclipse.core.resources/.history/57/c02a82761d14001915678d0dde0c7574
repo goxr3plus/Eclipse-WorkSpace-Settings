@@ -1,0 +1,19 @@
+package guru.springframework;
+
+public class Dollar {
+
+    private final int amount;
+
+    public Dollar(final int ammount) {
+	amount = ammount;
+    }
+
+    public Dollar times(final int multiplier) {
+	return new Dollar(amount*multiplier);
+    }
+
+    public int getAmount() {
+	return amount;
+    }
+
+}

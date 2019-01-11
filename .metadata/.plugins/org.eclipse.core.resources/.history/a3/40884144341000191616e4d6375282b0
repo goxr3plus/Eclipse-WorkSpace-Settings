@@ -1,0 +1,18 @@
+package com.intralot.l10.nam.manager.jpa;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.MockitoJUnitRunner;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ManualCreditLimitJPAManagerTest {
+
+	@InjectMocks
+	private ManualCreditLimitJPAManager manualCreditLimitJPAManager;
+
+	@Test
+	public void run() {
+		new ManualCreditLimitJPAManager();
+	}
+}

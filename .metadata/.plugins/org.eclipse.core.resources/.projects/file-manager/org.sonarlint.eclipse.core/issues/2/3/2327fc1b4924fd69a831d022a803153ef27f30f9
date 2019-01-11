@@ -1,0 +1,11 @@
+
+squid:S00117”"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ºİÃåüÿÿÿÿ8ùó¼¾ú,HÄ»RMINORZ
+CODE_SMELL
+~squid:UselessImportCheck"7Remove this unused import 'javax.persistence.Temporal'.(…ò­“üÿÿÿÿ8øÿïÁú,Hœ¾RMINORZ
+CODE_SMELL
+·squid:S1186M"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¤ı—şÿÿÿÿHõRCRITICALZ
+CODE_SMELL
+msquid:UselessImportCheck"+Remove this unused import 'java.util.Date'.(¸…¼ü8¦éñÁú,H›¾RMINORZ
+CODE_SMELL
+‚squid:UselessImportCheck";Remove this unused import 'javax.persistence.TemporalType'.(×ÓÛøÿÿÿÿ8øÿïÁú,Hì½RMINORZ
+CODE_SMELL

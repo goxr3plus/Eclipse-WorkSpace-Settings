@@ -1,0 +1,28 @@
+package com.intralot.l10.nam.manager.jpa;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import java.util.Optional;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import com.intralot.l10.nam.entity.ActionsRequest;
+import com.intralot.l10.nam.repository.jpa.ActionsRepository;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ActionsJPAManagerTest {
+
+	@InjectMocks
+	private ActionsJPAManager actionsJPAManager;
+
+	@Mock
+	private ActionsRepository actionsRepository;
+
+	@Test
+	public void transactionIdExists() {
+		when(actionsRepository.findByTransactionId(anyLong())).thenReturn(Optional.of(new ActionsRequest()));
+		actionsJPAManager.transactionIdExists(9L);
+	}
+}

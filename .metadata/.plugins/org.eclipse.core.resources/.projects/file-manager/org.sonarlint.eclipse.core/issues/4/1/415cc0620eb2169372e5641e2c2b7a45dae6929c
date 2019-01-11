@@ -1,0 +1,17 @@
+
+]squid:S2160"+Override the "equals" method in this class.(Ççñ—ıÿÿÿÿHÂ RMINORZ
+CODE_SMELL
+Ysquid:S1068",Remove this unused "headerVo" private field.(›Àù£HÃ RMAJORZ
+CODE_SMELL
+^squid:S1068	",Remove this unused "middleVo" private field.(ÚáŒ°ùÿÿÿÿHÄ RMAJORZ
+CODE_SMELL
+Vsquid:S1068
+")Remove this unused "items" private field.(ŸÈÁHÅ RMAJORZ
+CODE_SMELL
+Zsquid:S1948"*Make "headerVo" transient or serializable.(›Àù£HÆ RCRITICALZ
+CODE_SMELL
+_squid:S1948	"*Make "middleVo" transient or serializable.(ÚáŒ°ùÿÿÿÿHÇ RCRITICALZ
+CODE_SMELL
+Wsquid:S1948
+"'Make "items" transient or serializable.(ŸÈÁHÈ RCRITICALZ
+CODE_SMELL

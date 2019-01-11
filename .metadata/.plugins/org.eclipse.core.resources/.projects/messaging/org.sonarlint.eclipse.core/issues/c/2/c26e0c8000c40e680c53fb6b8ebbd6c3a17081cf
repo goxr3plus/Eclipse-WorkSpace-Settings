@@ -1,0 +1,13 @@
+
+~squid:CommentedOutCodeLine3"<This block of commented-out lines of code should be removed.(éØ»ÚûÿÿÿÿHÛáRMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine1"<This block of commented-out lines of code should be removed.(šá•¥üÿÿÿÿHÜáRMAJORZ
+CODE_SMELL
+vsquid:S4488m"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(¿ÇœµHÝáRMINORZ
+CODE_SMELL
+{squid:S4488~"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(šÕÕ³úÿÿÿÿHÞáRMINORZ
+CODE_SMELL
+vsquid:S4488]"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(§ƒ†½HßáRMINORZ
+CODE_SMELL
+{squid:S44888"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(Ì¹‘ƒúÿÿÿÿHàáRMINORZ
+CODE_SMELL

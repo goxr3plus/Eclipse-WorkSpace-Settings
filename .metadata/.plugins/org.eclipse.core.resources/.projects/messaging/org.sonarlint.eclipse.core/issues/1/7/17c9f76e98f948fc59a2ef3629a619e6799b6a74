@@ -1,0 +1,14 @@
+
+È%squid:RedundantThrowsDeclarationCheck#"tRemove the declaration of thrown exception 'java.net.URISyntaxException', as it cannot be thrown from method's body.(ÓŸ…Êúÿÿÿÿ8·ë¤»ƒ-HµäRMINORZ
+CODE_SMELL
+k
+squid:S8999";Do something with the "boolean" value returned by "delete".(ĞŒ÷ÛH¶äRMINORZVULNERABILITY
+wsquid:S40429"IUse "java.nio.Files#delete" here for better messages on error conditions.(ĞŒ÷ÛH·äRMAJORZ
+CODE_SMELL
+wsquid:S4042:"IUse "java.nio.Files#delete" here for better messages on error conditions.(€í’H¸äRMAJORZ
+CODE_SMELL
+ssquid:S2095c"JUse try-with-resources or close this "OutputStream" in a "finally" clause.(óŠ³°H¹äRBLOCKERZBUG
+k
+squid:S899:";Do something with the "boolean" value returned by "delete".(€í’HºäRMINORZVULNERABILITY
+wsquid:S20955"NUse try-with-resources or close this "FileOutputStream" in a "finally" clause.(öí—³H»äRBLOCKERZBUG
+wsquid:S2095/"NUse try-with-resources or close this "FileOutputStream" in a "finally" clause.(ò…š¡H¼äRBLOCKERZBUG

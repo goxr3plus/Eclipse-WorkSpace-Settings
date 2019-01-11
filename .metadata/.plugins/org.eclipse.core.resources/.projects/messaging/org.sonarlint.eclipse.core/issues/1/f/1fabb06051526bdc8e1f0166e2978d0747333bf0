@@ -1,0 +1,18 @@
+
+…squid:S00116&"QRename this field "app_id" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(›ÊÁˆþÿÿÿÿH¦äRMINORZ
+CODE_SMELL
+Žsquid:S00116)"ZRename this field "partner_api_key" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Õ×ÃÿüÿÿÿÿH§äRMINORZ
+CODE_SMELL
+Xsquid:S3457N"%String contains no format specifiers.(¢½‹¢ÿÿÿÿÿH¨äRMAJORZ
+CODE_SMELL
+ˆsquid:S00116,"ZRename this field "environment_key" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ƒ§¿5H©äRMINORZ
+CODE_SMELL
+„squid:S00116/"URename this field "app_secret" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’œüÕHªäRMINORZ
+CODE_SMELL
+–squid:UselessImportCheck"[Remove this unused import 'com.intralot.lotos10.messaging.model.PushNotificationException'.(—¿½ÈH«äRMINORZ
+CODE_SMELL
+†squid:S00117‘"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(æÝ­»ÿÿÿÿÿH¬äRMINORZ
+CODE_SMELL
+’squid:S1488•"^Immediately return this expression instead of assigning it to the temporary variable "base64".(“œßöýÿÿÿÿH­äRMINORZ
+CODE_SMELL
+Ysquid:S1148b"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿH®äRMINORZVULNERABILITY

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;Mandate.java&apos; to &apos;file-manager/src/main/java/com.intralot.l10.bank.entity&apos;&#x0D;&#x0A;- Original project: &apos;Generator&apos;&#x0D;&#x0A;- Destination element: &apos;file-manager/src/main/java/com.intralot.l10.bank.entity&apos;&#x0D;&#x0A;- Original element: &apos;model.Mandate.java&apos;" description="Copy compilation unit" destination="=file-manager/src\/main\/java&lt;com.intralot.l10.bank.entity" element1="/src&lt;model{Mandate.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1543593326300" units="1" version="1.0"/>
+</session>

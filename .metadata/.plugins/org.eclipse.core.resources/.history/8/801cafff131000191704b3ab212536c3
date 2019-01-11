@@ -1,0 +1,78 @@
+package com.intralot.l10.ats.manager.client;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.ats.clients.ats.AtsRestClient;
+import com.intralot.l10.ats.entity.AtsConfiguration;
+import com.intralot.l10.ats.manager.config.TestConfig;
+import com.intralot.l10.ats.manager.configuration.ConfigurationManager;
+import com.intralot.l10.ats.model.AtsSubmitDocumentDto;
+
+import reactor.core.publisher.Mono;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {TestConfig.class, SubmitDocumentManagerTest.Config.class})
+public class TestSubmitDocumentManager {
+
+	@Rule
+	public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+	@InjectMocks
+	private SubmitDocumentManager submitDocumentManager;
+
+	@Mock
+	private AtsRestClient atsRestClient;
+
+	@Mock
+	private ConfigurationManager configurationManager;
+
+	@Autowired
+	SubmitDocumentManager submitDocumentManager2 = new SubmitDocumentManager();
+
+	@MockBean
+	private ConfigurationManager configurationManager2;
+
+	@Test
+	public void testRetrieveDocument() {
+
+		final Mono<String> mono = Mono.just("Hello");
+		final AtsConfiguration atsConfiguration = new AtsConfiguration();
+		when(configurationManager.getConfiguration()).thenReturn(atsConfiguration);
+		when(atsRestClient.submitDocument(anyLong(), any(AtsConfiguration.class), any(AtsSubmitDocumentDto.class), anyInt())).thenReturn(mono);
+
+		assert submitDocumentManager.submitFile(5L, new AtsSubmitDocumentDto()) == mono;
+	}
+
+	@Test
+	public void testInit() {
+		submitDocumentManager2.init();
+	}
+
+	@Configuration
+	static class Config {
+
+		@Bean(name = "SubmitDocumentManager")
+		public SubmitDocumentManager submitDocumentManager() {
+
+			return new SubmitDocumentManager();
+		}
+
+	}
+}

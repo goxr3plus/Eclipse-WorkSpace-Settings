@@ -1,0 +1,14 @@
+
+–squid:S4165…"cRemove this useless assignment; "alert" already holds the assigned value along all execution paths.(­½†ÇùÿÿÿÿHøRMAJORZ
+CODE_SMELL
+–squid:S4165"cRemove this useless assignment; "alert" already holds the assigned value along all execution paths.(­½†ÇùÿÿÿÿH÷RMAJORZ
+CODE_SMELL
+”squid:S3457"aNo need to call "toString()" method as formatting and string conversion is done by the Formatter.(‡éšúùÿÿÿÿHüRMAJORZ
+CODE_SMELL
+ysquid:CommentedOutCodeLineè"<This block of commented-out lines of code should be removed.(è»Î³HùRMAJORZ
+CODE_SMELL
+‚squid:S3776["RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(‘õöÑHúRCRITICALZ
+CODE_SMELL
+tsquid:S2259|"I"NullPointerException" will be thrown when invoking method "isSnoozed()".(ìÕÇ‘ûÿÿÿÿHûRMAJORZBUG
+Wsquid:S2629"$Invoke method(s) only conditionally.(‡éšúùÿÿÿÿHöRMAJORZ
+CODE_SMELL

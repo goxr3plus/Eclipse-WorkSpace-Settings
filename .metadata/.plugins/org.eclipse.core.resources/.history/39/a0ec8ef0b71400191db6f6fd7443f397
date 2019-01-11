@@ -1,0 +1,5 @@
+package com.intralot.lotos10.messaging.model;
+
+public class MessageDeliveryTypeDTO {
+
+}

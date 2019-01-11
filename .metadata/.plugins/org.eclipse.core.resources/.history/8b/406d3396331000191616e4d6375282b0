@@ -1,0 +1,94 @@
+package com.intralot.l10.bank.manager.process;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.bank.exception.BankFilesErrorCode;
+import com.intralot.l10.bank.exception.BankFilesGenericException;
+import com.intralot.l10.bank.manager.GlobalConfig;
+import com.intralot.l10.bank.manager.parser.DocumentParsingManager;
+import com.intralot.l10.bank.model.jaxb.Document;
+import com.intralot.l10.bank.model.jaxb.StatusReasonInformation;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = DocumentParsingManager.class)
+@ContextConfiguration(classes = { GlobalConfig.class })
+public class TestDocumentParsingManager {
+
+	private final String basePath = "src/test/resources/jaxb/";
+
+	@Autowired
+	private DocumentParsingManager documentParsingManager;
+
+	@Test
+	public void parseAcceptDocument() throws IOException, Exception {
+		final Document document = documentParsingManager
+				.parseDocument(FileUtils.openInputStream(new File(basePath + "PAIN002-0045-20180522-01.xml")));
+
+		System.err.println("Accepted Document :\n" + document);
+	}
+
+	@Test
+	public void parseRejectDocument_With_Reason_And_Retailers() throws IOException, Exception {
+		final Document document = documentParsingManager
+				.parseDocument(FileUtils.openInputStream(new File(basePath + "PAIN002-0045-20180522-02.xml")));
+
+		assertEquals(getRejectionReason(document), "AM04");
+	}
+
+	@Test
+	public void parseRejectDocument_Without_Reason_AND_ALL_REJECTED() throws IOException, Exception {
+		final Document document = documentParsingManager
+				.parseDocument(FileUtils.openInputStream(new File(basePath + "PAIN002-0045-20180522-03.xml")));
+
+		assertEquals(getRejectionReason(document), null);
+	}
+
+	@Test(expected = BankFilesGenericException.class)
+	public void parseAcceptDocument_Exception() throws IOException, Exception {
+		documentParsingManager.parseDocument(
+				FileUtils.openInputStream(new File(basePath + "PAIN002-0045-20180522-04-corrupted.xml")));
+
+	}
+
+	// -------------------- PRIVATE METHODS --------------------//
+	private String getRejectionReason(final Document response) {
+
+		/* Get reason (if exists) */
+		String reason = null;
+		final List<StatusReasonInformation> list = response.getCstmrPmtStsRpt().getOrgnlPmtInfAndSts().get(0)
+				.getStsRsnInf();
+		if (!list.isEmpty()) {
+			reason = list.get(0).getRsn().getCd();
+		}
+
+		return reason;
+	}
+
+	private Document getDocument(final Path path) {
+
+		final BufferedInputStream inputStream;
+		try {
+			inputStream = new BufferedInputStream(new FileInputStream(path.toString()));
+		} catch (final FileNotFoundException e) {
+			throw new BankFilesGenericException(BankFilesErrorCode.IO_ERROR, new Object[] { e.getMessage() });
+		}
+
+		return documentParsingManager.parseDocument(inputStream);
+	}
+}

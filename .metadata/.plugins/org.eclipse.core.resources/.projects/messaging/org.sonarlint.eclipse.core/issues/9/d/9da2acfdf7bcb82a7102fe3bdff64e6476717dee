@@ -1,0 +1,7 @@
+
+osquid:S1193f"@Replace the usage of the "instanceof" operator by a catch block.(Æ§†ÄøÿÿÿÿRMAJORZ
+CODE_SMELL
+{squid:S2095Y"QUse try-with-resources or close this "CloseableHttpClient" in a "finally" clause.(£“Ç¯ÿÿÿÿÿRBLOCKERZBUG
+{squid:CommentedOutCodeLine«"<This block of commented-out lines of code should be removed.(´é„ÙÿÿÿÿÿRMAJORZ
+CODE_SMELL
+Vsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿRMINORZVULNERABILITY

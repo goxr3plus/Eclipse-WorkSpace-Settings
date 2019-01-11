@@ -1,0 +1,14 @@
+1546939525547	Delete element
+1546939637209	Delete element
+1546939815516	Rename field 'name'
+1546939818702	Rename field 'location'
+1546939821867	Rename field 'birthDate'
+1546940240520	Copy compilation unit
+1546941093624	Move compilation unit
+1546941448303	Delete element
+1546941507271	Delete element
+1546942361283	Rename type 'BankFilesGenericException'
+1546942368314	Move compilation unit
+1546942426860	Rename type 'AccountingBalanceRepository'
+1546942436322	Rename type 'PersonRepository'
+1546943923784	Rename method 'getAllPersons'

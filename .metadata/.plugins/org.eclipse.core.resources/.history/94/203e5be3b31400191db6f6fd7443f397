@@ -1,0 +1,129 @@
+package com.intralot.lotos10.messaging.entities;
+
+import java.util.Collection;
+import java.util.Objects;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "message_delivery_type")
+public class MessageDeliveryType {
+
+	private Long id;
+	private String descr;
+	private String name;
+	private Collection<Message> messagesById;
+	private Collection<MessageType> messageTypesById;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	public Long getId() {
+
+		return this.id;
+	}
+
+	public void setId(final Long id) {
+
+		this.id = id;
+	}
+
+	@Basic
+	@Column(name = "DESCR", nullable = true, insertable = true, updatable = true, length = 150)
+	public String getDescr() {
+
+		return this.descr;
+	}
+
+	public void setDescr(final String descr) {
+
+		this.descr = descr;
+	}
+
+	@Basic
+	@Column(name = "NAME", nullable = false, insertable = true, updatable = true, length = 50)
+	public String getName() {
+
+		return this.name;
+	}
+
+	public void setName(final String name) {
+
+		this.name = name;
+	}
+
+	@OneToMany(mappedBy = "messageDeliveryTypeByMessageDeliveryTypeFk", fetch = FetchType.LAZY)
+	public Collection<Message> getMessagesById() {
+
+		return this.messagesById;
+	}
+
+	public void setMessagesById(final Collection<Message> messagesById) {
+
+		this.messagesById = messagesById;
+	}
+
+	@OneToMany(mappedBy = "messageDeliveryTypeByMessageDeliveryTypeFk", fetch = FetchType.LAZY)
+	public Collection<MessageType> getMessageTypesById() {
+
+		return this.messageTypesById;
+	}
+
+	public void setMessageTypesById(final Collection<MessageType> messageTypesById) {
+
+		this.messageTypesById = messageTypesById;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		final MessageDeliveryType that = (MessageDeliveryType) o;
+
+		if (!this.id.equals(that.id)) {
+			return false;
+		}
+		if (this.descr != null ? !this.descr.equals(that.descr) : that.descr != null) {
+			return false;
+		}
+		if (this.name != null ? !this.name.equals(that.name) : that.name != null) {
+			return false;
+		}
+		if (this.messagesById != null ? !this.messagesById.equals(that.messagesById) : that.messagesById != null) {
+			return false;
+		}
+		return !(this.messageTypesById != null ? !this.messageTypesById.equals(that.messageTypesById) : that.messageTypesById != null);
+
+	}
+
+	@Override
+	public int hashCode() {
+
+		return Objects.hash(id, descr, name, messagesById, messageTypesById);
+	}
+
+	@Override
+	public String toString() {
+
+		return "MessageDeliveryType{" +
+			"id=" + this.id +
+			", descr='" + this.descr + '\'' +
+			", name='" + this.name + '\'' +
+			", messagesById=" + this.messagesById +
+			", messageTypesById=" + this.messageTypesById +
+			'}';
+	}
+}

@@ -1,0 +1,85 @@
+package com.intralot.l10.ats.manager.client;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import com.intralot.l10.ats.clients.infostore.InfostoreRestClient;
+import com.intralot.l10.ats.model.subscriber.SubscriberDto;
+
+<<<<<<< HEAD:src/test/java/com/intralot/l10/ats/manager/client/TestInfoStoreManager.java
+=======
+import global.config.TestConfig;
+>>>>>>> Testing:src/test/java/com/intralot/l10/ats/manager/client/InfoStoreManagerTest.java
+import reactor.core.publisher.Mono;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {TestConfig.class, TestInfoStoreManager.Config.class})
+public class TestInfoStoreManager {
+
+@ContextConfiguration(classes = { TestConfig.class, InfoStoreManagerTest.Config.class })
+public class InfoStoreManagerTest {
+	@Rule
+	public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+	@InjectMocks
+	private InfoStoreManager infoStoreManager;
+
+	@Mock
+	private InfostoreRestClient infostoreClient;
+
+	@Autowired
+	InfoStoreManager infoStoreManager2 = new InfoStoreManager();
+
+	@Test
+	public void testSubscribeToInfostore() {
+
+		final Mono<String> mono = Mono.just("Hello");
+		when(infostoreClient.subscribe(any(SubscriberDto.class), anyInt())).thenReturn(mono);
+		ReflectionTestUtils.setField(infoStoreManager, "issSubscriberBaseUrl", "http://ats.dev.intralot.com");
+
+		assert infoStoreManager.subscribeToInfostore(new SubscriberDto()) == mono;
+	}
+
+	@Test
+	public void testCheckInfostoreSubscription() {
+
+		final Mono<?> mono = Mono.just("Hello");
+		doReturn(mono).when(infostoreClient).checkSubscription(anyString(), anyInt());
+
+		assertEquals(mono, infoStoreManager.checkInfostoreSubscription("path"));
+	}
+
+	@Test
+	public void testInit() throws SecurityException {
+		infoStoreManager2.init();
+	}
+
+	@Configuration
+	static class Config {
+
+		@Bean(name = "InfoStoreManager")
+		public InfoStoreManager infoStoreManager() {
+
+			return new InfoStoreManager();
+		}
+
+	}
+}

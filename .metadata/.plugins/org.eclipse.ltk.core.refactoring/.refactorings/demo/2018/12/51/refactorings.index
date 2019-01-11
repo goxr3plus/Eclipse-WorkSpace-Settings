@@ -1,0 +1,11 @@
+1545041460927	Encapsulate field 'students'
+1545041482539	Encapsulate field 'students'
+1545041514875	Encapsulate field 'course'
+1545041638038	Rename field 'course'
+1545050736875	Encapsulate field 'courses'
+1545222513231	Copy compilation unit
+1545222522336	Rename type 'Course2'
+1545223145146	Copy compilation unit
+1545223166284	Rename field 'hourlyWage'
+1545223314893	Copy compilation unit
+1545223360066	Rename local variable 'course'

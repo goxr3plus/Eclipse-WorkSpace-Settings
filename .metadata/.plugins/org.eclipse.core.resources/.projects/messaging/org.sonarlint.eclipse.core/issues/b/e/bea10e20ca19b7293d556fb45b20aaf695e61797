@@ -1,0 +1,42 @@
+
+xjavascript:S2814µ"CRename "n" as this name is already used in declaration at line 359.(ä¯£’øÿÿÿÿRMAJORZ
+CODE_SMELL
+sjavascript:S2814Å"CRename "i" as this name is already used in declaration at line 319.(Ñ¥«™RMAJORZ
+CODE_SMELL
+wjavascript:S2814¶"GRename "regex" as this name is already used in declaration at line 360.(ı›®ÛRMAJORZ
+CODE_SMELL
+{javascript:S2814ˆ"LRename "groupIndex" as this name is already used in declaration at line 500.(°“Ë`RMAJORZ
+CODE_SMELL
+{javascript:S2814™"LRename "groupIndex" as this name is already used in declaration at line 500.(°“Ë`RMAJORZ
+CODE_SMELL
+xjavascript:S2814Â"CRename "i" as this name is already used in declaration at line 415.(Äº¢ÀıÿÿÿÿRMAJORZ
+CODE_SMELL
+sjavascript:S2814Î"CRename "i" as this name is already used in declaration at line 415.(±§°”RMAJORZ
+CODE_SMELL
+sjavascript:S2814‰"CRename "p" as this name is already used in declaration at line 501.(ñŸ·öRMAJORZ
+CODE_SMELL
+sjavascript:S2814¡"CRename "p" as this name is already used in declaration at line 501.(ñŸ·öRMAJORZ
+CODE_SMELL
+sjavascript:S2814ƒ"CRename "i" as this name is already used in declaration at line 500.(´÷Û¬RMAJORZ
+CODE_SMELL
+rjavascript:S2814ˆ"CRename "i" as this name is already used in declaration at line 500.(°“Ë`RMAJORZ
+CODE_SMELL
+rjavascript:S2814™"CRename "i" as this name is already used in declaration at line 500.(°“Ë`RMAJORZ
+CODE_SMELL
+sjavascript:S2814 "CRename "i" as this name is already used in declaration at line 500.(Ñ¥«™RMAJORZ
+CODE_SMELL
+xjavascript:S2814µ"CRename "i" as this name is already used in declaration at line 359.(ä¯£’øÿÿÿÿRMAJORZ
+CODE_SMELL
+|javascript:S2814Ï"GRename "range" as this name is already used in declaration at line 451.(º–¹˜øÿÿÿÿRMAJORZ
+CODE_SMELL
+ƒjavascript:S2814"NRename "decimalValue" as this name is already used in declaration at line 506.(îÄª­úÿÿÿÿRMAJORZ
+CODE_SMELL
+tjavascript:UnusedVariableÄ"6Remove the declaration of the unused 'notWs' variable.(Õºâ™üÿÿÿÿRMINORZ
+CODE_SMELL
+mjavascript:S1854Ä"8Remove this useless assignment to local variable "notWs"(Õºâ™üÿÿÿÿRMAJORZ
+CODE_SMELL
+tjavascript:S1854ì
+"?Remove this useless assignment to local variable "codeSegments"(»«óÿÿÿÿÿRMAJORZ
+CODE_SMELL
+ejavascript:S1854É"5Remove this useless assignment to local variable "cs"(İáĞRMAJORZ
+CODE_SMELL

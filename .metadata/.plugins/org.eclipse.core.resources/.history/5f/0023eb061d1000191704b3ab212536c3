@@ -1,0 +1,195 @@
+package com.intralot.l10.ats.manager.submit;
+
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import com.intralot.l10.ats.entity.SubmitDocumentRequest;
+import com.intralot.l10.ats.enumeration.DrawStatus;
+import com.intralot.l10.ats.enumeration.Operation;
+import com.intralot.l10.ats.manager.client.SubmitDocumentManager;
+import com.intralot.l10.ats.manager.evidence.EvidenceFileManager;
+import com.intralot.l10.ats.manager.file.FileCodecsManager;
+import com.intralot.l10.ats.manager.file.FileNamingManager;
+import com.intralot.l10.ats.manager.file.FileOperationsManager;
+import com.intralot.l10.ats.manager.transform.AtsTransformationManager;
+import com.intralot.l10.ats.model.AtsSubmitDocumentDto;
+import com.intralot.l10.ats.repository.AtsSubmitDocumentRepository;
+
+import global.config.TestConfig;
+import reactor.core.publisher.Mono;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.Silent.class)
+@ContextConfiguration(classes = {TestConfig.class})
+public class SubmitDocumentProcessingManagerTest {
+
+	@InjectMocks
+	SubmitDocumentProcessingManager submitDocumentProcessingManager;
+
+	@Mock
+	private SubmitDocumentRequestJPAManager submitDocumentRequestJPAManager;
+
+	@Mock
+	private SubmitDocumentPreProcessingManager submitDocumentPreProcessingManager;
+
+	@Mock
+	private AtsSubmitDocumentRepository atsSubmitDocumentRepository;
+
+	@Mock
+	private FileOperationsManager fileOperationsManager;
+
+	@Mock
+	private EvidenceFileManager evidenceFileManager;
+
+	@Mock
+	private FileNamingManager fileNamingManager;
+
+	@Mock
+	private FileCodecsManager fileCodecsManager;
+
+	@Mock
+	private AtsTransformationManager atsTransformationManager;
+
+	@Mock
+	private SubmitDocumentManager submitDocumentManager;
+
+	private String temporaryPath;
+	private String submitDirectory;
+
+	private final SubmitDocumentRequest submitDocumentRequest = new SubmitDocumentRequest();
+	private final AtsSubmitDocumentDto atsSubmitDocumentDto = new AtsSubmitDocumentDto();
+
+	@Before
+	public void setup() {
+
+		temporaryPath = "./src/test/resources/tmp";
+		ReflectionTestUtils.setField(submitDocumentProcessingManager, "tmpDirectory", temporaryPath);
+		ReflectionTestUtils.setField(submitDocumentProcessingManager, "submitDirectory", submitDirectory);
+
+		doAnswer((i) -> {
+			assertTrue(true);
+			return temporaryPath;
+		}).when(evidenceFileManager).createEvidenceFile(anyInt(), anyInt(), anyBoolean(), any(Operation.class), any(Path.class));
+
+		submitDocumentRequest.setDrawId(100100);
+		submitDocumentRequest.setId(1L);
+		submitDocumentRequest.setGameId(5);
+		submitDocumentRequest.setWinnersIncluded(true);
+		submitDocumentRequest.setDocumentHash("hash");
+		submitDocumentRequest.setRevisionNumber(1);
+		submitDocumentRequest.setL10Path("/path/l.txt");
+
+		when(fileNamingManager.evidenceDocumentNameForSubmit(anyInt(), anyInt(), anyBoolean()))
+			.thenReturn("100100.TXT");
+		when(fileCodecsManager.hashFile(anyString())).thenReturn("hash");
+		when(fileOperationsManager.storeFile(anyString(), any(Path.class))).thenReturn(Paths.get("path"));
+		when(fileOperationsManager.zipFile(any(Path.class))).thenReturn(Paths.get("path"));
+		when(atsTransformationManager.transformSubmitDocumentRequest(any(SubmitDocumentRequest.class)))
+			.thenReturn(atsSubmitDocumentDto);
+		when(submitDocumentManager.submitFile(anyLong(), any(AtsSubmitDocumentDto.class)))
+			.thenReturn(Mono.just("mono"));
+		when(submitDocumentPreProcessingManager.preProcessSubmitDocument(anyInt(), anyInt(), any(DrawStatus.class), anyLong(),
+			anyBoolean(), anyList())).thenReturn(submitDocumentRequest);
+		when(submitDocumentRequestJPAManager.findByGameIdAndDrawIdAndWinnersIncluded(anyInt(), anyInt(), anyBoolean()))
+			.thenReturn(Collections.emptyList());
+
+	}
+
+	@After
+	public void destroy() throws Exception {
+
+		System.out.println("Deleting Base Dir=" + temporaryPath);
+
+		if (Files.exists(Paths.get(temporaryPath))) {
+
+			Files.walkFileTree(Paths.get(temporaryPath), new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+
+					Files.delete(file);
+					return FileVisitResult.CONTINUE;
+				}
+
+				@Override
+				public FileVisitResult postVisitDirectory(final Path dir, final IOException e) throws IOException {
+
+					if (e == null) {
+						Files.delete(dir);
+						return FileVisitResult.CONTINUE;
+					} else {
+						throw e;
+					}
+				}
+			});
+		}
+	}
+
+	@Test
+	public void initialSubmission() {
+
+		when(submitDocumentPreProcessingManager.shouldProcessSubmitDocument(anyInt(), anyInt(), any(DrawStatus.class),
+			anyList())).thenReturn(true);
+
+		submitDocumentProcessingManager.initialSubmission(5, 100100, DrawStatus.WINNING_NUMBERS, System.currentTimeMillis());
+	}
+
+	@Test
+	public void initialSubmission_throw_exception() {
+
+		when(atsTransformationManager.transformSubmitDocumentRequest(submitDocumentRequest))
+			.thenReturn(null);
+		when(submitDocumentPreProcessingManager.shouldProcessSubmitDocument(anyInt(), anyInt(), any(DrawStatus.class),
+			anyList())).thenReturn(true);
+
+		submitDocumentProcessingManager.initialSubmission(5, 100100, DrawStatus.WINNING_NUMBERS, System.currentTimeMillis());
+	}
+
+	@Test
+	public void initialSubmission2() {
+
+		when(submitDocumentPreProcessingManager.shouldProcessSubmitDocument(anyInt(), anyInt(), any(DrawStatus.class),
+			anyList())).thenReturn(false);
+
+		submitDocumentProcessingManager.initialSubmission(5, 100100, DrawStatus.DIST_CALCULATION, System.currentTimeMillis());
+	}
+
+	@Test
+	public void replayedSubmission2() {
+
+		submitDocumentProcessingManager.replayedSubmission(submitDocumentRequest);
+	}
+
+	@Test
+	public void replayedSubmission_null_path() {
+
+		submitDocumentRequest.setL10Path(null);
+		submitDocumentProcessingManager.replayedSubmission(submitDocumentRequest);
+	}
+
+}

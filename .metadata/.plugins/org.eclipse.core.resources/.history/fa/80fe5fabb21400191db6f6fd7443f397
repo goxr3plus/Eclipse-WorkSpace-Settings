@@ -1,0 +1,74 @@
+package com.intralot.lotos10.messaging.controller;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.intralot.lotos10.messaging.model.MessageTypeDTO;
+import com.intralot.lotos10.messaging.model.ResponseOutput;
+import com.intralot.lotos10.messaging.repositories.IMessageTypeRepo;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
+@RestController
+@RequestMapping("/messaging/message-delivery-types")
+public class MessageDeliveryTypeController {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageDeliveryTypeController.class);
+
+	@Autowired
+	private IMessageTypeRepo messageTypeRepo;
+
+	@ApiOperation(value = "getAllDeliveryMessageTypes", nickname = "getAllMessageTypes", response = MessageTypeDTO.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "Success", response = ResponseOutput.class),
+		@ApiResponse(code = 400, message = "Bad Request", response = ResponseOutput.class),
+		@ApiResponse(code = 404, message = "Not Found", response = ResponseOutput.class),
+		@ApiResponse(code = 401, message = "Unauthorized", response = ResponseOutput.class),
+		@ApiResponse(code = 500, message = "Internal Server Error", response = ResponseOutput.class)})
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", dataType = "string"),
+		@ApiImplicitParam(name = "GUID", paramType = "header", dataType = "string"),
+	})
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<List<MessageTypeDTO>> getAllMessageTypes(@RequestHeader final HttpHeaders headers) {
+
+		final List<MessageTypeDTO> l = this.messageTypeRepo.findAllDTO();
+		return new ResponseEntity<>(l, HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "findMessageTypesByCategoryId", nickname = "findMessageTypesByCategoryId", response = MessageTypeDTO.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "Success", response = ResponseOutput.class),
+		@ApiResponse(code = 400, message = "Bad Request", response = ResponseOutput.class),
+		@ApiResponse(code = 404, message = "Not Found", response = ResponseOutput.class),
+		@ApiResponse(code = 401, message = "Unauthorized", response = ResponseOutput.class),
+		@ApiResponse(code = 500, message = "Internal Server Error", response = ResponseOutput.class)})
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", dataType = "string"),
+		@ApiImplicitParam(name = "GUID", paramType = "header", dataType = "string"),
+	})
+	@RequestMapping(value = "/{categoryId}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<List<MessageTypeDTO>> findMessageType(@RequestHeader final HttpHeaders headers,
+		@ApiParam(value = "Type Category Id", required = true) @PathVariable final Long categoryId) {
+
+		final List<MessageTypeDTO> l = this.messageTypeRepo.findDTOByTemplateCategory(categoryId);
+		return new ResponseEntity<>(l, HttpStatus.OK);
+	}
+
+}

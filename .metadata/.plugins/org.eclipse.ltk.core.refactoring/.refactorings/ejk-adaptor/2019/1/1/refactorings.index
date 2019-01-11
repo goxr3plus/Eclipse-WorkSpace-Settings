@@ -1,0 +1,22 @@
+1546602074168	Move compilation unit
+1546602149610	Rename type 'TestConfig'
+1546602156793	Delete element
+1546602159818	Move compilation unit
+1546602765654	Rename type 'TestMessageComposeManager'
+1546602775088	Rename type 'TestXMLParser'
+1546602783453	Rename type 'TestFileOperationsManager'
+1546602787812	Rename type 'TestScpManager'
+1546602793429	Rename type 'TestInfoStoreManager'
+1546602800897	Delete element
+1546603285597	Copy package
+1546615118374	Rename type 'SnwProcessingManagerTest'
+1546615123119	Rename type 'MessageComposeManagerTest'
+1546615126897	Rename type 'XMLParserTest'
+1546615131221	Rename type 'ScpManagerTest'
+1546615135565	Rename type 'FileOperationsManagerTest'
+1546615140144	Rename type 'FileNamingManagerTest'
+1546615143892	Rename type 'FileCodecsManagerTest'
+1546615147530	Rename type 'InfoStoreManagerTest'
+1546615151794	Rename type 'RequestJPAManagerTest'
+1546615156707	Rename type 'EventJPAManagerTest'
+1546615161698	Delete element

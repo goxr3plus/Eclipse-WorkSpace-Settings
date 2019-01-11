@@ -1,0 +1,280 @@
+package com.intralot.l10.ats.manager.file;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.ats.exception.AtsGenericException;
+import com.intralot.l10.ats.exception.AtsOpapException;
+
+import global.config.TestConfig;
+import global.utils.FileTools;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {TestConfig.class, FileOperationsManagerTest.Config.class})
+public class FileOperationsManagerTest {
+
+	@Autowired
+	FileOperationsManager fileOperationsManager;
+
+	@Value("${ats.directory.data}")
+	private String operationsBasePath;
+
+	@Before
+	public void init() throws Exception {
+
+		operationsBasePath = operationsBasePath + "/";
+		System.out.println("Creating Base Dir=" + operationsBasePath);
+		Files.createDirectories(Paths.get(operationsBasePath));
+	}
+
+	@After
+	public void destroy() throws Exception {
+
+		System.out.println("Deleting Base Dir=" + operationsBasePath);
+
+		// Give permissions to delete the file
+		// If removed this code the test will permanently fail
+		// because once this file is created and not deleted
+		// then you have to do it manually from the Operating System
+		final Path output = Paths.get(operationsBasePath, "output89000.txt");
+		if (Files.exists(output)) {
+			output.toFile().setReadable(true);
+			output.toFile().setWritable(true);
+		}
+
+		FileTools.deleteDirectory(Paths.get(operationsBasePath));
+	}
+
+	// ------------------------- ROOT EXISTANCE FILE -------------------------//
+
+	@Test
+	public void testParentExistance() {
+
+		final Path output = Paths.get(operationsBasePath, "outputCompress.txt");
+		this.createFile(output, "zzzz");
+
+		fileOperationsManager.directoryExistsOrElseCreate(output.getParent());
+
+	}
+
+	@Test
+	public void testParentExistanceNotExisting() {
+
+		final Path output = Paths.get(operationsBasePath, "/parent/outputCompress23423.txt");
+
+		fileOperationsManager.directoryExistsOrElseCreate(output.getParent());
+
+	}
+
+	// ------------------------- Stored File -------------------------//
+
+	@Test
+	public void testStoreFileResource() {
+
+		final Path output = Paths.get(operationsBasePath, "outputCompress23.txt");
+		this.createFile(output, "zzzz");
+
+		fileOperationsManager.storeFile("./23", output);
+
+		assertThat(Paths.get(operationsBasePath + "/23/", "outputCompress23.txt")).exists();
+	}
+
+	@Test(expected = AtsGenericException.class)
+	public void testStoreFileThrowsException() {
+
+		fileOperationsManager.storeFile(operationsBasePath, Paths.get("lala.txt"));
+	}
+
+	// ----------------- Get Stored File Resource -----------------//
+
+	@Test
+	public void testGetStoredFileResource() {
+
+		final Path output = Paths.get(operationsBasePath, "outputCompress.txt");
+		this.createFile(output, "zzzz");
+
+		fileOperationsManager.getStoredFileResource("outputCompress.txt");
+	}
+
+	@Test(expected = AtsGenericException.class)
+	public void testGetStoredFileThrowsException() {
+
+		final Path output = Paths.get(operationsBasePath, "outputCompress45.txt");
+
+		fileOperationsManager.getStoredFileResource(output.toString());
+	}
+
+	// ------------------------- ROOT EXISTANCE FILE -------------------------//
+
+	@Test
+	public void testGetStoredFileBytes() throws IOException {
+
+		final Path output = Paths.get(this.operationsBasePath, "outputCompress.txt");
+		this.createFile(output, "zzzz");
+		final byte[] original = Files.readAllBytes(output);
+		final byte[] bytes = fileOperationsManager.getStoredFileBytes("outputCompress.txt");
+
+		assertArrayEquals(original, bytes);
+	}
+
+	@Test(expected = AtsGenericException.class)
+	public void testGetStoredFileBytesThrowsException() {
+
+		final Path output = Paths.get(operationsBasePath, "outputCompress.txt");
+		fileOperationsManager.getStoredFileBytes(output.toString());
+
+	}
+
+	// ------------------------- EVIDENCE FILE -------------------------//
+
+	@Test
+	public void testPathExistance() {
+
+		final Path output = Paths.get(operationsBasePath, "evidence.txt");
+		this.createFile(output, "evidence content");
+
+		fileOperationsManager.pathExistsOrElseDelete(output);
+
+	}
+
+	@Test
+	public void testPathExistanceNoExisting() {
+
+		final Path output = Paths.get(operationsBasePath, "evidence.txt");
+
+		fileOperationsManager.pathExistsOrElseDelete(output);
+
+	}
+
+	// ------------------------- DELETE FILE -------------------------//
+
+	@Test
+	public void testDeleteFile() {
+
+		final Path output = Paths.get(operationsBasePath, "output323423.txt");
+		this.createFile(output, "zzzz");
+
+		fileOperationsManager.deleteFile(output);
+
+		assertThat(output).doesNotExist();
+	}
+
+	@Test
+	public void testDeleteFileNotExisting() {
+
+		final Path output = Paths.get(operationsBasePath, "output323423.txt");
+
+		fileOperationsManager.deleteFile(output);
+
+		assertThat(output).doesNotExist();
+	}
+
+	@Test
+	public void testDeleteFileNullPath() {
+
+		fileOperationsManager.deleteFile(null);
+
+	}
+
+	@Ignore
+	@Test(expected = AtsOpapException.class)
+	public void testDeleteFileExceptionThrowException() {
+
+		final Path output = Paths.get(operationsBasePath, "output89000.txt");
+		this.createFile(output, "zzzz");
+
+		output.toFile().setReadable(false);
+		output.toFile().setWritable(false);
+
+		fileOperationsManager.deleteFile(output);
+	}
+
+	// ------------------------- DELETE MULTIPLE FILES -------------------------//
+
+	@Test
+	public void testDeleteMultipleFilesExisting() {
+
+		final List<Path> files = Stream.of(10000, 20000, 30000).map(m -> Paths.get(operationsBasePath, "output" + m + ".txt"))
+			.collect(Collectors.toList());
+		files.forEach(path -> this.createFile(path, "zzzz"));
+
+		fileOperationsManager.deleteFiles(new ArrayList<>(files));
+
+		final boolean allDeleted = files.stream().anyMatch(path -> path.toFile().exists());
+
+		assertFalse(allDeleted);
+	}
+
+	// ------------------------- ZIP FILE -------------------------//
+
+	@Test
+	public void testZIPFile() {
+
+		final Path output = Paths.get(operationsBasePath, "outputCompress.txt");
+		this.createFile(output, "zzzz");
+
+		final Path compressedFilePath = fileOperationsManager.zipFile(output);
+
+		assertThat(Files.exists(compressedFilePath));
+
+	}
+
+	@Ignore
+	@Test(expected = AtsGenericException.class)
+	public void testZIPFileThrowException() throws AtsGenericException {
+
+		final Path output = Paths.get(operationsBasePath, "outputCompress3456.txt");
+		fileOperationsManager.zipFile(output);
+
+	}
+
+	// ------------------------- Helper Method -------------------------//
+
+	public void createFile(final Path path, final String content) {
+
+		if (Files.exists(path)) {
+			fileOperationsManager.deleteFile(path);
+		}
+
+		try {
+			Files.write(path, content.getBytes(), StandardOpenOption.CREATE_NEW);
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Configuration
+	static class Config {
+
+		@Bean(name = "FileOperationsManager")
+		public FileOperationsManager fileOperationsManager() {
+
+			return new FileOperationsManager();
+		}
+
+	}
+
+}

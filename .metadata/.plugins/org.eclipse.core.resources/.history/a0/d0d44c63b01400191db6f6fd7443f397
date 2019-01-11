@@ -1,0 +1,55 @@
+#Server details
+server:
+  port: 8081
+
+#Logging
+logging:
+  level:
+    org.hibernate: info
+    org.apache.catalina: warn
+    org.springframework: info
+    springfox.documentation: warn
+
+    com.intralot: info
+    root: info
+
+spring:
+  #Database
+  datasource:
+    url: jdbc:mysql://10.70.9.25:3306/l10_op?useUnicode=true&characterEncoding=UTF-8&useSSL=false&rewriteBatchedStatements=true
+    username: l10
+    password: l10
+
+  #JPA
+  jpa:
+    show-sql: false
+
+#Messaging Application properties
+messaging:
+
+  #General Transmission properties
+  transmission:
+    attempts: 3
+
+  #SMS configuration
+  sms:
+    from: OPAP
+    non-working:
+      from: 00:00:01
+      to: 07:00:01
+    yuboto:
+      apiKey: 5DA0CD06-6D28-490A-8401-380A89F1415A
+
+  #HTTP configuration
+  http:
+    proxy:
+      use: false
+      scheme: http
+      host: proxy.dc.opap
+      port: 3128
+
+#Clients
+clients:
+  auth:
+    static:
+      host: http://auth.dev.pat.l10.intralot.com

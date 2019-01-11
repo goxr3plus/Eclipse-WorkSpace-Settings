@@ -1,0 +1,19 @@
+/**
+ * 
+ */
+package guru.springframework;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+class MoneyTest {
+
+    @Test
+    void test() {
+	Dollar five = new Dollar(5);
+	
+	fail("Not yet implemented");
+    }
+
+}

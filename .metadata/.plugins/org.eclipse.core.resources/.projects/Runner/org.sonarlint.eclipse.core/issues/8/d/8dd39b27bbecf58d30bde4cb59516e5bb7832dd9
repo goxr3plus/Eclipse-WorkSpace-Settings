@@ -1,0 +1,23 @@
+
+r
+squid:S106!"9Replace this use of System.out or System.err by a logger.(°ú±»ÿÿÿÿÿ8©´ëµú,HÕ©RMAJORZ
+CODE_SMELL
+‡squid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(º‰ìò8ëòâµú,HÉ©RMINORZ
+CODE_SMELL
+nsquid:S1854"9Remove this useless assignment to local variable "v_res".(± ¬¢8ëòâµú,HÆ©RMAJORZ
+CODE_SMELL
+vsquid:S2259"HA "NullPointerException" could be thrown; "v_iban_tmp" is nullable here.(±´îä8Â¬ôµú,HÞ©RMAJORZBUG
+€squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(›…Œ‰8ûÛàµú,H¾©RMAJORZ
+CODE_SMELL
+Œsquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ïí¨„ýÿÿÿÿ8ëòâµú,HÈ©RMINORZ
+CODE_SMELL
+€squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÈŒ®8ûÛàµú,H¿©RMAJORZ
+CODE_SMELL
+dsquid:S1481"*Remove this unused "v_res" local variable.(Ïí¨„ýÿÿÿÿ8ëòâµú,HÅ©RMINORZ
+CODE_SMELL
+€squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(‚€ìê8ûÛàµú,HÀ©RMAJORZ
+CODE_SMELL
+esquid:S1481"+Remove this unused "v_char" local variable.(¿äÚéùÿÿÿÿ8áÕøµú,Hã©RMINORZ
+CODE_SMELL
+tsquid:S1854":Remove this useless assignment to local variable "v_char".(¿äÚéùÿÿÿÿ8áÕøµú,Hä©RMAJORZ
+CODE_SMELL

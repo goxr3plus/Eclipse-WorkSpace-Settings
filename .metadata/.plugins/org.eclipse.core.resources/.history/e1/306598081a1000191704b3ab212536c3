@@ -1,0 +1,86 @@
+package com.intralot.l10.nam.manager.process;
+
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import com.intralot.l10.nam.entity.GamingBalanceRequest;
+import com.intralot.l10.nam.entity.GamingBalanceRetailer;
+import com.intralot.l10.nam.enumeration.NamRequestItemStatus;
+import com.intralot.l10.nam.manager.client.AcnDynamicClientManager;
+import com.intralot.l10.nam.manager.config.TestConfig;
+import com.intralot.l10.nam.manager.jpa.GamingBalanceJPAManager;
+import com.intralot.l10.nam.manager.transform.ModelTransformationManager;
+import com.intralot.l10.nam.repository.jdbc.NamRepository;
+import com.intralot.l10.nam.repository.jdbc.RetailerFinLimitsRepository;
+
+import global.config.GlobalConfig;
+import reactor.core.publisher.Mono;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { GamingBalanceProcessingManager.class, ModelTransformationManager.class, GlobalConfig.class })
+@ContextConfiguration(classes = { TestConfig.class, GamingBalanceProcessingManagerTest.Config.class })
+public class GamingBalanceProcessingManagerTest {
+
+	@Autowired
+	private ApplicationContext appCtx;
+	
+	@Autowired
+	private GamingBalanceProcessingManager gamingBalanceProcessingManager;
+
+	@Autowired
+	private ModelTransformationManager modelTransformationManager;
+
+	@MockBean
+	private GamingBalanceJPAManager gamingBalanceJPAManager;
+
+	@MockBean
+	private RetailerFinLimitsRepository retailerFinLimitsRepository;
+
+	@MockBean
+	private NamRepository namRepository;
+
+	@MockBean
+	private AcnDynamicClientManager acnDynamicClientManager;
+
+	@Ignore
+	@Test
+	public void process() {
+
+		GamingBalanceRequest gamingBalanceRequest = new GamingBalanceRequest();
+		gamingBalanceRequest.setProviderId(1L);
+		gamingBalanceRequest.setTransactionId(1L);
+		gamingBalanceRequest.setStatus(1);
+
+		/* List */
+		GamingBalanceRetailer retailer = new GamingBalanceRetailer();
+		retailer.setId(5L);
+		retailer.setGamingBalance(new BigDecimal("0"));
+		retailer.setCreditLimit(new BigDecimal("5000"));
+		retailer.setCreditLimitTransactionId(5000L);
+		retailer.setStatus(NamRequestItemStatus.SUCCESS.getId());
+		List<GamingBalanceRetailer> list = Collections.singletonList(retailer);
+		gamingBalanceRequest.setGamingBalanceRetailers(list);
+
+
+//		Mono.subscriberContext().doOnNext(context -> {
+//			context.put("key", "value");
+//		}).then();
+		
+		Mono.just(appCtx)
+		.doOnNext(c -> gamingBalanceProcessingManager.process(gamingBalanceRequest).block()).block();
+
+	}
+
+
+}

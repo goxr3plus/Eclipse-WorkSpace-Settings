@@ -1,0 +1,112 @@
+package com.intralot.l10.ats.manager.file;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.validation.Validator;
+import org.apache.commons.lang3.StringUtils;
+import org.dozer.Mapper;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
+import com.intralot.iif.core.utils.JsonMapper;
+import com.intralot.l10.ats.exception.AtsGenericException;
+
+
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(SpringRunner.class)
+@SpringBootTest(classes = { FileCodecsManager.class })
+@PrepareForTest(StringUtils.class)
+public class FileCodecsManagerTest {
+	
+	
+
+	String testFileHash;
+
+	@MockBean
+	JsonMapper jsonMapper;
+
+	@MockBean
+	Mapper dozer;
+
+	@MockBean
+	Validator validator;
+
+	@Autowired
+	FileCodecsManager fileCodecsManager;
+
+	@Before
+	public void initialize() {
+
+		this.testFileHash = "XYbJAMwjze9UzL/0kDXedikhuBf+zJFby0Txjov6MroMLVyBMAyZs8//JVrHdWvRhM/KGSUnxDNlkPtzBanXFw==";
+	}
+
+	// ------------------------- HASH FILE -------------------------//
+
+	@Test
+	public void hashFileTest() {
+
+		final Path currentDir = Paths.get("./src/test/resources/evidence-file/AT_Cpns_1100_683248_rev1.TXT");
+
+		assertThat(this.fileCodecsManager.hashFile(currentDir.toAbsolutePath().toString()), is(this.testFileHash));
+
+	}
+
+	@Test(expected = AtsGenericException.class)
+	public void hashFileNotExistTest() {
+		final Path currentDir = Paths.get("./src/test/resources/evidence-file/AT_Cpns_1100_683248_rev1--lala.TXT");
+		assertThat(fileCodecsManager.hashFile(currentDir.toString()), is(this.testFileHash));
+	}
+	
+	@Test(expected = AtsGenericException.class)
+	public void hashFileStringEmptyTest() {
+		
+		PowerMockito.mockStatic(StringUtils.class);
+		BDDMockito.given(StringUtils.isEmpty(any(CharSequence.class))).willReturn(true);
+		
+		final Path currentDir = Paths.get("./src/test/resources/evidence-file/AT_Cpns_1100_683248_rev1.TXT");
+		fileCodecsManager.hashFile(currentDir.toString());
+	}
+
+	// ------------------------- BASE 64 -------------------------//
+
+	@Test
+	public void pathToBase64() {
+
+		final String path = "/src/test/resources/evidence-file/AT_Cpns_1100_683248_rev1.TXT";
+
+		assertThat(this.fileCodecsManager.pathToBase64(path),
+				is("L3NyYy90ZXN0L3Jlc291cmNlcy9ldmlkZW5jZS1maWxlL0FUX0NwbnNfMTEwMF82ODMyNDhfcmV2MS5UWFQ="));
+
+	}
+
+	@Test
+	public void base64ToPath() {
+
+
+		assertThat(
+				this.fileCodecsManager.base64ToPath(
+						"L3NyYy90ZXN0L3Jlc291cmNlcy9ldmlkZW5jZS1maWxlL0FUX0NwbnNfMTEwMF82ODMyNDhfcmV2MS5UWFQ="),
+				is("/src/test/resources/evidence-file/AT_Cpns_1100_683248_rev1.TXT"));
+
+	}
+
+	@Test(expected = AtsGenericException.class)
+	public void base64ToPathThrowException() {
+
+		this.fileCodecsManager.base64ToPath("$$$$$$$$$$$$$$$$$$$$$$$$");
+
+	}
+
+}

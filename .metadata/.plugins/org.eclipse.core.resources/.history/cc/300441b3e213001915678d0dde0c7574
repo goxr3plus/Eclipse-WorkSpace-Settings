@@ -1,0 +1,2 @@
+SELECT_ALL_PERSONS = SELECT * FROM person;
+SELECT * FROM person WHERE id=:id;

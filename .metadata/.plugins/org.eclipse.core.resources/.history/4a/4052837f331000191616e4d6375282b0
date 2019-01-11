@@ -1,0 +1,170 @@
+package com.intralot.l10.bank.manager.process;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.bank.entity.BankFilesMonitoring;
+import com.intralot.l10.bank.entity.Mandate;
+import com.intralot.l10.bank.entity.MandateSeq;
+import com.intralot.l10.bank.exception.BankFilesGenericException;
+import com.intralot.l10.bank.manager.global.GlobalConfig;
+import com.intralot.l10.bank.manager.jpa.BankFilesMonitoringJpaManager;
+import com.intralot.l10.bank.manager.jpa.MandateHisJpaManager;
+import com.intralot.l10.bank.manager.parser.DocumentParsingManager;
+import com.intralot.l10.bank.model.AccountingPeriod;
+import com.intralot.l10.bank.repository.jdbc.AccountingBalanceRepository;
+import com.intralot.l10.bank.repository.jdbc.AccountingPeriodRepository;
+import com.intralot.l10.bank.repository.jpa.BankFilesMonitoringRepository;
+import com.intralot.l10.bank.repository.jpa.MandateHisRepository;
+import com.intralot.l10.bank.repository.jpa.MandateRepository;
+import com.intralot.l10.bank.repository.jpa.MandateSeqRepository;
+
+//TODO ADD MORE ASSERTS
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { BankFilesResponseProcessor.class, DocumentParsingManager.class, GlobalConfig.class })
+public class BankFilesResponseProcessorTest {
+
+	private final String basePath = "src/test/resources/jaxb/";
+
+	@Autowired
+	private BankFilesResponseProcessor bankFilesResponseProcessor;
+
+	@MockBean
+	private AccountingPeriodRepository accountingPeriodRepository;
+
+	@MockBean
+	private BankFilesMonitoringRepository bankFilesMonitoringRepository;
+
+	@Autowired
+	private DocumentParsingManager documentParsingManager;
+
+	@MockBean
+	private BankFilesMonitoringJpaManager bankFilesMonitoringJpaManager;
+
+	@MockBean
+	private AccountingBalanceRepository accountingBalanceRepository;
+
+	@MockBean
+	private MandateRepository mandateRepository;
+
+	@MockBean
+	private MandateSeqRepository mandateSeqRepository;
+
+	@MockBean
+	private MandateHisJpaManager mandateHisJpaManager;
+
+	@MockBean
+	private MandateHisRepository mandateHisRepository;
+
+	private final AccountingPeriod accountingPeriod = new AccountingPeriod();
+
+	private final Path acceptedDoc = Paths.get(basePath + "PAIN002-0045-20180522-01.xml");
+	private final Path rejectedWithRets = Paths.get(basePath + "PAIN002-0045-20180522-02.xml");
+	private final Path rejectedNoRets = Paths.get(basePath + "PAIN002-0045-20180522-03.xml");
+	private final Path fakePath = Paths.get(basePath + "PAIN002-0045-20180522-80.xml");
+
+	@Before
+	public void init() {
+		accountingPeriod.setLotCd(2);
+		accountingPeriod.setYear(2018);
+		accountingPeriod.setAccCd(58);
+		accountingPeriod.setEndDate(Timestamp.valueOf(LocalDateTime.now()));
+
+	}
+
+	// --------------- FILE NOT EXISTS --------------------------//
+
+	@Test(expected = BankFilesGenericException.class)
+	public void fileNotFound() {
+
+		/* When */
+		when(accountingPeriodRepository.getAccountingPeriodByOperatorAndYearAndCode(anyInt(), anyInt(), anyInt()))
+				.thenReturn(accountingPeriod);
+
+		bankFilesResponseProcessor.handleIncomingFile(fakePath);
+	}
+
+	// --------------- ALREADY PROCESSED --------------------------//
+
+	@Test
+	public void replyAlreadyProcessed() {
+		when(bankFilesMonitoringRepository.findByFileName(anyString()))
+				.thenReturn(Optional.of(new BankFilesMonitoring()));
+
+		bankFilesResponseProcessor.handleIncomingFile(rejectedWithRets);
+	}
+
+	// --------------- ACCEPTED REPLY DOCUMENT--------------------------//
+
+	@Test
+	public void processAcceptedDocument() {
+		/* When */
+		when(accountingPeriodRepository.getAccountingPeriodByOperatorAndYearAndCode(anyInt(), anyInt(), anyInt()))
+				.thenReturn(accountingPeriod);
+
+		bankFilesResponseProcessor.handleIncomingFile(acceptedDoc);
+	}
+
+	// --------------- REJECTED REPLY DOCUMENT--------------------------//
+	@Test
+	public void processRejectedDocument_WITH_RETAILERS_AND_REASON() {
+
+		/* Variables */
+		final Mandate mandate = new Mandate();
+		mandate.setMdId("1");
+		final List<Mandate> rejectedRetailers = Arrays.asList(mandate);
+
+		/* When */
+		when(accountingPeriodRepository.getAccountingPeriodByOperatorAndYearAndCode(anyInt(), anyInt(), anyInt()))
+				.thenReturn(accountingPeriod);
+		when(mandateSeqRepository.findById(anyInt())).thenReturn(Optional.of(new MandateSeq()));
+		when(mandateRepository.getRejectedRetailerMandate(anyString(), any(LocalDate.class)))
+				.thenReturn(rejectedRetailers);
+
+		bankFilesResponseProcessor.handleIncomingFile(rejectedWithRets);
+
+	}
+
+	@Test
+	public void processRejectedDocument_WITH_RETAILERS_AND_REASON_NO_MANDATES() {
+
+		/* When */
+		when(accountingPeriodRepository.getAccountingPeriodByOperatorAndYearAndCode(anyInt(), anyInt(), anyInt()))
+				.thenReturn(accountingPeriod);
+		when(mandateSeqRepository.findById(anyInt())).thenReturn(Optional.of(new MandateSeq()));
+		when(mandateRepository.getRejectedRetailerMandate(anyString(), any(LocalDate.class))).thenReturn(null);
+		bankFilesResponseProcessor.handleIncomingFile(rejectedWithRets);
+
+	}
+
+	@Test
+	public void processRejectedDocument_NO_RETAILERS_NO_REASON() {
+
+		/* When */
+		when(accountingPeriodRepository.getAccountingPeriodByOperatorAndYearAndCode(anyInt(), anyInt(), anyInt()))
+				.thenReturn(accountingPeriod);
+		when(mandateSeqRepository.findById(anyInt())).thenReturn(Optional.of(new MandateSeq()));
+
+		bankFilesResponseProcessor.handleIncomingFile(rejectedNoRets);
+	}
+
+}

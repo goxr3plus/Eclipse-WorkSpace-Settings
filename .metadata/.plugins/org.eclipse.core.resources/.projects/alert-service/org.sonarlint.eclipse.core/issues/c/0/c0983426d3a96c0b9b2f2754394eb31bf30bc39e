@@ -1,0 +1,29 @@
+
+msquid:S2184¡"ECast one of the operands of this subtraction operation to a "double".(¾Ò¶˜HÙäRMINORZBUG
+squid:S2629±"\Invoke method(s) only conditionally. Use the built-in formatting to construct this argument.(ÇÚø„ÿÿÿÿÿHÚäRMAJORZ
+CODE_SMELL
+qsquid:S2184Z"ECast one of the operands of this subtraction operation to a "double".(üŠšÃùÿÿÿÿHÛäRMINORZBUG
+ysquid:S4488"JReplace "@RequestMapping(method = RequestMethod.POST)" with "@PostMapping"(ä«ú÷HÍäRMINORZ
+CODE_SMELL
+msquid:S2184"ECast one of the operands of this subtraction operation to a "double".(¾Ò¶˜HËäRMINORZBUG
+qsquid:S2184f"ECast one of the operands of this subtraction operation to a "double".(÷ºÒ§úÿÿÿÿHÓäRMINORZBUG
+qsquid:S2184w"ECast one of the operands of this subtraction operation to a "double".(÷ºÒ§úÿÿÿÿH×äRMINORZBUG
+rsquid:S2184š"ECast one of the operands of this subtraction operation to a "double".(•«¥×ùÿÿÿÿHÜäRMINORZBUG
+msquid:S2184©"ECast one of the operands of this subtraction operation to a "double".(¾Ò¶˜HÕäRMINORZBUG
+msquid:S2184­"ECast one of the operands of this subtraction operation to a "double".(¾Ò¶˜HÒäRMINORZBUG
+qsquid:S2184]"ECast one of the operands of this subtraction operation to a "double".(÷ºÒ§úÿÿÿÿHÊäRMINORZBUG
+usquid:S3457±"AFormat specifiers should be used instead of string concatenation.(ÇÚø„ÿÿÿÿÿHÏäRMAJORZ
+CODE_SMELL
+msquid:S2184¥"ECast one of the operands of this subtraction operation to a "double".(¾Ò¶˜HÖäRMINORZBUG
+wsquid:CallToDeprecatedMethod,"3Remove this use of "description"; it is deprecated.(·€ó–ÿÿÿÿÿHŞäRMINORZ
+CODE_SMELL
+qsquid:S2184o"ECast one of the operands of this subtraction operation to a "double".(÷ºÒ§úÿÿÿÿHÎäRMINORZBUG
+}squid:S4488A"JReplace "@RequestMapping(method = RequestMethod.POST)" with "@PostMapping"(Œ©³ıúÿÿÿÿHØäRMINORZ
+CODE_SMELL
+osquid:S3457{"AFormat specifiers should be used instead of string concatenation.(–¸ÓõHİäRMAJORZ
+CODE_SMELL
+qsquid:S2184s"ECast one of the operands of this subtraction operation to a "double".(÷ºÒ§úÿÿÿÿHÔäRMINORZBUG
+Šsquid:S2629{"\Invoke method(s) only conditionally. Use the built-in formatting to construct this argument.(–¸ÓõHÌäRMAJORZ
+CODE_SMELL
+qsquid:S2184j"ECast one of the operands of this subtraction operation to a "double".(÷ºÒ§úÿÿÿÿHĞäRMINORZBUG
+qsquid:S2184b"ECast one of the operands of this subtraction operation to a "double".(÷ºÒ§úÿÿÿÿHÑäRMINORZBUG

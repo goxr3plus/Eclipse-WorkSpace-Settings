@@ -1,0 +1,27 @@
+
+Ó%squid:RedundantThrowsDeclarationCheckH"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(½ôêüH³RMINORZ
+CODE_SMELL
+Ù%squid:RedundantThrowsDeclarationCheck¨"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(¯å÷şÿÿÿÿH¹RMINORZ
+CODE_SMELL
+Ø%squid:RedundantThrowsDeclarationCheck("‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(§Ø‚ÏûÿÿÿÿH±RMINORZ
+CODE_SMELL
+Ø%squid:RedundantThrowsDeclarationCheckx"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(ÍäÚÁúÿÿÿÿH¶RMINORZ
+CODE_SMELL
+Ù%squid:RedundantThrowsDeclarationCheckˆ"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(õ…Ê¼şÿÿÿÿH·RMINORZ
+CODE_SMELL
+Ó%squid:RedundantThrowsDeclarationCheckh"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(Ç²ş˜HµRMINORZ
+CODE_SMELL
+Ò%squid:RedundantThrowsDeclarationCheck8"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(€¥H²RMINORZ
+CODE_SMELL
+Ø%squid:RedundantThrowsDeclarationCheckX"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(Â·şûÿÿÿÿH´RMINORZ
+CODE_SMELL
+Ù%squid:RedundantThrowsDeclarationCheckÈ"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(“§µúÿÿÿÿH»RMINORZ
+CODE_SMELL
+Ù%squid:RedundantThrowsDeclarationCheck¸"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(†™šşÿÿÿÿHºRMINORZ
+CODE_SMELL
+Ù%squid:RedundantThrowsDeclarationCheckè"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(¤¼ö±ıÿÿÿÿH½RMINORZ
+CODE_SMELL
+Ó%squid:RedundantThrowsDeclarationCheckØ"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(¶×º3H¼RMINORZ
+CODE_SMELL
+Ô%squid:RedundantThrowsDeclarationCheck˜"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(ÇÆÚH¸RMINORZ
+CODE_SMELL

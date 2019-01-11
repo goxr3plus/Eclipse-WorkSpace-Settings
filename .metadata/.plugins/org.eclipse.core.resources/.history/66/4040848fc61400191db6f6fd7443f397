@@ -1,0 +1,107 @@
+package com.intralot.lotos10.messaging.services;
+
+import com.intralot.lotos10.messaging.clients.PgpClient;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openpgp.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.Base64;
+
+import java.io.*;
+import java.net.URISyntaxException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.util.Iterator;
+
+@Service
+public class EncryptionService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EncryptionService.class);
+
+    @Autowired
+    private PgpClient pgpClient;
+
+    /**
+     * Encrypt the content based on the email recipient
+     *
+     * @param content
+     * @param recipient
+     * @return
+     * @throws URISyntaxException
+     */
+    public String encryptMessage(final String content, final String recipient) throws URISyntaxException, IOException, PGPException, NoSuchProviderException {
+        String pgpKey = pgpClient.getPgpKey(recipient);
+        byte[] encdata = encrypt(content.getBytes(), pgpKey);
+        BASE64Encoder en = new BASE64Encoder();
+
+        return en.encode(encdata != null ? encdata : "".getBytes());
+    }
+
+    private static byte[] encrypt(final byte[] data, final String pgpKey) throws PGPException, IOException, NoSuchProviderException {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        try {
+            File tempfile = File.createTempFile("pgp", null);
+            FileOutputStream fos = new FileOutputStream(tempfile);
+            fos.write(pgpKey.getBytes());
+            fos.close();
+            PGPPublicKey key = readPublicKeyFromCol(new FileInputStream(tempfile.getAbsolutePath()));
+
+            File tempfile2 = File.createTempFile("data", null);
+            FileOutputStream fos2 = new FileOutputStream(tempfile2);
+            fos2.write(data);
+            fos2.close();
+            encrypt(tempfile2.getAbsolutePath(), baos, key);
+            tempfile.delete();
+            tempfile2.delete();
+            return baos.toByteArray();
+        } catch (Exception e) {
+            LOGGER.error("Error while encrypting email ", e);
+            throw e;
+        }
+    }
+
+    private static PGPPublicKey readPublicKeyFromCol(final InputStream in) throws IOException, PGPException {
+        PGPPublicKeyRing pkRing;
+        PGPPublicKeyRingCollection pkCol = new PGPPublicKeyRingCollection(PGPUtil.getDecoderStream(in));
+        Iterator it = pkCol.getKeyRings();
+        while (it.hasNext()) {
+            pkRing = (PGPPublicKeyRing) it.next();
+            Iterator pkIt = pkRing.getPublicKeys();
+            while (pkIt.hasNext()) {
+                PGPPublicKey key = (PGPPublicKey) pkIt.next();
+                if (key.isEncryptionKey())
+                    return key;
+            }
+        }
+        return null;
+    }
+
+    private static void encrypt(final String fileName, final OutputStream out, final PGPPublicKey encKey)
+            throws IOException, PGPException, NoSuchProviderException {
+        Security.addProvider(new BouncyCastleProvider());
+        OutputStream outTemp = new DataOutputStream(out);
+        ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+        PGPCompressedDataGenerator comData = new PGPCompressedDataGenerator(PGPCompressedDataGenerator.ZIP);
+        PGPUtil.writeFileToLiteralData(comData.open(bOut), PGPLiteralData.BINARY, new File(fileName));
+        comData.close();
+        PGPEncryptedDataGenerator cPk = new PGPEncryptedDataGenerator(PGPEncryptedDataGenerator.CAST5,
+                new SecureRandom(), "BC");
+        try {
+            cPk.addMethod(encKey);
+        } catch (java.security.NoSuchProviderException e) {
+            LOGGER.error("Error while encrypting email ", e);
+            throw e;
+        }
+        byte[] bytes = bOut.toByteArray();
+        OutputStream cOut = cPk.open(outTemp, bytes.length);
+        cOut.write(bytes);
+        cPk.close();
+        outTemp.close();
+    }
+
+}

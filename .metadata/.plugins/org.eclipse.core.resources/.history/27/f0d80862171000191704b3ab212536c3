@@ -1,0 +1,219 @@
+package com.intralot.l10.ejk.manager.template;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.InputStream;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.ejk.manager.config.TestConfig;
+import com.intralot.l10.ejk.manager.message.MessageParseManager;
+import com.intralot.l10.ejk.model.jaxb.ACKMessage;
+import com.intralot.l10.ejk.model.jaxb.ACKMessageData;
+import com.intralot.l10.ejk.model.jaxb.BALBalanceData;
+import com.intralot.l10.ejk.model.jaxb.BALData;
+import com.intralot.l10.ejk.model.jaxb.BALMessage;
+import com.intralot.l10.ejk.model.jaxb.TNWCompanyData;
+import com.intralot.l10.ejk.model.jaxb.TNWCompanyInternalData;
+import com.intralot.l10.ejk.model.jaxb.TNWMessage;
+import com.intralot.l10.ejk.model.jaxb.TNWWinner;
+import com.intralot.l10.ejk.model.jaxb.TSCCompanyData;
+import com.intralot.l10.ejk.model.jaxb.TSCData;
+import com.intralot.l10.ejk.model.jaxb.TSCMessage;
+import com.intralot.l10.ejk.model.jaxb.WNRData;
+import com.intralot.l10.ejk.model.jaxb.WNRMessage;
+import com.intralot.l10.ejk.model.jaxb.WNRWinningData;
+import com.intralot.l10.ejk.model.jaxb.WSHData;
+import com.intralot.l10.ejk.model.jaxb.WSHMessage;
+import com.intralot.l10.ejk.model.jaxb.WSHWinningShareData;
+import com.intralot.l10.ejk.model.jaxb.XMLHeader;
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {TestConfig.class})
+public class XMLParserTest {
+
+	private final String mainFolder = "/testingXMLS/";
+
+	@Value("${file.base-path.outgoing-message}")
+	String bar;
+
+	@Autowired
+	private MessageParseManager parseManager;
+
+	@Test
+	public void parseACKMessageTest() {
+
+		// Original Message
+		final InputStream inputStream = this.getClass().getResourceAsStream(mainFolder + "ACK.xml");
+		final ACKMessage message = parseManager.parseAck(inputStream);
+
+		// Tester Object
+		final XMLHeader header = new XMLHeader("1.00", "2010-09-16T15:22:00", "Primary Control Center", "2019515", "EULO", "ACK", "PCC", "DEL", "1");
+		final ACKMessageData data = new ACKMessageData("2010394EULOCOFDELSCC1.cfl", "2010394EULOCOFDELSCC1.chk", "2010394EULOSSCDELPCC1.xml", "Yes");
+		final ACKMessage message2 = new ACKMessage(header, data);
+
+		// Let's see the content of XML in console from interest
+		// logger.info("\n~~~~~~~~~ACK~~~~~~~~~:\n" + message + "\n" + message2);
+
+		assertEquals(message.toString(), message2.toString());
+
+	}
+
+	@Test
+	public void parseTSCMessageTest() {
+
+		// Original Message
+		final InputStream inputStream = this.getClass().getResourceAsStream(mainFolder + "TSC.xml");
+		final TSCMessage message = parseManager.parseTsc(inputStream);
+
+		// Tester Object
+		final XMLHeader header = new XMLHeader("1.00", "2010-09-16T15:29:00", "Primary Control Center", "2019515", "EULO", "TSC", "PCC", "DEL", "1");
+		final TSCData data = new TSCData();
+		data.getCompanyData().add(new TSCCompanyData("DEL", "159200", "b0bee899f995977b38e69fb9121b0a8410d2ee3b"));
+		data.getCompanyData().add(new TSCCompanyData("SIS", "1200000", "b0bee899f995977b38e69fb9121b0a8410d2eeff"));
+		data.getCompanyData().add(new TSCCompanyData("ALL", "3711000", null));
+		final TSCMessage message2 = new TSCMessage(header, data);
+
+		// Let's see the content of XML in console from interest
+		// logger.info("\n~~~~~~~~~TSC~~~~~~~~~:\n" + message + "\n" + message2);
+
+		assertEquals(message.toString(), message2.toString());
+
+	}
+
+	@Test
+	public void parseBALMessageTest() {
+
+		// Original Message
+		final InputStream inputStream = this.getClass().getResourceAsStream(mainFolder + "BAL.xml");
+		final BALMessage message = parseManager.parseBal(inputStream);
+
+		// Tester Object
+		final XMLHeader header = new XMLHeader("1.00", "2010-09-17T07:00:00", "Primary Control Center", "2019515", "EULO", "BAL", "PCC", "DEL", "1");
+		final BALData data = new BALData();
+		data.getBalanceData().add(new BALBalanceData("DEL", "NOR", "1110023"));
+		data.getBalanceData().add(new BALBalanceData("HAM", "AXS", "121224505"));
+		final BALMessage message2 = new BALMessage(header, data);
+
+		// Let's see the content of XML in console from interest
+		// logger.info("\n~~~~~~~~~BAL~~~~~~~~~:\n" + message + "\n" + message2);
+
+		assertEquals(message.toString(), message2.toString());
+
+	}
+
+	@Test
+	public void parseWSHMessageTest() {
+
+		// Original Message
+		final InputStream inputStream = this.getClass().getResourceAsStream(mainFolder + "WSH.xml");
+		final WSHMessage message = parseManager.parseWsh(inputStream);
+
+		// Tester Object
+		final XMLHeader header = new XMLHeader("1.00", "2010-09-16T17:08:00", "Primary Control Center", "2019515", "EULO", "WSH", "PCC", "DEL", "1");
+		final WSHData data = new WSHData();
+		data.getWinningShareData().add(new WSHWinningShareData("1", "1200000", "1400000000"));
+		data.getWinningShareData().add(new WSHWinningShareData("2", "45450000", "0"));
+		data.getWinningShareData().add(new WSHWinningShareData("3", "45401000", "0"));
+		data.getWinningShareData().add(new WSHWinningShareData("4", "45400000", "0"));
+		data.getWinningShareData().add(new WSHWinningShareData("5", "45399", "0"));
+		data.getWinningShareData().add(new WSHWinningShareData("6", "44950", "0"));
+		data.getWinningShareData().add(new WSHWinningShareData("7", "44901", "0"));
+		data.getWinningShareData().add(new WSHWinningShareData("8", "44900", "0"));
+		data.getWinningShareData().add(new WSHWinningShareData("9", "44899", "0"));
+		data.getWinningShareData().add(new WSHWinningShareData("10", "27200", "0"));
+		data.getWinningShareData().add(new WSHWinningShareData("11", "15300", "0"));
+		data.getWinningShareData().add(new WSHWinningShareData("12", "9400", "0"));
+		final WSHMessage message2 = new WSHMessage(header, data);
+
+		// Let's see the content of XML in console from interest
+		// logger.info("\n~~~~~~~~~WSH~~~~~~~~~:\n" + message + "\n" + message2);
+
+		assertEquals(message.toString(), message2.toString());
+	}
+
+	@Test
+	public void parseWNRMessageTest() {
+
+		// Original Message
+		final InputStream inputStream = this.getClass().getResourceAsStream(mainFolder + "WNR.xml");
+		final WNRMessage message = parseManager.parseWnr(inputStream);
+
+		// Tester Object
+		final XMLHeader header = new XMLHeader("1.00", "2010-09-16T15:35:00", "Draw Center", "2019515", "EULO", "WNR", "DRC", "DEL", "1");
+		final WNRData data = new WNRData();
+		data.setDrawDate("2010-09-16T12:00:00");
+		data.getWinningNumber().add(new WNRWinningData("1", "0", "01"));
+		data.getWinningNumber().add(new WNRWinningData("2", "0", "02"));
+		data.getWinningNumber().add(new WNRWinningData("3", "0", "03"));
+		data.getWinningNumber().add(new WNRWinningData("4", "0", "04"));
+		data.getWinningNumber().add(new WNRWinningData("5", "0", "05"));
+		data.getWinningNumber().add(new WNRWinningData("1", "1", "9"));
+		data.getWinningNumber().add(new WNRWinningData("2", "1", "10"));
+		final WNRMessage message2 = new WNRMessage(header, data);
+
+		// Let's see what is happening in the console
+		// logger.info("\n~~~~~~~~~WNR~~~~~~~~~:\n" + message + "\n" + message2);
+
+		assertEquals(message.toString(), message2.toString());
+
+	}
+
+	@Test
+	public void parseTNWMessageTest() {
+
+		// Original Message
+		final InputStream inputStream = this.getClass().getResourceAsStream(mainFolder + "TNW.xml");
+		final TNWMessage message = parseManager.parseTnw(inputStream);
+
+		// Tester Object
+
+		// Let's create data and winners for company1
+		final XMLHeader header = new XMLHeader("1.00", "2010-09-16T17:00:00", "Primary Control Center", "2019515", "EULO", "TNW", "PCC", "DEL", "1");
+		final TNWCompanyData data = new TNWCompanyData();
+		final TNWCompanyInternalData internalData1 = new TNWCompanyInternalData();
+		internalData1.setCompany("DEL");
+		internalData1.getWinnersData().add(new TNWWinner("1", "0"));
+		internalData1.getWinnersData().add(new TNWWinner("2", "0"));
+		internalData1.getWinnersData().add(new TNWWinner("3", "0"));
+		internalData1.getWinnersData().add(new TNWWinner("4", "0"));
+		internalData1.getWinnersData().add(new TNWWinner("5", "0"));
+		internalData1.getWinnersData().add(new TNWWinner("6", "0"));
+		internalData1.getWinnersData().add(new TNWWinner("7", "1"));
+		internalData1.getWinnersData().add(new TNWWinner("8", "0"));
+		internalData1.getWinnersData().add(new TNWWinner("9", "0"));
+		internalData1.getWinnersData().add(new TNWWinner("10", "1"));
+		internalData1.getWinnersData().add(new TNWWinner("11", "1"));
+		internalData1.getWinnersData().add(new TNWWinner("12", "4"));
+		data.getCompanyData().add(internalData1);
+
+		// Let's create data and winners for company2
+		final TNWCompanyInternalData internalData2 = new TNWCompanyInternalData();
+		internalData2.setCompany("ALL");
+		internalData2.getWinnersData().add(new TNWWinner("1", "8"));
+		internalData2.getWinnersData().add(new TNWWinner("2", "19"));
+		internalData2.getWinnersData().add(new TNWWinner("3", "79"));
+		internalData2.getWinnersData().add(new TNWWinner("4", "101"));
+		internalData2.getWinnersData().add(new TNWWinner("5", "990"));
+		internalData2.getWinnersData().add(new TNWWinner("6", "2119"));
+		internalData2.getWinnersData().add(new TNWWinner("7", "312"));
+		internalData2.getWinnersData().add(new TNWWinner("8", "41"));
+		internalData2.getWinnersData().add(new TNWWinner("9", "5117"));
+		internalData2.getWinnersData().add(new TNWWinner("10", "61217"));
+		internalData2.getWinnersData().add(new TNWWinner("11", "71217"));
+		internalData2.getWinnersData().add(new TNWWinner("12", "991017"));
+		data.getCompanyData().add(internalData2);
+		final TNWMessage message2 = new TNWMessage(header, data);
+
+		// Let's see what is happening in the console
+		// logger.info("\n~~~~~~~~~TNW~~~~~~~~~:\n" + message + "\n" + message2);
+
+		assertEquals(message.toString(), message2.toString());
+	}
+
+}

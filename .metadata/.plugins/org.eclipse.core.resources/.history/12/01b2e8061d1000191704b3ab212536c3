@@ -1,0 +1,88 @@
+package com.intralot.l10.ats.manager.submit;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.ats.manager.event.EventJPAManager;
+import com.intralot.l10.ats.manager.file.FileOperationsManager;
+import static org.assertj.core.api.Assertions.assertThat;
+import global.config.TestConfig;
+import global.utils.FileTools;
+
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {TestConfig.class, SubmitDocumentPostProcessingManagerTest.Config.class})
+public class SubmitDocumentPostProcessingManagerTest {
+
+	@Autowired
+	private SubmitDocumentPostProcessingManager submitDocumentPostProcessingManager;
+
+	@Autowired
+	private FileOperationsManager fileOperationsManager;
+
+	@MockBean
+	private EventJPAManager eventJPAManager;
+
+	final String retrieveDirectory = "src/test/resources/SubmitDocumentPostProcessingManager/";
+
+	@Before
+	public void init() throws IOException {
+		Files.createDirectories(Paths.get(retrieveDirectory));
+		Files.copy(Paths.get("src/test/resources/evidence-file/AT_Cpns_1100_683248_rev1.TXT"),
+			Paths.get(retrieveDirectory + "AT_Cpns_1100_683248_rev2.TXT"));
+	}
+
+	@After
+	public void destroy() throws IOException {
+		FileTools.deleteDirectory(Paths.get(retrieveDirectory));
+	}
+
+	@Test
+	public void postProcessSubmitDocument() {
+		submitDocumentPostProcessingManager
+			.postProcessSubmitDocument(Paths.get(retrieveDirectory + "AT_Cpns_1100_683248_rev2.TXT"));
+
+		assertThat(Paths.get(retrieveDirectory + "AT_Cpns_1100_683248_rev2.TXT.ZIP").toFile()).exists();
+	}
+
+	// TODO
+	@Ignore
+	@Test
+	public void postProcessSubmitDocument_Exception() {
+
+		// submitDocumentPostProcessingManager
+		// .postProcessSubmitDocument(Paths.get(retrieveDirectory +
+		// "file-non-existant.txt"));
+	}
+
+	@Configuration
+	static class Config {
+
+		@Bean(name = "SubmitDocumentPostProcessingManager")
+		public SubmitDocumentPostProcessingManager submitDocumentPostProcessingManager() {
+
+			return new SubmitDocumentPostProcessingManager();
+		}
+
+		@Bean(name = "FileOperationsManager")
+		public FileOperationsManager fileOperationsManager() {
+
+			return new FileOperationsManager();
+		}
+
+	}
+
+}

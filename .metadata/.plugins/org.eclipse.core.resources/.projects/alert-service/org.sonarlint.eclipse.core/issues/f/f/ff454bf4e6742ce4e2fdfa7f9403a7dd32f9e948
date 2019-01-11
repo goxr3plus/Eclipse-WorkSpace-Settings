@@ -1,0 +1,19 @@
+
+psquid:S2184["ECast one of the operands of this subtraction operation to a "double".(ì×èÕıÿÿÿÿH¦RMINORZBUG
+psquid:S2184l"ECast one of the operands of this subtraction operation to a "double".(˜ÙÃñşÿÿÿÿHªRMINORZBUG
+wsquid:S4488>"JReplace "@RequestMapping(method = RequestMethod.POST)" with "@PostMapping"(ä«ú÷H«RMINORZ
+CODE_SMELL
+qsquid:S2147j"ECombine this catch with the one at line 102, which has the same body.(Í´ˆ#H®RMINORZ
+CODE_SMELL
+squid:S2629o"\Invoke method(s) only conditionally. Use the built-in formatting to construct this argument.(€øâìüÿÿÿÿH¬RMAJORZ
+CODE_SMELL
+ssquid:S3457o"AFormat specifiers should be used instead of string concatenation.(€øâìüÿÿÿÿH¯RMAJORZ
+CODE_SMELL
+ksquid:S2184W"ECast one of the operands of this subtraction operation to a "double".(şµÁóH¥RMINORZBUG
+psquid:S2184S"ECast one of the operands of this subtraction operation to a "double".(¥ùÌşÿÿÿÿH¤RMINORZBUG
+psquid:S2184h"ECast one of the operands of this subtraction operation to a "double".(˜ÙÃñşÿÿÿÿH©RMINORZBUG
+psquid:S2184c"ECast one of the operands of this subtraction operation to a "double".(¥ùÌşÿÿÿÿH¨RMINORZBUG
+psquid:S2184_"ECast one of the operands of this subtraction operation to a "double".(ŸŸ›øûÿÿÿÿH§RMINORZBUG
+vsquid:CallToDeprecatedMethod)"3Remove this use of "description"; it is deprecated.(¡àÉ™ıÿÿÿÿH­RMINORZ
+CODE_SMELL
+ksquid:S2184O"ECast one of the operands of this subtraction operation to a "double".(Ş‘óÙH£RMINORZBUG

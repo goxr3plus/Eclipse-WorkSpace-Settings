@@ -1,0 +1,350 @@
+package com.intralot.l10.nam.manager.transform;
+
+import static org.junit.Assert.assertEquals;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import com.intralot.l10.nam.entity.ActionsRequest;
+import com.intralot.l10.nam.entity.ActionsRetailer;
+import com.intralot.l10.nam.entity.CreditLimitRequest;
+import com.intralot.l10.nam.entity.DailyBalanceRequest;
+import com.intralot.l10.nam.entity.DailyBalanceRetailer;
+import com.intralot.l10.nam.entity.GamingBalanceRequest;
+import com.intralot.l10.nam.entity.GamingBalanceRetailer;
+import com.intralot.l10.nam.entity.ManualCreditLimitRequest;
+import com.intralot.l10.nam.entity.ManualCreditLimitRetailer;
+import com.intralot.l10.nam.enumeration.NamRequestItemStatus;
+import com.intralot.l10.nam.enumeration.NamRequestStatus;
+import com.intralot.l10.nam.manager.config.TestConfig;
+import com.intralot.l10.nam.manager.process.ManualCreditLimitProcessingManager;
+import com.intralot.l10.nam.model.ActionsRequestDto;
+import com.intralot.l10.nam.model.ActionsResponseDto;
+import com.intralot.l10.nam.model.CreditLimitRequestDto;
+import com.intralot.l10.nam.model.CreditLimitsResponseDto;
+import com.intralot.l10.nam.model.DailyRequestDto;
+import com.intralot.l10.nam.model.DailyResponseDto;
+import com.intralot.l10.nam.model.GamingBalance;
+import com.intralot.l10.nam.model.GamingBalanceRequestDto;
+import com.intralot.l10.nam.model.GamingBalancesResponseDto;
+import com.intralot.l10.nam.model.HeaderRequest;
+import com.intralot.l10.nam.model.ManualCreditLimitRequestDto;
+import com.intralot.l10.nam.model.ManualCreditLimitsResponseDto;
+import com.intralot.l10.nam.model.RetailerAmount;
+
+import global.config.GlobalConfig;
+
+//TODO Maybe some more asserts in future ?
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { ManualCreditLimitProcessingManager.class, ModelTransformationManager.class, GlobalConfig.class })
+@ContextConfiguration(classes = { TestConfig.class, ModelTransformationManagerTest.Config.class })
+public class ModelTransformationManagerTest {
+
+	@Autowired
+	private ModelTransformationManager modelTransformationManager;
+
+	private final HeaderRequest header = new HeaderRequest();
+	private final List<Integer> retailersList = Collections.singletonList(1);
+
+	@PostConstruct
+	public void setup() {
+		header.setProviderId(1L);
+		header.setTransactionId(1L);
+	}
+
+	@Test
+	public void transformGamingBalanceRequestDtoToEntity() {
+
+		GamingBalanceRequestDto gamingBalanceRequestDto = new GamingBalanceRequestDto();
+		gamingBalanceRequestDto.setHeader(header);
+
+		GamingBalanceRequest request = modelTransformationManager
+				.transformGamingBalanceRequestDtoToEntity(gamingBalanceRequestDto, retailersList);
+
+		assertEquals(request.getProviderId(), header.getProviderId());
+		assertEquals(request.getTransactionId(), header.getTransactionId());
+		assertEquals(request.getStatus(), NamRequestStatus.IN_PROGRESS.getId());
+		assertEquals(retailersList, request.getGamingBalanceRetailers().stream()
+				.map(retailer -> retailer.getRetailerId()).collect(Collectors.toList()));
+	}
+
+	@Test
+	public void transformDailyBalanceRequestDtoToEntity() {
+
+		DailyRequestDto dailyRequestDto = new DailyRequestDto();
+		dailyRequestDto.setHeader(header);
+
+		DailyBalanceRequest request = modelTransformationManager
+				.transformDailyBalanceRequestDtoToEntity(dailyRequestDto, LocalDate.now(), retailersList);
+
+		assertEquals(request.getProviderId(), header.getProviderId());
+		assertEquals(request.getTransactionId(), header.getTransactionId());
+		assertEquals(request.getStatus(), NamRequestStatus.IN_PROGRESS.getId());
+		assertEquals(retailersList, request.getDailyBalanceRetailers().stream()
+				.map(retailer -> retailer.getRetailerId()).collect(Collectors.toList()));
+	}
+
+	@Test
+	public void transformCreditLimitRequestDtoToEntity() {
+
+		CreditLimitRequestDto creditLimitRequestDto = new CreditLimitRequestDto();
+		creditLimitRequestDto.setHeader(header);
+		creditLimitRequestDto.setCreditLimit(500L);
+
+		GamingBalance gamingBalance = new GamingBalance();
+		gamingBalance.setId(500L);
+		gamingBalance.setGamingBalance(new BigDecimal("0.01"));
+
+		CreditLimitRequest request = modelTransformationManager
+				.transformCreditLimitRequestDtoToEntity(creditLimitRequestDto, gamingBalance);
+
+		assertEquals(request.getProviderId(), header.getProviderId());
+		assertEquals(request.getTransactionId(), header.getTransactionId());
+		assertEquals(request.getStatus(), NamRequestStatus.IN_PROGRESS.getId());
+		assertEquals(request.getInquiryDbId(), gamingBalance.getId());
+		assertEquals(request.getInquiryGamingBalance(), gamingBalance.getGamingBalance());
+	}
+
+	@Test
+	public void transformActionsRequestDtoToEntity() {
+
+		ActionsRequestDto actionsRequestDto = new ActionsRequestDto();
+		actionsRequestDto.setHeader(header);
+		actionsRequestDto.setListOfRetailers(retailersList);
+		actionsRequestDto.setAction(1);
+
+		ActionsRequest request = modelTransformationManager.transformActionsRequestDtoToEntity(actionsRequestDto);
+
+		assertEquals(request.getProviderId(), header.getProviderId());
+		assertEquals(request.getTransactionId(), header.getTransactionId());
+		assertEquals(request.getStatus(), NamRequestStatus.IN_PROGRESS.getId());
+		assertEquals(retailersList, request.getActionRetailers().stream().map(retailer -> retailer.getRetailerId())
+				.collect(Collectors.toList()));
+	}
+
+	@Test
+	public void transformGamingBalanceRequestEntityToResponseDto() {
+
+		GamingBalanceRequest gamingBalanceRequest = new GamingBalanceRequest();
+		gamingBalanceRequest.setProviderId(1L);
+		gamingBalanceRequest.setTransactionId(1L);
+		gamingBalanceRequest.setStatus(1);
+
+		/* List */
+		GamingBalanceRetailer retailer = new GamingBalanceRetailer();
+		retailer.setId(5L);
+		retailer.setStatus(NamRequestItemStatus.IN_PROGRESS.getId());
+		List<GamingBalanceRetailer> list = Collections.singletonList(retailer);
+		gamingBalanceRequest.setGamingBalanceRetailers(list);
+
+		GamingBalancesResponseDto request = modelTransformationManager
+				.transformGamingBalanceRequestEntityToResponseDto(gamingBalanceRequest);
+
+		assertEquals(request.getHeader().getProviderId(), header.getProviderId());
+		assertEquals(request.getHeader().getTransactionId(), header.getTransactionId());
+	}
+
+	@Test
+	public void transformGamingBalanceRequestEntityToResponseDto_SUCCESS() {
+
+		GamingBalanceRequest gamingBalanceRequest = new GamingBalanceRequest();
+		gamingBalanceRequest.setProviderId(1L);
+		gamingBalanceRequest.setTransactionId(1L);
+		gamingBalanceRequest.setStatus(1);
+
+		/* List */
+		GamingBalanceRetailer retailer = new GamingBalanceRetailer();
+		retailer.setId(5L);
+		retailer.setGamingBalance(new BigDecimal("0"));
+		retailer.setCreditLimit(new BigDecimal("5000"));
+		retailer.setCreditLimitTransactionId(5000L);
+		retailer.setStatus(NamRequestItemStatus.SUCCESS.getId());
+		List<GamingBalanceRetailer> list = Collections.singletonList(retailer);
+		gamingBalanceRequest.setGamingBalanceRetailers(list);
+
+		GamingBalancesResponseDto request = modelTransformationManager
+				.transformGamingBalanceRequestEntityToResponseDto(gamingBalanceRequest);
+
+		assertEquals(request.getHeader().getProviderId(), header.getProviderId());
+		assertEquals(request.getHeader().getTransactionId(), header.getTransactionId());
+	}
+
+	@Test
+	public void transformDailyBalanceRequestEntityToResponseDto() {
+
+		DailyBalanceRequest dailyBalanceRequest = new DailyBalanceRequest();
+		dailyBalanceRequest.setProviderId(1L);
+		dailyBalanceRequest.setTransactionId(1L);
+		dailyBalanceRequest.setStatus(1);
+		dailyBalanceRequest.setInputDate(LocalDate.now());
+
+		/* List */
+		DailyBalanceRetailer retailer = new DailyBalanceRetailer();
+		retailer.setId(5L);
+		retailer.setStatus(NamRequestItemStatus.IN_PROGRESS.getId());
+		Collection<DailyBalanceRetailer> list = Collections.singletonList(retailer);
+		dailyBalanceRequest.setDailyBalanceRetailers(list);
+
+		DailyResponseDto request = modelTransformationManager
+				.transformDailyBalanceRequestEntityToResponseDto(dailyBalanceRequest);
+
+		assertEquals(request.getHeader().getProviderId(), header.getProviderId());
+		assertEquals(request.getHeader().getTransactionId(), header.getTransactionId());
+	}
+
+	@Test
+	public void transformDailyBalanceRequestEntityToResponseDto_SUCESS() {
+
+		DailyBalanceRequest dailyBalanceRequest = new DailyBalanceRequest();
+		dailyBalanceRequest.setProviderId(1L);
+		dailyBalanceRequest.setTransactionId(1L);
+		dailyBalanceRequest.setStatus(1);
+		dailyBalanceRequest.setInputDate(LocalDate.now());
+
+		/* List */
+		DailyBalanceRetailer retailer = new DailyBalanceRetailer();
+		retailer.setId(5L);
+		retailer.setGamingBalance(new BigDecimal("5000"));
+		retailer.setCreditLimit(new BigDecimal("5000"));
+		retailer.setDailyBalance(new BigDecimal("5000"));
+		retailer.setStatus(NamRequestItemStatus.SUCCESS.getId());
+		Collection<DailyBalanceRetailer> list = Collections.singletonList(retailer);
+		dailyBalanceRequest.setDailyBalanceRetailers(list);
+
+		DailyResponseDto request = modelTransformationManager
+				.transformDailyBalanceRequestEntityToResponseDto(dailyBalanceRequest);
+
+		assertEquals(request.getHeader().getProviderId(), header.getProviderId());
+		assertEquals(request.getHeader().getTransactionId(), header.getTransactionId());
+	}
+
+	@Test
+	public void transformCreditLimitRequestToResponse() {
+
+		CreditLimitRequest creditLimitRequest = new CreditLimitRequest();
+		creditLimitRequest.setProviderId(1L);
+		creditLimitRequest.setTransactionId(1L);
+		creditLimitRequest.setStatus(1);
+		creditLimitRequest.setCalculatedGamingBalance(new BigDecimal("5000"));
+		creditLimitRequest.setCreditLimit(new BigDecimal("5000"));
+
+		CreditLimitsResponseDto request = modelTransformationManager
+				.transformCreditLimitRequestToResponse(creditLimitRequest);
+
+		assertEquals(request.getHeader().getProviderId(), header.getProviderId());
+		assertEquals(request.getHeader().getTransactionId(), header.getTransactionId());
+
+		// TODO ADD MORE ASSERTS HERE
+	}
+
+	@Test
+	public void transformActionsRequestEntityToResponseDto() {
+
+		ActionsRequest actionsRequest = new ActionsRequest();
+		actionsRequest.setProviderId(1L);
+		actionsRequest.setTransactionId(1L);
+		actionsRequest.setStatus(1);
+
+		/* List */
+		ActionsRetailer retailer = new ActionsRetailer();
+		retailer.setId(5L);
+		retailer.setStatus(NamRequestItemStatus.IN_PROGRESS.getId());
+		Collection<ActionsRetailer> list = Collections.singletonList(retailer);
+		actionsRequest.setActionRetailers(list);
+
+		ActionsResponseDto request = modelTransformationManager
+				.transformActionsRequestEntityToResponseDto(actionsRequest);
+
+		assertEquals(request.getHeader().getProviderId(), header.getProviderId());
+		assertEquals(request.getHeader().getTransactionId(), header.getTransactionId());
+	}
+
+	@Test
+	public void transformActionsRequestEntityToResponseDto_SUCCESS() {
+
+		ActionsRequest actionsRequest = new ActionsRequest();
+		actionsRequest.setProviderId(1L);
+		actionsRequest.setTransactionId(1L);
+		actionsRequest.setStatus(1);
+
+		/* List */
+		ActionsRetailer retailer = new ActionsRetailer();
+		retailer.setId(5L);
+		retailer.setStatus(NamRequestItemStatus.SUCCESS.getId());
+		Collection<ActionsRetailer> list = Collections.singletonList(retailer);
+		actionsRequest.setActionRetailers(list);
+
+		ActionsResponseDto request = modelTransformationManager
+				.transformActionsRequestEntityToResponseDto(actionsRequest);
+
+		assertEquals(request.getHeader().getProviderId(), header.getProviderId());
+		assertEquals(request.getHeader().getTransactionId(), header.getTransactionId());
+	}
+
+	@Test
+	public void transformManualCreditLimitRequestDtoToEntity() {
+
+		ManualCreditLimitRequestDto actionsRequest = new ManualCreditLimitRequestDto();
+
+		/* List */
+		RetailerAmount retailerAmount = new RetailerAmount();
+		retailerAmount.setCreditLimit(5000L);
+		List<RetailerAmount> list = Collections.singletonList(retailerAmount);
+		actionsRequest.setRetailers(list);
+
+		ManualCreditLimitRequest request = modelTransformationManager
+				.transformManualCreditLimitRequestDtoToEntity(actionsRequest);
+
+		// TODO Add asserts
+	}
+
+	@Test
+	public void transformManualCreditLimitRequestEntityToResponseDto() {
+
+		ManualCreditLimitRequest nanualCreditLimitRequest = new ManualCreditLimitRequest();
+		nanualCreditLimitRequest.setStatus(NamRequestItemStatus.IN_PROGRESS.getId());
+
+		/* List */
+		ManualCreditLimitRetailer manualCreditLimitRetailer = new ManualCreditLimitRetailer();
+		Collection<ManualCreditLimitRetailer> list = Collections.singletonList(manualCreditLimitRetailer);
+		nanualCreditLimitRequest.setManualCreditLimitRetailers(list);
+
+		ManualCreditLimitsResponseDto request = modelTransformationManager
+				.transformManualCreditLimitRequestEntityToResponseDto(nanualCreditLimitRequest);
+
+		// TODO Add asserts
+	}
+
+	@Test
+	public void transformManualCreditLimitRequestEntityToResponseDto_SUCCESS() {
+
+		ManualCreditLimitRequest nanualCreditLimitRequest = new ManualCreditLimitRequest();
+		nanualCreditLimitRequest.setStatus(NamRequestItemStatus.SUCCESS.getId());
+
+		/* List */
+		ManualCreditLimitRetailer manualCreditLimitRetailer = new ManualCreditLimitRetailer();
+		manualCreditLimitRetailer.setStatus(NamRequestItemStatus.SUCCESS.getId());
+		manualCreditLimitRetailer.setCalculatedAvailableCredit(new BigDecimal("5000"));
+		manualCreditLimitRetailer.setIncomingCreditLimit(new BigDecimal("5000"));
+		manualCreditLimitRetailer.setGamingBalance(new BigDecimal("5000"));
+		Collection<ManualCreditLimitRetailer> list = Collections.singletonList(manualCreditLimitRetailer);
+		nanualCreditLimitRequest.setManualCreditLimitRetailers(list);
+
+		ManualCreditLimitsResponseDto request = modelTransformationManager
+				.transformManualCreditLimitRequestEntityToResponseDto(nanualCreditLimitRequest);
+
+		// TODO Add asserts
+	}
+
+}

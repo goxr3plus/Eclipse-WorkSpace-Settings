@@ -1,0 +1,86 @@
+package com.intralot.l10.nam.manager.process;
+
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+import java.math.BigDecimal;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import com.intralot.l10.nam.exception.NamGenericException;
+import com.intralot.l10.nam.manager.jpa.CreditLimitJPAManager;
+import com.intralot.l10.nam.manager.transform.ModelTransformationManager;
+import com.intralot.l10.nam.manager.validation.ValidationManager;
+import com.intralot.l10.nam.model.CreditLimitRequestDto;
+import com.intralot.l10.nam.model.GamingBalance;
+import com.intralot.l10.nam.model.HeaderRequest;
+import com.intralot.l10.nam.repository.jdbc.NamRepository;
+import com.intralot.l10.nam.repository.jdbc.RetailerRepository;
+
+@RunWith(MockitoJUnitRunner.class)
+public class CreditLimitPreProcessingManagerTest {
+
+	@InjectMocks
+	private CreditLimitPreProcessingManager creditLimitPreProcessingManager;
+
+	@Mock
+	private RetailerRepository retailerRepository;
+
+	@Mock
+	private CreditLimitJPAManager creditLimitJPAManager;
+
+	@Mock
+	private ModelTransformationManager modelTransformationManager;
+
+	@Mock
+	private ValidationManager validationManager;
+
+	@Mock
+	private NamRepository namRepository;
+
+	private HeaderRequest header;
+	private CreditLimitRequestDto creditLimitRequestDto;
+	private GamingBalance gamingBalance;
+
+	@Before
+	public void init() {
+
+		header = new HeaderRequest();
+		header.setProviderId(1L);
+		header.setTransactionId(1L);
+
+		creditLimitRequestDto = new CreditLimitRequestDto();
+		creditLimitRequestDto.setRetailerId(1);
+		creditLimitRequestDto.setInquiryId(1L);
+		creditLimitRequestDto.setHeader(header);
+		creditLimitRequestDto.setCreditLimit(500L);
+
+		gamingBalance = new GamingBalance();
+		gamingBalance.setId(500L);
+		
+		gamingBalance.setGamingBalance(new BigDecimal("0.01"));
+
+		when(namRepository.getGamingBalancePerRetailerIdAndTransaction(anyInt(), anyLong())).thenReturn(gamingBalance);
+	}
+
+	@Test
+	public void preProcess() {
+		
+		gamingBalance.setStatus(2);
+		creditLimitPreProcessingManager.preProcess(creditLimitRequestDto);
+	}
+	
+	@Test(expected = NamGenericException.class)
+	public void preProcess_exception() {
+		
+		gamingBalance.setStatus(1);
+		creditLimitPreProcessingManager.preProcess(creditLimitRequestDto);
+	}
+
+}

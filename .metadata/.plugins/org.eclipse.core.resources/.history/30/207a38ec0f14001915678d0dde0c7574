@@ -1,0 +1,298 @@
+package com.intralot.l10.bank.manager.process;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.routines.IBANValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import com.intralot.iif.core.AbstractManager;
+import com.intralot.l10.bank.entity.Mandate;
+import com.intralot.l10.bank.entity.MandateCrd;
+import com.intralot.l10.bank.entity.MandateHis;
+import com.intralot.l10.bank.entity.MandateIban;
+import com.intralot.l10.bank.entity.MandateSch;
+import com.intralot.l10.bank.entity.MandateSeq;
+import com.intralot.l10.bank.entity.MandateSts;
+import com.intralot.l10.bank.enumaration.MandateScheme;
+import com.intralot.l10.bank.enumaration.MandateSequence;
+import com.intralot.l10.bank.enumaration.MandateStatus;
+import com.intralot.l10.bank.manager.jpa.MandateCreditorJpaManager;
+import com.intralot.l10.bank.manager.jpa.MandateHisJpaManager;
+import com.intralot.l10.bank.manager.jpa.MandateIbanHisJpaManager;
+import com.intralot.l10.bank.manager.jpa.MandateIbanJpaManager;
+import com.intralot.l10.bank.manager.jpa.MandateJpaManager;
+import com.intralot.l10.bank.manager.util.MandateUtils;
+import com.intralot.l10.bank.model.AccountingPeriod;
+import com.intralot.l10.bank.model.HrUser;
+import com.intralot.l10.bank.model.RetailerBank;
+import com.intralot.l10.bank.repository.jdbc.AccountingBalanceRepository;
+import com.intralot.l10.bank.repository.jdbc.AccountingPeriodRepository;
+import com.intralot.l10.bank.repository.jdbc.RetailerBankRepository;
+import com.intralot.l10.bank.repository.jpa.MandateHisRepository;
+import com.intralot.l10.bank.repository.jpa.MandateRepository;
+import com.intralot.l10.bank.repository.jpa.MandateSchRepository;
+import com.intralot.l10.bank.repository.jpa.MandateSeqRepository;
+import com.intralot.l10.bank.repository.jpa.MandateStsRepository;
+
+@Component
+@Transactional
+public class CreateBankFilesPreProcessor extends AbstractManager {
+
+	@Autowired
+	private MandateUtils mandateUtils;
+
+	@Autowired
+	private AccountingPeriodRepository accountingPeriodRepository;
+
+	@Autowired
+	private MandateRepository mandateRepository;
+
+	@Autowired
+	private MandateHisRepository mandateHisRepository;
+
+	@Autowired
+	private MandateSchRepository mandateSchRepository;
+
+	@Autowired
+	private MandateSeqRepository mandateSeqRepository;
+
+	@Autowired
+	private MandateStsRepository mandateStsRepository;
+
+	@Autowired
+	private MandateCreditorJpaManager mandateCreditorService;
+
+	@Autowired
+	private AccountingBalanceRepository accountingBalanceRepository;
+
+	@Autowired
+	private MandateJpaManager mandateJpaManager;
+
+	@Autowired
+	private RetailerBankRepository retailerBankRepository;
+
+	@Autowired
+	private MandateHisJpaManager mandateHisJpaManager;
+
+	@Autowired
+	private MandateIbanJpaManager mandateIbanJpaManager;
+
+	@Autowired
+	private MandateIbanHisJpaManager mandateIbanHisJpaManager;
+
+	public void prepareData(final Integer operatorId, final Integer year, final Integer accCd) {
+
+		log.info("ENTERING prepareData, operatorId={}, year={}, accCd={}", operatorId, year, accCd);
+
+		/* Get current accounting period */
+		final AccountingPeriod currentAccPeriod = accountingPeriodRepository.getAccountingPeriodByOperatorAndYearAndCode(operatorId, year, accCd);
+
+		/* Undo previous run, if any */
+		this.undoPreviousRun(currentAccPeriod);
+
+		/* Update mandates */
+		this.updateMandates(currentAccPeriod);
+
+		log.info("EXITING prepareData");
+	}
+
+	private void undoPreviousRun(final AccountingPeriod currentAccPeriod) {
+
+		log.info("ENTERING undoPreviousRun, currentAccPeriod={}", currentAccPeriod);
+		/*
+		Mandates that first and last collection dates are the same with accept date are mandates that changed from FRST to RCUR; these mandates must be changed back to FRST.
+		Mandates that first and last collection dates are different are mandates that were already RCUR, no action for those.
+		 */
+		final LocalDate p_dt = currentAccPeriod.getEndDateAsLocalDate();
+
+		/* Fetch and iterate mandates eligible for undo */
+		final List<Mandate> mandates = mandateRepository.findByStatusAndFirstCalcDateAndLastCalcDate(MandateStatus.ACTIVE_SIGNED.getId(), p_dt);
+		for (final Mandate mandate : mandates) {
+
+			log.info("Undoing mandate={}", mandate);
+
+			/* Fetch mandate with maximum sequence in History */
+			mandateHisRepository.findMaxSequenceById(mandate.getMdId()).ifPresent(maxSequence -> {
+
+				/* Delete mandate with maximum sequence in History */
+				mandateHisRepository.deleteBySequenceAndId(mandate.getMdId(), maxSequence);
+
+				/* Fetch MandateHis with maxSequence-1 */
+				final MandateHis mandateHis = mandateHisRepository.findBySequenceAndId(mandate.getMdId(), maxSequence - 1);
+
+				/* Update Mandate based on MandateHis */
+				if (mandateHis != null) 
+					mandateRepository.undoMandate(mandateHis.getMdSchId(), mandateHis.getMdSeqId(), mandate.getMdId());
+				
+			});
+		}
+
+		/* Unmark balance for Operator / Period */
+		log.info("Un-marking Retailers Balance for period={}", currentAccPeriod);
+		accountingBalanceRepository.unmarkAccRetBal(currentAccPeriod.getLotCd(), currentAccPeriod.getYear(), currentAccPeriod.getAccCd());
+
+		log.info("EXITING undoPreviousRun");
+	}
+
+	private void updateMandates(final AccountingPeriod currentAccPeriod) {
+
+		log.info("ENTERING updateMandates, currentAccPeriod={}", currentAccPeriod);
+
+		/* Calculate p_dt */
+		final LocalDate p_dt = currentAccPeriod.getEndDateAsLocalDate();
+
+		/* Instances */
+		final MandateCrd mandateCrd = mandateCreditorService.getActiveCreditor();
+		final MandateSch mandateSch = mandateSchRepository.findById(MandateScheme.CORE.getId()).get();
+		final MandateSeq mandateSeq = mandateSeqRepository.findById(MandateSequence.FIRST.getId()).get();
+		final MandateSts mandateSts = mandateStsRepository.findById(MandateStatus.ACTIVE_SIGNED.getId()).get();
+		final IBANValidator ibanValidator = new IBANValidator();
+
+		/* Get Creditor Prefix */
+		final String mdCrdIncId = mandateCrd.getMdCrdIncId();
+		final String creditorPrefix = mdCrdIncId.substring(mdCrdIncId.length() - 4, mdCrdIncId.length());
+
+		/* Iterate retailer banks */
+		final List<RetailerBank> retBanks = retailerBankRepository.getRetailerBanksBetweenStartAndEndDate(p_dt);
+		for (final RetailerBank retBank : retBanks) {
+
+			log.info("Processing retailer bank={}", retBank);
+
+			boolean createMandate = false;
+			boolean updateMandate = false;
+
+			if (!ibanValidator.isValid(retBank.getAccountNumber())) {
+				log.warn("IBAN={} for retailer={} is invalid", retBank.getAccountNumber(), retBank.getRetailerCode());
+				continue;
+			}
+
+			/* Calculate retailerName */
+			final String retailerName = this.getRetailerName(retBank);
+			log.info("Calculated retailerName={}", retailerName);
+
+			/* Select mandate for retailer */
+			final Mandate mandate = mandateJpaManager.fetchActiveMandateByRetailerCode(Integer.parseInt(retBank.getRetailerCode()));
+
+			/* Mandate NOT EXISTS for retail */
+			if (mandate == null) {
+				log.info("Mandate for retailer={} NOT EXIST, creating...", retBank.getRetailerCode());
+				createMandate = true;
+			}
+
+			/* Mandate EXISTS for retail, Check IBAN and BIC */
+			else {
+				log.info("Mandate for retailer={} EXIST, checking for changes...", retBank.getRetailerCode());
+
+				/* Get IBAN and BIC from mandate */
+				final MandateIban mandateIban = mandate.getMandateRecentIban();
+				final String bic = mandate.getMdDbtBic();
+
+				/* Mandate BIC NULL || != RetBank BIC */
+				if (bic == null || !bic.equals(retBank.getBic())) {
+					if (retBank.getBic() != null) {
+						updateMandate = true;
+					}
+				}
+				/* Mandate IBAN NULL || != RetBank IBAN */
+				else {
+					if (mandateIban == null) {
+						if (retBank.getAccountNumber() != null) {
+							updateMandate = true;
+						}
+					} else {
+
+						if (mandateIban.getMdIban() == null || !mandateIban.getMdIban().equals(retBank.getAccountNumber())) {
+							if (retBank.getAccountNumber() != null) {
+								updateMandate = true;
+							}
+						}
+					}
+				}
+			}
+
+			/* Mandate NOT EXIST || Has changes */
+			log.info("Mandate for retailer={} createMandate={}, updateMandate={}", retBank.getRetailerCode(), createMandate, updateMandate);
+			if (createMandate || updateMandate) {
+
+				/* Keep System LocalDateTime */
+				final LocalDateTime localDateTime = LocalDateTime.now();
+				int mandateIdSequence = 0;
+
+				/* Mandate EXIST but iban, bic changed */
+				if (updateMandate && mandate.getMdId() != null) {
+
+					mandateIdSequence = this.updateMandate(mandate, localDateTime);
+				}
+
+				this.createMandate(retBank, creditorPrefix, mandateIdSequence, p_dt, mandateCrd, mandateSch, mandateSeq, mandateSts, localDateTime, retailerName);
+			}
+		}
+
+		log.info("EXITING updateMandates");
+	}
+
+	private String getRetailerName(final RetailerBank retBank) {
+
+		/* Calculate retailerName */
+		final List<HrUser> hrUser = retailerBankRepository.getRetailerName(Integer.parseInt(retBank.getRetailerCode()));
+
+		final String retailerName = (CollectionUtils.isEmpty(hrUser))
+			? "Πρακτορείο " + retBank.getRetailerCode()
+			: (hrUser.get(0).getFirstName().trim() + " " + hrUser.get(0).getLastName().trim()).replaceAll("&", "KAI");
+
+		return StringUtils.substring(retailerName, 0, 64);
+	}
+
+	private int updateMandate(final Mandate mandate, final LocalDateTime localDateTime) {
+
+		log.info("ENTERING updateMandate, mandate={}", mandate);
+
+		/* Revoke mandate for retailer */
+		mandateRepository.revokeMandate(mandate.getMdId(), localDateTime);
+
+		/* Find Mandate by MdId */
+		mandateRepository.findById(mandate.getMdId()).ifPresent(mandatee -> {
+
+			/* Find MaxUpdateSequence */
+			final int v_md_upd_seq_id = mandateHisRepository.findMaxSequenceById(mandate.getMdId()).orElse(0) + 1;
+
+			/* Create new Mandate_His */
+			mandateHisJpaManager.createMandateHis(mandatee, localDateTime, v_md_upd_seq_id);
+		});
+
+		log.info("EXITING updateMandate, mandate={}", mandate);
+		return (int) (Math.floorMod(Long.parseLong(mandate.getMdId()) / 10, 100) + 1);
+	}
+
+	private void createMandate(final RetailerBank retBank, final String creditorPrefix, final Integer mandateIdSequence,
+		final LocalDate p_dt, final MandateCrd mandateCrd, final MandateSch mandateSch, final MandateSeq mandateSeq, final MandateSts mandateSts,
+		final LocalDateTime localDateTime, final String retailerName) {
+
+		log.info("ENTERING createMandate, retBank={}", retBank);
+
+		/* Calculate newMandateId */
+		final String newMandateId = mandateUtils.calculateMandateId(creditorPrefix, retBank.getRetailerCode(), mandateIdSequence);
+
+		/* Create new mandate */
+		final Mandate newMandate = mandateJpaManager.createNewMandate(retBank, mandateIdSequence, p_dt, mandateCrd,
+			mandateSch, mandateSeq, mandateSts, localDateTime, newMandateId, retailerName);
+
+
+		/* Create new mandate_his */
+		mandateHisJpaManager.createMandateHis(newMandate, localDateTime, 1);
+
+		/* Create new mandate_iban */
+		final MandateIban mandateIban = mandateIbanJpaManager.createMandateIban(retBank, newMandate, newMandateId, p_dt);
+
+		/* Create new mandate_iban_his */
+		mandateIbanHisJpaManager.createMandateIbanHis(mandateIban);
+		log.info("EXITING createMandate, retBank={}", newMandate);
+	}
+
+}

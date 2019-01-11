@@ -1,0 +1,11 @@
+
+Vsquid:S2629."$Invoke method(s) only conditionally.(ÑˆÅ°üÿÿÿÿH $RMAJORZ
+CODE_SMELL
+…squid:ModifiersOrderCheck"EReorder the modifiers to comply with the Java Language Specification.(ô¬õ´úÿÿÿÿH¡$RMINORZ
+CODE_SMELL
+€squid:ModifiersOrderCheck"EReorder the modifiers to comply with the Java Language Specification.(…¥¨­H¢$RMINORZ
+CODE_SMELL
+Usquid:S14528"&Remove usage of generic wildcard type.(®¦èyH£$RCRITICALZ
+CODE_SMELL
+“squid:S3457."aNo need to call "toString()" method as formatting and string conversion is done by the Formatter.(ÑˆÅ°üÿÿÿÿH¤$RMAJORZ
+CODE_SMELL

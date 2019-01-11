@@ -1,0 +1,131 @@
+1545047683461	Extract interface 'LEBLE'
+1545047761377	Delete element
+1545131290674	Rename type 'PAINOO2'
+1545132092758	Delete element
+1545133165356	Extract Class...
+1545133186202	Delete element
+1545133284771	Delete element
+1545133340341	Rename type 'DocumentParsingManager'
+1545133345335	Rename type 'DocumentParsingManagertEST'
+1545133778838	Rename resource 'file.xml'
+1545133930596	Extract Class...
+1545133959544	Delete element
+1545135464254	Delete element
+1545137284760	Delete element
+1545137288789	Delete element
+1545137503989	Move compilation unit
+1545137513008	Move compilation unit
+1545137524159	Move compilation unit
+1545137535383	Rename package 'com.intralot.l10.bank.manager.parser'
+1545137576850	Move compilation unit
+1545137579969	Delete element
+1545138559425	Delete element
+1545140149716	Move compilation unit
+1545143766982	Rename resource 'pain.002.001.03.xml'
+1545144229907	Delete element
+1545144573166	Delete elements
+1545145760516	Delete element
+1545145769657	Rename package 'com.intralot.l10.bank.model.jaxb2'
+1545209964940	Delete elements
+1545210848646	Encapsulate field 'description'
+1545211619882	Copy file
+1545211700997	Rename resource 'V0_0__dropper.sql'
+1545211707465	Rename resource 'V1_0__init.sql'
+1545212061756	Rename resource 'V1_1__init.sql'
+1545212073380	Delete element
+1545214614144	Delete element
+1545216591916	Delete element
+1545217180458	Encapsulate field 'fileId'
+1545217281349	Rename field 'fName'
+1545217569736	Delete elements
+1545217574598	Delete elements
+1545217595443	Rename field 'date'
+1545229019882	Rename type 'BankFileMonitoringJpaManager'
+1545293888860	Rename resource 'Document.xml'
+1545293893931	Delete element
+1545301089357	Delete elements
+1545301830904	Rename type 'CashAccount16'
+1545301834889	Rename type 'AddressType2Code'
+1545301838443	Rename type 'AmountType3Choice'
+1545301841360	Rename type 'AmendmentInformationDetails6'
+1545301844708	Rename type 'AccountIdentification4Choice'
+1545301849384	Rename type 'CreditorReferenceInformation2'
+1545301854131	Rename type 'ClearingSystemIdentification2Choice'
+1545301857068	Rename type 'ClearingSystemMemberIdentification2'
+1545301862585	Rename type 'CreditorReferenceType1Choice'
+1545301870292	Rename type 'CustomerPaymentStatusReportV03'
+1545301873509	Rename type 'CreditorReferenceType2'
+1545301878400	Rename type 'DocumentType3Code'
+1545301881071	Rename type 'JCCBranchAndFinancialInstitutionIdentification4'
+1545301883829	Rename type 'GenericFinancialIdentification1'
+1545301899617	Rename type 'FinancialInstitutionIdentification7'
+1545301905430	Rename type 'FinancialIdentificationSchemeName1Choice'
+1545301908691	Rename type 'EquivalentAmount2'
+1545301912453	Rename type 'ClearingChannel2Code'
+1545301915259	Rename type 'CategoryPurpose1Choice'
+1545301921855	Rename type 'GroupHeader36'
+1545301924370	Rename type 'JCCAccountIdentification4Choice'
+1545301927749	Rename type 'JCCCdtrSchmeIdentification32'
+1545301931681	Rename type 'JCCCashAccount1'
+1545301933628	Rename type 'GenericPersonIdentification1'
+1545301935485	Rename type 'GenericOrganisationIdentification1'
+1545301939174	Rename type 'PartyIdentification32'
+1545301941286	Rename type 'PaymentTransactionInformation25'
+1545301943703	Rename type 'PaymentTypeInformation22'
+1545301946339	Rename type 'PersonIdentification5'
+1545301949180	Rename type 'PostalAddress6'
+1545301952493	Rename type 'PersonIdentificationSchemeName1Choice'
+1545301961457	Rename type 'RemittanceInformation5'
+1545301964765	Rename type 'Priority2Code'
+1545301967366	Rename type 'StatusReasonInformation8'
+1545301969625	Rename type 'StructuredRemittanceInformation7'
+1545301973017	Rename type 'TransactionGroupStatus3Code'
+1545301975948	Rename type 'TransactionIndividualStatus3Code'
+1545301979243	Rename type 'SequenceType1Code'
+1545301982413	Rename type 'ServiceLevel8Choice'
+1545301985146	Rename type 'StatusReason6Choice'
+1545301988367	Rename type 'OriginalGroupInformation20'
+1545301990729	Rename type 'OriginalPaymentInformation1'
+1545301997710	Rename type 'OriginalTransactionReference13'
+1545302005922	Rename type 'JCCFinancialInstitutionIdentification1'
+1545302008370	Rename type 'JCCGenericFinancialIdentification1'
+1545302011488	Rename type 'JCCOrganisationIdentificationSchemeName1Choice'
+1545302014314	Rename type 'LocalInstrument2Choice'
+1545302016500	Rename type 'MandateRelatedInformation6'
+1545302018800	Rename type 'OrganisationIdentification4'
+1545302023374	Rename type 'JCCCdtrSchmeIdentificationParty6Choice'
+1545302025913	Rename type 'JCCCdtrSchmeIdentificationPrvtIdIdentification5'
+1545302028198	Rename type 'JCCCdtrSchmeIdentificationPrvtIdOthrIdentification1'
+1545302034888	Rename type 'Party6Choice'
+1545310811317	Rename method 'unmarkAccRetBalForReply'
+1545312416011	Rename method 'getRejectedMandate'
+1545312826136	Rename local variable 'p_dt'
+1545314034807	Delete element
+1545315971245	Delete element
+1545319126910	Delete element
+1545378446223	Rename resource 'PAIN002-0045-20180522-04.xml'
+1545378456530	Copy file
+1545378541272	Rename method 'parseRejectDocument'
+1545379694010	Copy file
+1545381638371	Delete element
+1545383345625	Delete element
+1545383370889	Copy compilation unit
+1545383570675	Rename type 'AccountPeriodStatus'
+1545384191602	Delete element
+1545384451840	Rename type 'AccountintPeriodStatus'
+1545384669013	Delete element
+1545399139583	Delete element
+1545399692495	Delete element
+1545402696426	Rename field 'path'
+1545402709761	Rename field 'path1'
+1545402718999	Rename field 'rejected_path_1'
+1545402723708	Rename field 'path2'
+1545405665965	Rename method 'parseRejectDocument_FILE_ALREADY_IN_DataBase'
+1545405686482	Rename method 'parseAcceptedDocument'
+1545405716458	Rename method 'parseRejectDocument_With_Reason_And_Retailers'
+1545405741163	Rename method 'parseRejectDocument_With_Reason_And_Retailers_No_Mandates'
+1545405820948	Rename method 'parseDocument_No_File_Found'
+1545405918899	Rename method 'parseDocument_Without_Reason_And_NoRetailers'
+1545406164054	Rename field 'acceptedDoc1'
+1545406210342	Rename field 'rejectedDoc2'
+1545406217172	Rename field 'rejectedDoc1'

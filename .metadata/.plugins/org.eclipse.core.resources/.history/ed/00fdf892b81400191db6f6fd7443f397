@@ -1,0 +1,44 @@
+package com.intralot.lotos10.messaging.model;
+
+public class MessageDeliveryTypeDTO {
+
+    private Long id;
+    private String name;
+    private String descr;
+
+    public MessageDeliveryTypeDTO() {
+	super();
+    }
+
+    public MessageDeliveryTypeDTO(final Long id, final String name,final String descr) {
+	super();
+	this.id = id;
+	this.descr = descr;
+	this.name = name;
+    }
+
+    public Long getId() {
+	return id;
+    }
+
+    public void setId(final Long id) {
+	this.id = id;
+    }
+
+    public String getDescr() {
+	return descr;
+    }
+
+    public void setDescr(final String descr) {
+	this.descr = descr;
+    }
+
+    public String getName() {
+	return name;
+    }
+
+    public void setName(final String name) {
+	this.name = name;
+    }
+
+}

@@ -1,0 +1,53 @@
+package global.config;
+
+import javax.validation.Validator;
+
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
+import org.springframework.boot.actuate.autoconfigure.flyway.FlywayEndpointAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.jdbc.DataSourceHealthIndicatorAutoConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intralot.iif.core.utils.JsonMapper;
+import com.intralot.iif.core.validation.DefaultValidatorAdapter;
+
+@Configuration
+@EnableAutoConfiguration(exclude = {
+	DataSourceAutoConfiguration.class,
+	DataSourceHealthIndicatorAutoConfiguration.class,
+	FlywayAutoConfiguration.class,
+	FlywayEndpointAutoConfiguration.class})
+@PropertySource(value = "classpath:test.properties", encoding = "UTF-8")
+public class TestConfig {
+
+	@Bean(name = "JsonMapper")
+	public JsonMapper jsonMapper() {
+
+		return new JsonMapper();
+	}
+
+	@Bean(name = "ObjectMapper")
+	public ObjectMapper objectMapper() {
+
+		return new ObjectMapper();
+	}
+
+	@Bean(name = "Mapper")
+	public Mapper dozer() {
+
+		return new DozerBeanMapper();
+	}
+
+	@Bean(name = "Validator")
+	public Validator validator() {
+
+		return new DefaultValidatorAdapter();
+	}
+	
+}

@@ -1,0 +1,23 @@
+package guru.springframework;
+
+public class Dollar {
+
+    private int amount;
+
+    public Dollar(final int i) {
+	amount = i;
+    }
+
+    public void times(final int i) {
+	amount *= i;
+    }
+
+    public int getAmount() {
+	return amount;
+    }
+
+    public void setAmount(int amount) {
+	this.amount = amount;
+    }
+
+}

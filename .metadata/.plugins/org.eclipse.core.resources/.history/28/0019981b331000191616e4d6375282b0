@@ -1,0 +1,213 @@
+package com.intralot.l10.ats.manager.retrieve.documents;
+
+import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import com.intralot.l10.ats.entity.RetrieveDocumentsRequest;
+import com.intralot.l10.ats.enumeration.DocumentType;
+import com.intralot.l10.ats.exception.AtsOpapException;
+import com.intralot.l10.ats.manager.configuration.ConfigurationJPAManager;
+import com.intralot.l10.ats.manager.configuration.ConfigurationManager;
+import com.intralot.l10.ats.manager.submit.SubmitDocumentRequestJPAManager;
+import com.intralot.l10.ats.manager.transform.ModelTransformationManager;
+import com.intralot.l10.ats.manager.validation.ValidationManager;
+import com.intralot.l10.ats.model.AtsRetrieveDocumentsRequestDto;
+import com.intralot.l10.ats.model.SubmitDocumentDto;
+
+import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class RetrieveDocumentsPreProcessingManagerTest {
+
+	@InjectMocks
+	private RetrieveDocumentsPreProcessingManager retrieveDocumentsPreProcessingManager;
+
+	@Mock
+	ConfigurationManager configurationManager;
+
+	@Mock
+	RetrieveDocumentsJPAManager retrieveDocumentsJPAManager;
+
+	@Mock
+	SubmitDocumentRequestJPAManager submitDocumentRequestJPAManager;
+
+	@Mock
+	ConfigurationJPAManager configurationJPAManager;
+
+	@Mock
+	ModelTransformationManager modelTransformationManager;
+
+	@Mock
+	ValidationManager validationManager;
+
+	private final RetrieveDocumentsRequest retrieveDocumentsRequest = new RetrieveDocumentsRequest();
+	private final AtsRetrieveDocumentsRequestDto atsRetrieveDocumentsRequestDto = new AtsRetrieveDocumentsRequestDto();
+
+	@Before
+	public void setup() {
+
+		retrieveDocumentsRequest.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+		retrieveDocumentsRequest.setStatus(2);
+		retrieveDocumentsRequest.setSystemId(5);
+		retrieveDocumentsRequest.setDocumentTypeId(2);
+
+		atsRetrieveDocumentsRequestDto.setSystemId(5);
+		atsRetrieveDocumentsRequestDto.setDocumentTypeId(1);
+	}
+
+	@Test
+	public void preProcessPollingRequest() {
+
+		when(retrieveDocumentsJPAManager.findByReportId(anyLong())).thenReturn(retrieveDocumentsRequest);
+
+		assertFalse(retrieveDocumentsPreProcessingManager.preProcessPollingRequest(5L, 1,
+			"105e9723-be50-4d15-a04e-841d6b513836"));
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessPollingRequest_Exception() {
+		retrieveDocumentsPreProcessingManager.preProcessPollingRequest(5L, 1, "105e9723-be50-4d15-a04e-841d6b513836");
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessPollingRequest_Throw_Exception() {
+		when(retrieveDocumentsJPAManager.findByReportId(anyLong())).thenThrow(new NullPointerException());
+		retrieveDocumentsPreProcessingManager.preProcessPollingRequest(5L, 1, "105e9723-be50-4d15-a04e-841d6b513836");
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessPollingRequest_FAIL_STATUS() {
+
+		retrieveDocumentsRequest.setStatus(3);
+		when(retrieveDocumentsJPAManager.findByReportId(anyLong())).thenReturn(retrieveDocumentsRequest);
+		retrieveDocumentsPreProcessingManager.preProcessPollingRequest(5L, 1, "105e9723-be50-4d15-a04e-841d6b513836");
+
+	}
+
+	// ============================================================================================
+	@Test
+	public void preProcessRetrieveDocuments() {
+
+		final Date date1 = new Date();
+		final Date date2 = new Date();
+
+		atsRetrieveDocumentsRequestDto.setFromDatetime(date1);
+		atsRetrieveDocumentsRequestDto.setToDatetime(date2);
+
+		final SubmitDocumentDto submitDocumentDto = new SubmitDocumentDto(100100, new Date(), 1);
+
+		when(validationManager.validateDocumentTypeId(anyInt())).thenReturn(DocumentType.WINNERS);
+		when(submitDocumentRequestJPAManager.findByGameIdAndWinnersIncludedBetweenDates(anyInt(), anyBoolean(),
+			any(Date.class), any(Date.class))).thenReturn(Collections.singletonList(submitDocumentDto));
+
+		retrieveDocumentsPreProcessingManager.preProcessRetrieveDocuments("xoecid", atsRetrieveDocumentsRequestDto, 1,
+			"105e9723-be50-4d15-a04e-841d6b513836");
+
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessRetrieveDocuments_validate_document_exists_error() {
+
+		final Date date1 = new Date();
+		final Date date2 = new Date();
+
+		atsRetrieveDocumentsRequestDto.setFromDatetime(date1);
+		atsRetrieveDocumentsRequestDto.setToDatetime(date2);
+
+		final SubmitDocumentDto submitDocumentDto = new SubmitDocumentDto(100100, new Date(), 1);
+
+		when(validationManager.validateDocumentTypeId(anyInt())).thenReturn(DocumentType.WINNERS);
+		when(submitDocumentRequestJPAManager.findByGameIdAndWinnersIncludedBetweenDates(anyInt(), anyBoolean(),
+			any(Date.class), any(Date.class))).thenReturn(Collections.emptyList());
+
+		retrieveDocumentsPreProcessingManager.preProcessRetrieveDocuments("xoecid", atsRetrieveDocumentsRequestDto, 1,
+			"105e9723-be50-4d15-a04e-841d6b513836");
+
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessRetrieveDocuments_dateFrom_bigger_than_dateTo() {
+
+		final Date date1 = new Date();
+		date1.setYear(2080);
+		final Date date2 = new Date();
+
+		atsRetrieveDocumentsRequestDto.setFromDatetime(date1);
+		atsRetrieveDocumentsRequestDto.setToDatetime(date2);
+
+		retrieveDocumentsPreProcessingManager.preProcessRetrieveDocuments("xoecid", atsRetrieveDocumentsRequestDto, 1,
+			"105e9723-be50-4d15-a04e-841d6b513836");
+
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessRetrieveDocuments_has_pending_exception() {
+
+		when(retrieveDocumentsJPAManager.getPendingRetrieveDocumentsRequests(anyInt(), anyInt(), anyInt()))
+			.thenReturn(true);
+		retrieveDocumentsPreProcessingManager.preProcessRetrieveDocuments("xoecid", atsRetrieveDocumentsRequestDto, 1,
+			"105e9723-be50-4d15-a04e-841d6b513836");
+
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessRetrieveDocuments_diff_bigger_than_day() {
+
+		final Date date1 = new Date();
+		date1.setHours(0);
+		final Date date2 = new Date();
+		date2.setHours(14);
+
+		atsRetrieveDocumentsRequestDto.setFromDatetime(date1);
+		atsRetrieveDocumentsRequestDto.setToDatetime(date2);
+		ReflectionTestUtils.setField(retrieveDocumentsPreProcessingManager, "reportingRangeAllGames", 12);
+
+		retrieveDocumentsPreProcessingManager.preProcessRetrieveDocuments("xoecid", atsRetrieveDocumentsRequestDto, 1,
+			"105e9723-be50-4d15-a04e-841d6b513836");
+
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessRetrieveDocuments_invalid_gameid() {
+
+		final Date date1 = new Date();
+		date1.setHours(1);
+		final Date date2 = new Date();
+		date2.setHours(4);
+
+		System.err.println(date1.getHours() + "," + date2.getHours());
+
+		atsRetrieveDocumentsRequestDto.setFromDatetime(date1);
+		atsRetrieveDocumentsRequestDto.setToDatetime(date2);
+
+		when(validationManager.validateSystemId(anyInt())).thenReturn(1500);
+		ReflectionTestUtils.setField(retrieveDocumentsPreProcessingManager, "reportingRangeAllGames", 4);
+		ReflectionTestUtils.setField(retrieveDocumentsPreProcessingManager, "reportingRangeKino", 1);
+
+		retrieveDocumentsPreProcessingManager.preProcessRetrieveDocuments("xoecid", atsRetrieveDocumentsRequestDto, 1,
+			"105e9723-be50-4d15-a04e-841d6b513836");
+
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessRetrieveDocuments_THROW_EXCEPTION() {
+
+		retrieveDocumentsPreProcessingManager.preProcessRetrieveDocuments("xoecid", null, 1,
+			"105e9723-be50-4d15-a04e-841d6b513836");
+
+	}
+}

@@ -1,0 +1,119 @@
+package com.intralot.lotos10.messaging.test;
+
+import java.util.HashMap;
+
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.intralot.lotos10.messaging.entities.Message;
+import com.intralot.lotos10.messaging.entities.MessageDeliveryType;
+import com.intralot.lotos10.messaging.entities.MessagePriority;
+import com.intralot.lotos10.messaging.entities.MessageTemplate;
+import com.intralot.lotos10.messaging.entities.MessageType;
+import com.intralot.lotos10.messaging.enumeration.PriorityEnum;
+import com.intralot.lotos10.messaging.enumeration.NotificationTypesEnum;
+import com.intralot.lotos10.messaging.model.MessageInput;
+import com.intralot.lotos10.messaging.repositories.MessageDeliveryTypeRepo;
+import com.intralot.lotos10.messaging.repositories.MessagePriorityRepo;
+import com.intralot.lotos10.messaging.repositories.MessageRepo;
+import com.intralot.lotos10.messaging.repositories.MessageTypeRepo;
+import com.intralot.lotos10.messaging.services.MessageTransformationService;
+
+@RunWith(MockitoJUnitRunner.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class CreateMessageTest {
+
+	@Mock
+	private MessageTypeRepo messageTypeRepo;
+
+	@Mock
+	private MessageRepo messageRepo;
+
+	@Mock
+	private MessagePriorityRepo messagePriorityRepo;
+
+	@Mock
+	private MessageDeliveryTypeRepo messageDeliveryTypeRepo;
+
+	@InjectMocks
+	private MessageTransformationService messageTransformationService;
+
+//	@InjectMocks
+//	private MessageRepo messageRepo;
+
+//	@InjectMocks
+//	private MessageUtils messageUtils;
+
+	private final MessageInput messageInput = new MessageInput();
+	private final MessagePriority messagePriority = new MessagePriority();
+	private final MessageDeliveryType messageDeliveryType = new MessageDeliveryType();
+	private final MessageType messageType = new MessageType();
+	private final MessageTemplate messageTemplate = new MessageTemplate();
+
+	@Before
+	public void setUp() {
+
+		this.messageInput.setContent("Some content");
+		this.messageInput.setEncrypt("0");
+		this.messageInput.setMessageTypeId(null);
+		this.messageInput.setMethod(1L);
+		this.messageInput.setOrigin("IB91");
+		this.messageInput.setPriority(1L);
+		this.messageInput.setRecipients("user1@intralot.com,user@intralot.com");
+		this.messageInput.setSubject("some subject");
+		this.messageInput.setParams(new HashMap<String, String>() {{
+			put("full-name", "user");
+		}});
+
+		this.messagePriority.setId(1L);
+		this.messagePriority.setDescr(PriorityEnum.MEDIUM.name());
+		this.messagePriority.setName(PriorityEnum.MEDIUM.name());
+
+		this.messageDeliveryType.setId(1L);
+		this.messageDeliveryType.setName(NotificationTypesEnum.EMAIL.getValue());
+		this.messageDeliveryType.setDescr(NotificationTypesEnum.EMAIL.getValue());
+
+		this.messageTemplate.setSubject("Template subject");
+		this.messageTemplate.setContent("Template content");
+
+		this.messageType.setMessageDeliveryTypeByMessageDeliveryTypeFk(this.messageDeliveryType);
+		this.messageType.setMessagePriorityByMessagePriorityFk(this.messagePriority);
+		this.messageType.setMessageTemplateByMessageTemplateFk(this.messageTemplate);
+		this.messageType.setEncrypt("1");
+
+		MockitoAnnotations.initMocks(this);
+	}
+
+	@Test
+	public void testAMessageWithNoMessageType() {
+
+		Mockito.doReturn(this.messagePriority).when(this.messagePriorityRepo).findOne(Mockito.anyLong());
+		Mockito.doReturn(this.messageDeliveryType).when(this.messageDeliveryTypeRepo).findOne(Mockito.anyLong());
+
+		//this.messageUtils.createMessage(this.messageInput);
+		final Message message = this.messageTransformationService.transformMessageDtoToEntity(this.messageInput);
+		this.messageRepo.save(message);
+	}
+
+	@Test
+	public void testBMessageWithMessageType() {
+
+		this.messageInput.setMessageTypeId(this.messageType.getId());
+
+		Mockito.doReturn(this.messagePriority).when(this.messagePriorityRepo).findOne(Mockito.anyLong());
+		Mockito.doReturn(this.messageDeliveryType).when(this.messageDeliveryTypeRepo).findOne(Mockito.anyLong());
+		Mockito.doReturn(this.messageType).when(this.messageTypeRepo).findOne(Mockito.anyLong());
+
+		//this.messageUtils.createMessage(this.messageInput);
+		final Message message = this.messageTransformationService.transformMessageDtoToEntity(this.messageInput);
+		this.messageRepo.save(message);
+	}
+}

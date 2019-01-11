@@ -1,0 +1,115 @@
+package com.intralot.l10.nam.manager.process;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+import java.math.BigDecimal;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import com.intralot.l10.nam.entity.CreditLimitRequest;
+import com.intralot.l10.nam.exception.NamGenericException;
+import com.intralot.l10.nam.manager.config.TestConfig;
+import com.intralot.l10.nam.manager.jpa.CreditLimitJPAManager;
+import com.intralot.l10.nam.manager.transform.ModelTransformationManager;
+import com.intralot.l10.nam.model.CreditLimitsResponseDto;
+import com.intralot.l10.nam.model.RetailerFinLimits;
+import com.intralot.l10.nam.repository.jdbc.NamRepository;
+import com.intralot.l10.nam.repository.jdbc.RetailerFinLimitsRepository;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {CreditLimitProcessingManager.class})
+@ContextConfiguration(classes = { TestConfig.class, CreditLimitProcessingManagerTest.Config.class })
+public class CreditLimitProcessingManagerTest {
+
+	@Autowired
+	private CreditLimitProcessingManager creditLimitProcessingManager;
+
+	@Autowired
+	private ModelTransformationManager modelTransformationManager;
+
+	@MockBean
+	private CreditLimitJPAManager creditLimitJPAManager;
+
+	@MockBean
+	private RetailerFinLimitsRepository retailerFinLimitsRepository;
+
+	@MockBean
+	private NamRepository namRepository;
+
+	@Test
+	public void process() {
+		CreditLimitRequest creditLimitRequest = new CreditLimitRequest();
+		creditLimitRequest.setId(32L);
+		creditLimitRequest.setRetailerId(5);
+		creditLimitRequest.setCreditLimit(new BigDecimal("200"));
+		creditLimitRequest.setInquiryDbId(5L);
+		creditLimitRequest.setInquiryId(5L);
+		creditLimitRequest.setInquiryGamingBalance(new BigDecimal("0"));
+
+		RetailerFinLimits retailerFinLimits = new RetailerFinLimits();
+		retailerFinLimits.setCreditLimit(new BigDecimal("100"));
+		retailerFinLimits.setAvailableCredit(new BigDecimal("50"));
+		retailerFinLimits.setGamingBalance(new BigDecimal("50"));
+		retailerFinLimits.setDailyGamingBalance(new BigDecimal("50"));
+		retailerFinLimits.setRetailerId(5);
+
+		when(retailerFinLimitsRepository.getRetailerFinLimitsForUpdate(anyInt())).thenReturn(retailerFinLimits);
+
+		CreditLimitsResponseDto creditLimitsResponseDto = creditLimitProcessingManager.process(creditLimitRequest);
+
+		assertEquals(creditLimitsResponseDto.getCreditLimit().longValue(), 20000L);
+		assertEquals(creditLimitsResponseDto.getGamingBalance().longValue(), 5000L);
+		assertEquals(creditLimitsResponseDto.getRetailerId().intValue(), 5);
+		assertEquals(creditLimitsResponseDto.getInquiryId().intValue(), 5);
+	}
+
+	@Test(expected = Exception.class)
+	public void process_exception() {
+
+		creditLimitProcessingManager.process(null);
+	}
+
+	@Test(expected = NamGenericException.class)
+	public void process_exception_2() {
+
+		CreditLimitRequest creditLimitRequest = new CreditLimitRequest();
+		creditLimitRequest.setId(32L);
+		creditLimitRequest.setRetailerId(5);
+		creditLimitRequest.setInquiryDbId(5L);
+
+		RetailerFinLimits retailerFinLimits = new RetailerFinLimits();
+		retailerFinLimits.setCreditLimit(new BigDecimal("100"));
+		retailerFinLimits.setAvailableCredit(new BigDecimal("50"));
+		retailerFinLimits.setGamingBalance(new BigDecimal("50"));
+		retailerFinLimits.setDailyGamingBalance(new BigDecimal("0"));
+
+		when(retailerFinLimitsRepository.getRetailerFinLimitsForUpdate(anyInt())).thenReturn(retailerFinLimits);
+
+		CreditLimitsResponseDto creditLimitsResponseDto = creditLimitProcessingManager.process(creditLimitRequest);
+	}
+
+	// ============================ CONFIGURATION ================================
+
+	@Configuration
+	static class Config {
+
+		@Bean(name = "CreditLimitProcessingManager")
+		public CreditLimitProcessingManager creditLimitProcessingManager() {
+
+			return new CreditLimitProcessingManager();
+		}
+
+		@Bean(name = "ModelTransformationManager")
+		public ModelTransformationManager modelTransformationManager() {
+
+			return new ModelTransformationManager();
+		}
+	}
+
+}

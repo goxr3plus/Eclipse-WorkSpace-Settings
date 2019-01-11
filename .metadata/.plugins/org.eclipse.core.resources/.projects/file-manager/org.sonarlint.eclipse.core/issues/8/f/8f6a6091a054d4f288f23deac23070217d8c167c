@@ -1,0 +1,10 @@
+
+f
+squid:S106["9Replace this use of System.out or System.err by a logger.(—›¸îHø‚RMAJORZ
+CODE_SMELL
+€squid:CommentedOutCodeLine@"<This block of commented-out lines of code should be removed.(ñã»å8öƒ†½ù,H†ƒRMAJORZ
+CODE_SMELL
+Œsquid:S33054"OInject this field value directly into "handler1", the only method that uses it.(Ô€½®ÿÿÿÿÿ8Îîˆ½ù,HŽƒRCRITICALZ
+CODE_SMELL
+™squid:S33051"aInject this field value directly into "ftpInboundFileSynchronizer", the only method that uses it.(¨ôŸ±8Îîˆ½ù,HƒRCRITICALZ
+CODE_SMELL

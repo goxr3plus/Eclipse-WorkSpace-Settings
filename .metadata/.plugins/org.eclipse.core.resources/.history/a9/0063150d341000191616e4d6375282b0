@@ -1,0 +1,297 @@
+package com.intralot.l10.ejk.manager.file;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.ejk.enumeration.FileCreationOptions;
+import com.intralot.l10.ejk.exception.EjkGenericException;
+
+import global.config.GlobalConfig;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {FileOperationsManager.class,GlobalConfig.class})
+public class FileOperationsManagerTest {
+
+	@Autowired
+	FileOperationsManager fileOperationsManager;
+
+	@Value("${file.base-path.operationsmanager}")
+	private String operationsBasePath;
+
+	@Value("${file.base-path.combinationFolder}")
+	private String combinationsBasePath;
+
+	@Before
+	public void init() throws Exception {
+
+		operationsBasePath = operationsBasePath + "/";
+		System.out.println("Creating Base Dir=" + operationsBasePath);
+		Files.createDirectories(Paths.get(operationsBasePath));
+	}
+
+	@After
+	public void destroy() throws Exception {
+
+		System.out.println("Deleting Base Dir=" + operationsBasePath);
+
+		final Path path1 = Paths.get(combinationsBasePath, "combinationFinal.cfl");
+		final Path path2 = Paths.get(combinationsBasePath, "combination3.cfl");
+		if (Files.exists(path1)) {
+			Files.delete(path1);
+		}
+		if (Files.exists(path2)) {
+			Files.delete(path2);
+		}
+
+		if (Files.exists(Paths.get(operationsBasePath))) {
+
+			Files.walkFileTree(Paths.get(operationsBasePath), new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+
+					Files.delete(file);
+					return FileVisitResult.CONTINUE;
+				}
+
+				@Override
+				public FileVisitResult postVisitDirectory(final Path dir, final IOException e) throws IOException {
+
+					if (e == null) {
+						Files.delete(dir);
+						return FileVisitResult.CONTINUE;
+					} else {
+						throw e;
+					}
+				}
+			});
+		}
+	}
+
+	// ------------------- DIRECTORY EXISTS OR CREATE ---------------------//
+
+	@Test
+	public void testDirectoryExistsOrCreate() {
+
+		final Path output = Paths.get(operationsBasePath, "outputDir");
+		fileOperationsManager.directoryExistsOrElseCreate(output);
+
+		assertThat(output.toFile()).exists().isDirectory();
+	}
+
+	@Test
+	public void testDirectoryExistsOrCreateExisting() {
+
+		final Path output = Paths.get(operationsBasePath, "outputDir");
+		fileOperationsManager.directoryExistsOrElseCreate(output);
+
+		fileOperationsManager.directoryExistsOrElseCreate(output);
+
+	}
+
+	// ------------------- REPLACE PlaceHolder IN FILE ---------------------//
+
+	@Test
+	public void testReplacePlaceHolderInFile() throws IOException {
+
+		try {
+			final Path template = Paths.get(combinationsBasePath, "combinationTemplate.cfl");
+
+			final Path original = Paths.get(combinationsBasePath, "combination.cfl");
+			final Path fakeCopy = Paths.get(combinationsBasePath, "combinationFinal.cfl");
+
+			FileUtils.copyFile(template.toFile(), fakeCopy.toFile());
+
+			fileOperationsManager.replacePlaceHolderInFile(fakeCopy, "#@REVISION@#", "5523435");
+			fileOperationsManager.replacePlaceHolderInFile(fakeCopy, "#@DRAW@#", "100000");
+
+			final boolean isTwoEqual = Files.lines(original).map(line -> line.trim()).collect(Collectors.joining(""))
+					.equals(Files.lines(fakeCopy).map(line -> line.trim()).collect(Collectors.joining("")));
+
+			assertTrue(isTwoEqual);
+		} catch (final Exception ex) {
+			ex.printStackTrace();
+		}
+
+	}
+
+	@Test(expected = EjkGenericException.class)
+	public void testReplacePlaceHolderInFileThrowException() {
+
+		final Path src = Paths.get(combinationsBasePath, "combination3.cfl");
+		final Path target = Paths.get(combinationsBasePath, "combination2.cfl");
+
+		fileOperationsManager.replacePlaceHolderInFile(src, "#@REVISION@#", "5");
+
+	}
+
+	// ------------------------- CREATE FILE -------------------------//
+
+	@Test
+	public void testCreateFile() {
+
+		final Path output = Paths.get(operationsBasePath, "output1.txt");
+		fileOperationsManager.createFile(output, "zzzz", FileCreationOptions.OVERRIDE_IF_EXISTS);
+
+		assertThat(output.toFile()).hasContent("zzzz").hasExtension("txt");
+	}
+
+	@Test
+	public void testCreateFileOverride() {
+
+		final Path output = Paths.get(operationsBasePath, "output1.txt");
+		fileOperationsManager.createFile(output, "zzzz", FileCreationOptions.OVERRIDE_IF_EXISTS);
+		assertThat(output.toFile()).hasContent("zzzz").hasExtension("txt");
+
+		fileOperationsManager.createFile(output, "yyy", FileCreationOptions.OVERRIDE_IF_EXISTS);
+		assertThat(output.toFile()).hasContent("yyy").hasExtension("txt");
+	}
+
+	@Test(expected = EjkGenericException.class)
+	public void testCreateFileThrowException() {
+
+		final Path output = Paths.get(operationsBasePath, "output1.txt");
+		fileOperationsManager.createFile(output, "zzzz", FileCreationOptions.THROW_EXCEPTION_IF_EXISTS);
+
+		fileOperationsManager.createFile(output, "zzzz", FileCreationOptions.THROW_EXCEPTION_IF_EXISTS);
+	}
+
+	// ------------------------- RENAME FILE -------------------------//
+
+	@Test
+	public void testRenameFileExisting() {
+
+		final Path output = Paths.get(operationsBasePath, "output2.txt");
+		fileOperationsManager.createFile(output, "zzzz", FileCreationOptions.OVERRIDE_IF_EXISTS);
+
+		final Path renamedOutput = fileOperationsManager.renameFile(output, "output22.txt");
+
+		assertThat(renamedOutput).exists();
+	}
+
+	@Test(expected = EjkGenericException.class)
+	public void testRenameFileException() throws IOException {
+
+		final Path output = Paths.get(operationsBasePath, "output2bdfbdfbd.txt");
+		fileOperationsManager.renameFile(output, "output22.txt");
+	}
+
+	// ------------------------- DELETE FILE -------------------------//
+
+	@Test
+	public void testDeleteFile() {
+
+		final Path output = Paths.get(operationsBasePath, "output3.txt");
+		fileOperationsManager.createFile(output, "zzzz", FileCreationOptions.OVERRIDE_IF_EXISTS);
+
+		fileOperationsManager.deleteFile(output);
+
+		assertThat(output).doesNotExist();
+	}
+
+	@Test
+	public void testDeleteFileNullPath() {
+
+		fileOperationsManager.deleteFile(null);
+
+	}
+
+	@Ignore
+	@Test(expected = EjkGenericException.class)
+	public void testDeleteFileExceptionThrowException() throws IOException {
+
+		final Path output = Paths.get(operationsBasePath, "output89000.txt");
+		fileOperationsManager.createFile(output, "zzzz", FileCreationOptions.OVERRIDE_IF_EXISTS);
+
+		output.toFile().setReadable(false);
+		output.toFile().setWritable(false);
+
+		fileOperationsManager.deleteFile(output);
+	}
+
+	// ------------------------- DELETE MULTIPLE FILES -------------------------//
+
+	@Test
+	public void testDeleteMultipleFilesExisting() {
+
+		final List<Path> files = Stream.of(10000, 20000, 30000)
+				.map(m -> Paths.get(operationsBasePath, "output" + m + ".txt")).collect(Collectors.toList());
+		files.stream().forEach(
+				path -> fileOperationsManager.createFile(path, "zzzz", FileCreationOptions.OVERRIDE_IF_EXISTS));
+
+		fileOperationsManager.deleteFiles(files);
+
+		final boolean allDeleted = files.stream().anyMatch(path -> path.toFile().exists());
+
+		assertFalse(allDeleted);
+	}
+
+	@Test
+	public void testDeleteMultipleFilesNotExisting() {
+
+		final List<Path> files = Stream.of(63456, 24234, 8797)
+				.map(m -> Paths.get(operationsBasePath, "output" + m + ".txt")).collect(Collectors.toList());
+
+		fileOperationsManager.deleteFiles(files);
+
+		final boolean allDeleted = files.stream().anyMatch(path -> path.toFile().exists());
+
+		assertFalse(allDeleted);
+	}
+
+	// ------------------------- COMPRESS FILE -------------------------//
+
+	@Test
+	public void testCompressFile() {
+
+		final Path output = Paths.get(operationsBasePath, "outputCompress.txt");
+		fileOperationsManager.createFile(output, "zzzz", FileCreationOptions.OVERRIDE_IF_EXISTS);
+
+		final Path compressedFile = fileOperationsManager.compressFile(output);
+
+		assertThat(compressedFile).exists();
+
+	}
+
+	@Test(expected = EjkGenericException.class)
+	public void testCompressFileThrowException() {
+
+		final Path output = Paths.get(operationsBasePath, "outputCompress2.txt");
+		fileOperationsManager.compressFile(output);
+
+	}
+
+	// ------------------------- FILE NOT EXISTS FILE -------------------------//
+
+	@Test(expected = EjkGenericException.class)
+	public void fileNotExistThrowError() throws EjkGenericException {
+
+		final Path output = Paths.get(operationsBasePath, "output.txt");
+
+		fileOperationsManager.pathExistsOrElseThrowError(output);
+	}
+
+}

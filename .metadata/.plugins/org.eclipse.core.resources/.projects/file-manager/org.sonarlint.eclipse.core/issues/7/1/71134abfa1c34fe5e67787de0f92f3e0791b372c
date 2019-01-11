@@ -1,0 +1,26 @@
+
+psquid:S2583Q"DChange this condition so that it does not always evaluate to "false"(¨ÌàÜùÿÿÿÿHŞ‚RMAJORZBUG
+Zsquid:S1148 "#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿHØ‚RMINORZVULNERABILITY
+Zsquid:S1148±"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿHÜ‚RMINORZVULNERABILITY
+Usquid:S1075¦"&Remove this hard-coded path-delimiter.(ÒñË¤Hİ‚RMINORZ
+CODE_SMELL
+–squid:S4087¬"bRemove this "close" call; closing the resource is handled automatically by the try-with-resources.(‘¨ÑöúÿÿÿÿHß‚RMINORZ
+CODE_SMELL
+asquid:S2387$"2"log" is the name of a field in "AbstractManager".(­€ïVHÛ‚RBLOCKERZ
+CODE_SMELL
+esquid:S1135°"2Complete the task associated to this TODO comment.(ÕÌ®şÿÿÿÿHÖ‚RINFOZ
+CODE_SMELL
+nsquid:S3725›":Replace this with a call to the "toFile().exists()" method( ÖáÓıÿÿÿÿHà‚RMAJORZ
+CODE_SMELL
+…squid:S00117{"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ö™·‡øÿÿÿÿHÚ‚RMINORZ
+CODE_SMELL
+€squid:ModifiersOrderCheck$"EReorder the modifiers to comply with the Java Language Specification.(­€ïVHÓ‚RMINORZ
+CODE_SMELL
+fsquid:S1854x"9Remove this useless assignment to local variable "reply".(ß¶òwHÔ‚RMAJORZ
+CODE_SMELL
+squid:CommentedOutCodeLine—"<This block of commented-out lines of code should be removed.(©ù“ışÿÿÿÿHÙ‚RMAJORZ
+CODE_SMELL
+ƒsquid:S37764"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(ßŠ÷¼H×‚RCRITICALZ
+CODE_SMELL
+ssquid:S1858{"@"toJson" returns a string, there's no need to call "toString()".(Ö™·‡øÿÿÿÿHÕ‚RMINORZ
+CODE_SMELL

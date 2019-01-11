@@ -1,0 +1,11 @@
+package com.intralot.l10.ats.manager.retrieve.transform;
+
+//@RunWith(MockitoJUnitRunner.class)
+public class AtsTransformationManagerTest {
+
+//	@InjectMocks
+//	AtsTransformationManager atsTransformationManager;
+//
+//	@Mock
+//	ConfigurationManager configurationManager;
+}

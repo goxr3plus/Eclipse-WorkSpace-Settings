@@ -1,0 +1,10 @@
+
+csquid:S3655U"7Call "Optional#isPresent()" before accessing the value.(ÔË–ÿÿÿÿÿÿHŒ´RMAJORZBUG
+`squid:S1172."&Remove these unused method parameters.(€âÛïûÿÿÿÿ8¦º„¼ú,HµRMAJORZ
+CODE_SMELL
+bsquid:S1172 "/Remove this unused method parameter "statusId".(·èºÖøÿÿÿÿH´RMAJORZ
+CODE_SMELL
+‡squid:S00117/"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(†˜˜õ8Ò™ÿ¼ú,HË¹RMINORZ
+CODE_SMELL
+xsquid:S00107."=Method has 10 parameters, which is greater than 7 authorized.(€âÛïûÿÿÿÿ8¦º„¼ú,Hä´RMAJORZ
+CODE_SMELL

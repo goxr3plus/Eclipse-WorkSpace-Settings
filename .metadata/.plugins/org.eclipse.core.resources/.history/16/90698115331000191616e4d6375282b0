@@ -1,0 +1,86 @@
+package com.intralot.l10.ats.manager.retrieve.document;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import com.intralot.l10.ats.entity.SubmitDocumentRequest;
+import com.intralot.l10.ats.enumeration.DocumentType;
+import com.intralot.l10.ats.exception.AtsOpapException;
+import com.intralot.l10.ats.manager.configuration.ConfigurationJPAManager;
+import com.intralot.l10.ats.manager.configuration.ConfigurationManager;
+import com.intralot.l10.ats.manager.transform.ModelTransformationManager;
+import com.intralot.l10.ats.manager.validation.ValidationManager;
+
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class RetrieveDocumentPreProcessingManagerTest {
+
+	@InjectMocks
+	private RetrieveDocumentPreProcessingManager retrieveDocumentPreProcessingManager;
+
+	@Mock
+	ConfigurationManager configurationManager;
+
+	@Mock
+	RetrieveDocumentJPAManager retrieveDocumentJPAManager;
+
+	@Mock
+	ConfigurationJPAManager configurationJPAManager;
+
+	@Mock
+	ModelTransformationManager modelTransformationManager;
+
+	@Mock
+	ValidationManager validationManager;
+
+	@Test
+	public void preProcessRetrieveDocument() {
+
+		when(configurationManager.getCorrespondingSubmitDocRequest()).thenReturn(new SubmitDocumentRequest());
+		when(validationManager.validateDocumentTypeId(anyInt())).thenReturn(DocumentType.WINNERS);
+
+		retrieveDocumentPreProcessingManager.preProcessRetrieveDocument("xoecid",
+			"bearer 105e9723-be50-4d15-a04e-841d6b513836", 1, 5, 1, "100100-1");
+	}
+
+	@Test
+	public void preProcessRetrieveDocument_NOREVISION() {
+
+		when(configurationManager.getCorrespondingSubmitDocRequest()).thenReturn(new SubmitDocumentRequest());
+		when(validationManager.validateDocumentTypeId(anyInt())).thenReturn(DocumentType.WINNERS);
+
+		retrieveDocumentPreProcessingManager.preProcessRetrieveDocument("xoecid",
+			"bearer 105e9723-be50-4d15-a04e-841d6b513836", 1, 5, 1, "100100");
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessRetrieveDocument_Exception() {
+
+		retrieveDocumentPreProcessingManager.preProcessRetrieveDocument("xoecid",
+			"bearer 105e9723-be50-4d15-a04e-841d6b513836", 1, 5, 1, "100100");
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessRetrieveDocument2() {
+
+		when(validationManager.validateDocumentTypeId(anyInt())).thenReturn(DocumentType.WINNERS);
+
+		retrieveDocumentPreProcessingManager.preProcessRetrieveDocument("xoecid",
+			"bearer 105e9723-be50-4d15-a04e-841d6b513836", 1, 5, 1, "100100-1");
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void preProcessRetrieveDocument_PendingRequests_Exception() {
+
+		when(validationManager.validateDocumentTypeId(anyInt())).thenReturn(DocumentType.WINNERS);
+		when(retrieveDocumentJPAManager.getPendingRetrieveDocumentRequest(anyInt(), anyInt(), anyInt())).thenReturn(true);
+
+		retrieveDocumentPreProcessingManager.preProcessRetrieveDocument("xoecid",
+			"bearer 105e9723-be50-4d15-a04e-841d6b513836", 1, 5, 1, "100100-1");
+	}
+}

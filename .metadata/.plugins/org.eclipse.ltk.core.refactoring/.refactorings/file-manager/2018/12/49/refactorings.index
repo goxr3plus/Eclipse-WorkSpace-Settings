@@ -1,0 +1,76 @@
+1543825551353	Delete elements
+1543830295319	Rename type 'AtsConfigurationRepository'
+1543837971904	Delete element
+1543838594547	Rename type 'MandateIbanHi'
+1543838603127	Rename type 'MandateIbanHiPK'
+1543838756775	Rename type 'MandateHi'
+1543838760565	Rename type 'MandateHiPK'
+1543840327327	Rename type 'MandateSt'
+1543917714086	Delete elements
+1543917717134	Delete element
+1543924442380	Rename type 'MandateCrdSt'
+1543925376258	Copy compilation unit
+1543925377605	Copy compilation unit
+1543925378342	Copy compilation unit
+1543925378965	Copy compilation unit
+1543925379547	Copy compilation unit
+1543925381916	Copy compilation unit
+1543925382506	Copy compilation unit
+1543925399918	Rename type 'MandateRepository10'
+1543925419024	Delete elements
+1543925444932	Copy compilation unit
+1543925640882	Copy compilation unit
+1543925642079	Copy compilation unit
+1543925643756	Copy compilation unit
+1543925653426	Rename type 'MandateCrdRepository2'
+1543925676268	Rename type 'MandateCrdRepository3'
+1543925689422	Rename type 'MandateCrdRepository4'
+1543933760811	Copy compilation unit
+1543933782158	Copy compilation unit
+1543933807935	Copy compilation unit
+1544009052454	Copy file
+1544009343529	Rename field 'mandateSt'
+1544013570874	Delete element
+1544016703917	Rename resource 'V4_0__bank_cy_data_migration.sql'
+1544016729561	Copy file
+1544017552692	Copy file
+1544017567387	Copy file
+1544017574246	Rename resource 'V4_0__mandate_his_data_migration.sql'
+1544017580279	Rename resource 'V5_0__mandate_data_migration.sql'
+1544017586643	Rename resource 'V6_0__mandate_iban_data.sql'
+1544020723903	Delete element
+1544022116364	Rename resource 'V5_0__mandate_data.sql'
+1544022125050	Rename resource 'V4_0__mandate_his_data.sql'
+1544022137248	Rename resource 'V7_0__mandate_iban_data.sql'
+1544022163057	Rename resource 'V6_0__mandate_iban__his_data.sql'
+1544022173817	Rename resource 'V6_0__mandate_iban_data.sql'
+1544022459120	Rename resource 'V5_0__mandate_iban_data.sql'
+1544022464070	Rename resource 'V4_0__mandate_iban__his_data.sql'
+1544022467595	Rename resource 'V6_0__mandate_his_data.sql'
+1544022472652	Rename resource 'V7_0__mandate_data.sql'
+1544022995279	Rename resource 'V6_0__mandate_his.sql'
+1544023004471	Rename resource 'V5_0__mandate_iban.sql'
+1544087195319	Rename resource 'V6_0__mandate_iban.sql'
+1544087198876	Rename resource 'V7_0__mandate.sql'
+1544087211886	Rename resource 'V8_0__mandate.sql'
+1544094752251	Rename method 'customQuery'
+1544108617523	Copy compilation unit
+1544108626579	Rename type 'AccRetBal'
+1544168563296	Rename resource 'V8_0_acc_ret_bal.sql'
+1544168624681	Rename resource 'V8_0_accretbal.sql'
+1544170766833	Delete elements
+1544171102052	Delete element
+1544172088356	Rename local variable 'maxMandateHis'
+1544172096980	Rename local variable 'mandate'
+1544174275186	Rename field 'mandateRepo'
+1544180263828	Rename method 'selectMandatesByStatusAndDates'
+1544180294963	Rename method 'findByStatusAndDates'
+1544180343414	Rename type 'AccountinBalanaceRepository'
+1544180744198	Rename local variable 'p_dt'
+1544187878702	Rename method 'getMaxMandateHisById'
+1544187904072	Rename local variable 'v'
+1544188228022	Rename method 'findMaxSequenceID'
+1544188254904	Rename method 'deletByMaxSequenceAndMdId'
+1544188261409	Rename method 'findMaximumSequenceById'
+1544189147084	Rename method 'deleteByMaxSequenceAndId'
+1544189152941	Rename local variable 'maxSequence'

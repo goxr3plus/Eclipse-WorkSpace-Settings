@@ -1,0 +1,9 @@
+
+osquid:S3457G"AFormat specifiers should be used instead of string concatenation.(£¢ÿ‰H¢äRMAJORZ
+CODE_SMELL
+Xsquid:S34570"%String contains no format specifiers.(‘è® ýÿÿÿÿH£äRMAJORZ
+CODE_SMELL
+tsquid:S3457C"AFormat specifiers should be used instead of string concatenation.(©ð§±ùÿÿÿÿH¤äRMAJORZ
+CODE_SMELL
+tsquid:S3457K"AFormat specifiers should be used instead of string concatenation.(¥‡Ë øÿÿÿÿH¥äRMAJORZ
+CODE_SMELL

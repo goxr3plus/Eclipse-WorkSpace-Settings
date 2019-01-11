@@ -1,0 +1,31 @@
+package com.intralot.l10.nam.manager.client;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import global.config.GlobalConfig;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { AcnDynamicClientManager.class, GlobalConfig.class })
+public class AcnDynamicClientManagerTest {
+
+	@Autowired
+	AcnDynamicClientManager acnDynamicClientManager;
+
+	@Ignore
+	@Test
+	public void submitCallback() {
+
+		acnDynamicClientManager.submitCallback("url", "data");
+	}
+
+	@Configuration
+	static class Config {
+
+	}
+}

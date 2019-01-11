@@ -1,0 +1,11 @@
+
+usquid:S3457‰"AFormat specifiers should be used instead of string concatenation.(´´ÉœùÿÿÿÿHÃÒRMAJORZ
+CODE_SMELL
+squid:S2629>"\Invoke method(s) only conditionally. Use the built-in formatting to construct this argument.(´´ÉœùÿÿÿÿH¿ÒRMAJORZ
+CODE_SMELL
+^squid:S1135"2Complete the task associated to this TODO comment.(êÆÐ,HÁÒRINFOZ
+CODE_SMELL
+squid:S2629‰"\Invoke method(s) only conditionally. Use the built-in formatting to construct this argument.(´´ÉœùÿÿÿÿHÀÒRMAJORZ
+CODE_SMELL
+tsquid:S3457>"AFormat specifiers should be used instead of string concatenation.(´´ÉœùÿÿÿÿHÂÒRMAJORZ
+CODE_SMELL

@@ -1,0 +1,134 @@
+package com.intralot.l10.nam.manager.process;
+
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.nam.entity.ManualCreditLimitRequest;
+import com.intralot.l10.nam.entity.ManualCreditLimitRetailer;
+import com.intralot.l10.nam.enumeration.NamRequestItemStatus;
+import com.intralot.l10.nam.enumeration.NamRequestStatus;
+import com.intralot.l10.nam.manager.jpa.ManualCreditLimitJPAManager;
+import com.intralot.l10.nam.manager.transform.ModelTransformationManager;
+import com.intralot.l10.nam.model.ManualCreditLimitsResponseDto;
+import com.intralot.l10.nam.model.RetailerFinLimits;
+import com.intralot.l10.nam.repository.jdbc.RetailerFinLimitsRepository;
+import com.intralot.l10.nam.repository.jdbc.RetailerRepository;
+
+import global.config.GlobalConfig;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { ManualCreditLimitProcessingManager.class, ModelTransformationManager.class, GlobalConfig.class })
+public class ManualCreditLimitProcessingManagerTest {
+
+	@Autowired
+	private ManualCreditLimitProcessingManager manualCreditLimitProcessingManager;
+
+	@Autowired
+	ModelTransformationManager modelTransformationManager;
+
+	@MockBean
+	RetailerFinLimitsRepository retailerFinLimitsRepository;
+
+	@MockBean
+	ManualCreditLimitJPAManager manualCreditLimitJPAManager;
+
+	@MockBean
+	RetailerRepository retailerRepository;
+
+	@Test
+	public void process() {
+
+		ManualCreditLimitRequest nanualCreditLimitRequest = new ManualCreditLimitRequest();
+		nanualCreditLimitRequest.setStatus(NamRequestItemStatus.IN_PROGRESS.getId());
+
+		/* List */
+		ManualCreditLimitRetailer manualCreditLimitRetailer = new ManualCreditLimitRetailer();
+		Collection<ManualCreditLimitRetailer> list = Collections.singletonList(manualCreditLimitRetailer);
+		nanualCreditLimitRequest.setManualCreditLimitRetailers(list);
+
+		// when(retailerFinLimitsRepository.getRetailerFinLimitsForUpdate(anyInt())).thenReturn(null);
+
+		ManualCreditLimitsResponseDto request = modelTransformationManager
+				.transformManualCreditLimitRequestEntityToResponseDto(nanualCreditLimitRequest);
+
+		manualCreditLimitProcessingManager.process(nanualCreditLimitRequest);
+	}
+
+	@Test
+	public void process_RetailerFinLimits_NOT_NULL() {
+
+		ManualCreditLimitRequest nanualCreditLimitRequest = new ManualCreditLimitRequest();
+		nanualCreditLimitRequest.setStatus(NamRequestItemStatus.IN_PROGRESS.getId());
+
+		/* List */
+		ManualCreditLimitRetailer manualCreditLimitRetailer = new ManualCreditLimitRetailer();
+		manualCreditLimitRetailer.setRetailerId(5);
+		manualCreditLimitRetailer.setStatus(NamRequestStatus.SUCCESS.getId());
+		manualCreditLimitRetailer.setCalculatedAvailableCredit(new BigDecimal("5000"));
+		manualCreditLimitRetailer.setIncomingCreditLimit(new BigDecimal("5000"));
+		manualCreditLimitRetailer.setGamingBalance(new BigDecimal("0"));
+		Collection<ManualCreditLimitRetailer> list = Collections.singletonList(manualCreditLimitRetailer);
+		nanualCreditLimitRequest.setManualCreditLimitRetailers(list);
+
+		RetailerFinLimits retailerFinLimits = new RetailerFinLimits();
+		retailerFinLimits.setCreditLimit(new BigDecimal("100"));
+		retailerFinLimits.setAvailableCredit(new BigDecimal("50"));
+		retailerFinLimits.setGamingBalance(new BigDecimal("50"));
+		retailerFinLimits.setDailyGamingBalance(new BigDecimal("50"));
+		retailerFinLimits.setRetailerId(5);
+
+		when(retailerFinLimitsRepository.getRetailerFinLimitsForUpdate(anyInt())).thenReturn(retailerFinLimits);
+
+		ManualCreditLimitsResponseDto request = modelTransformationManager
+				.transformManualCreditLimitRequestEntityToResponseDto(nanualCreditLimitRequest);
+
+		manualCreditLimitProcessingManager.process(nanualCreditLimitRequest);
+	}
+
+	@Test(expected = Exception.class)
+	public void process_Exception() {
+
+		manualCreditLimitProcessingManager.process(null);
+	}
+	
+	//TODO FIX THIS TEST
+	@Ignore
+	@Test//(expected = Exception.class)
+	public void process_Exception_RETAILERID_NULL() {
+		
+		ManualCreditLimitRequest nanualCreditLimitRequest = new ManualCreditLimitRequest();
+		nanualCreditLimitRequest.setStatus(NamRequestItemStatus.IN_PROGRESS.getId());
+
+		/* List */
+		ManualCreditLimitRetailer manualCreditLimitRetailer = new ManualCreditLimitRetailer();
+		manualCreditLimitRetailer.setRetailerId(5);
+		manualCreditLimitRetailer.setStatus(NamRequestStatus.SUCCESS.getId());
+		Collection<ManualCreditLimitRetailer> list = Collections.singletonList(manualCreditLimitRetailer);
+		nanualCreditLimitRequest.setManualCreditLimitRetailers(list);
+
+		RetailerFinLimits retailerFinLimits = new RetailerFinLimits();
+		retailerFinLimits.setCreditLimit(new BigDecimal("100"));
+		retailerFinLimits.setRetailerId(5);
+
+		when(retailerFinLimitsRepository.getRetailerFinLimitsForUpdate(anyInt())).thenReturn(retailerFinLimits);
+
+		ManualCreditLimitsResponseDto request = modelTransformationManager
+				.transformManualCreditLimitRequestEntityToResponseDto(nanualCreditLimitRequest);
+
+		manualCreditLimitProcessingManager.process(nanualCreditLimitRequest);
+	}
+
+
+}

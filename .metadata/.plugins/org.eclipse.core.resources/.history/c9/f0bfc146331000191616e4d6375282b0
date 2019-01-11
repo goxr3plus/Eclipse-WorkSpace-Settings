@@ -1,0 +1,68 @@
+package com.intralot.l10.ats.manager.transform;
+
+import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.Date;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import com.intralot.l10.ats.entity.RetrieveDocumentRequest;
+import com.intralot.l10.ats.entity.RetrieveDocumentsRequest;
+import com.intralot.l10.ats.enumeration.DrawStatus;
+import com.intralot.l10.ats.model.AtsRetrieveDocumentsRequestDto;
+import com.intralot.l10.ats.model.SubmitDocumentDto;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ModelTransformationManagerTest {
+
+	@InjectMocks
+	ModelTransformationManager modelTransformationManager;
+
+	@Test
+	public void createSubmitDocumentRequest() {
+
+		modelTransformationManager.createSubmitDocumentRequest(5, 100100, 1, DrawStatus.DRAW_CLOSED, System.currentTimeMillis(), true);
+	}
+
+	@Test
+	public void transformRetrieveDocumentRequestToEntity() {
+
+		final String ecid = "ecid";
+		final Integer systemId = 5;
+		final Integer documentTypeId = 1;
+		final String documentId = "100100";
+
+		final RetrieveDocumentRequest retrieveDocumentRequest = modelTransformationManager
+			.transformRetrieveDocumentRequestToEntity(ecid, systemId, documentTypeId, documentId);
+
+		assertEquals(retrieveDocumentRequest.getEcid(), ecid);
+		assertSame(retrieveDocumentRequest.getSystemId(), systemId);
+		assertSame(retrieveDocumentRequest.getDocumentTypeId(), documentTypeId);
+		assertEquals(retrieveDocumentRequest.getDocumentId(), documentId);
+	}
+
+	@Test
+	public void transformRetrieveDocumentsRequestToEntity() {
+
+		final SubmitDocumentDto submitDocumentDto = new SubmitDocumentDto(100100, new Date(0), 1);
+		final AtsRetrieveDocumentsRequestDto atsRetrieveDocumentsRequestDto = new AtsRetrieveDocumentsRequestDto();
+		atsRetrieveDocumentsRequestDto.setSystemId(5);
+		atsRetrieveDocumentsRequestDto.setDocumentTypeId(1);
+		atsRetrieveDocumentsRequestDto.setFromDatetime(new Timestamp(System.currentTimeMillis()));
+		atsRetrieveDocumentsRequestDto.setToDatetime(new Timestamp(System.currentTimeMillis() + 1000000));
+
+		final RetrieveDocumentsRequest request = modelTransformationManager.transformRetrieveDocumentsRequestToEntity(
+			"xoecid", 5, atsRetrieveDocumentsRequestDto, Collections.singletonList(submitDocumentDto));
+
+		assertSame(request.getSystemId(), atsRetrieveDocumentsRequestDto.getSystemId());
+		assertEquals(request.getDateFrom(), atsRetrieveDocumentsRequestDto.getFromDatetime());
+		assertEquals(request.getDateTo(), atsRetrieveDocumentsRequestDto.getToDatetime());
+	}
+
+}

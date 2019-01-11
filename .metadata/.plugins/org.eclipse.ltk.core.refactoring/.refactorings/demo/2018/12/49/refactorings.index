@@ -1,0 +1,22 @@
+1543844087565	Move compilation unit
+1543844102548	Move compilation unit
+1543845684423	Delete elements
+1543846411783	Delete element
+1543846488983	Move compilation unit
+1543849607814	Extract local variable 'course2'
+1543995435513	Delete element
+1544000909627	Copy compilation unit
+1544000913306	Rename type 'Course2'
+1544001012792	Copy compilation unit
+1544001020172	Rename field 'name'
+1544001028191	Rename local variable 'name'
+1544002413034	Copy compilation unit
+1544002424707	Rename field 'name'
+1544002447817	Rename local variable 'name'
+1544002453497	Rename local variable 'name'
+1544018943329	Copy compilation unit
+1544018967034	Rename type 'Course'
+1544018973540	Rename type 'Course2'
+1544090269852	Encapsulate field 'student'
+1544183167452	Encapsulate field 'course'
+1544183232146	Encapsulate field 'reviews'

@@ -1,0 +1,7 @@
+
+vsquid:S4488K"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(’Ãý¡H¯äRMINORZ
+CODE_SMELL
+vsquid:S44882"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(ÆøîçH°äRMINORZ
+CODE_SMELL
+]squid:S1068""*Remove this unused "LOGGER" private field.(¦Ú¯ÅüÿÿÿÿH±äRMAJORZ
+CODE_SMELL

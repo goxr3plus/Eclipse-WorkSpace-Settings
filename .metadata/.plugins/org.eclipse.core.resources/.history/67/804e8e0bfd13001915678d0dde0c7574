@@ -1,0 +1,15 @@
+package guru.springframework;
+
+public class Dollar {
+    
+    private int amount;
+
+    public Dollar(final int i) {
+	
+    }
+
+    public void times(final int i) {
+	
+    }
+
+}

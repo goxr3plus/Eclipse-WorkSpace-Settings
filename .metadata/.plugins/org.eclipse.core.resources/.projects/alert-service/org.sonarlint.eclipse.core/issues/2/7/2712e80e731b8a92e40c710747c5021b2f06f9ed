@@ -1,0 +1,20 @@
+
+psquid:S3457Ë"AFormat specifiers should be used instead of string concatenation.(€‘ž´HéåRMAJORZ
+CODE_SMELL
+Ssquid:S3599ƒ",Use another way to initialize this instance.(Ã ánHêåRMINORZBUG
+Usquid:S2131„"Use "Integer.toString" instead.(©¯â£8É‚ÝÁƒ-HëåRMAJORZ
+CODE_SMELL
+ƒsquid:S1871å"MThis branch's code block is the same as the block for the branch on line 227.(ü¼óÌ8É‚ÝÁƒ-HìåRMAJORZ
+CODE_SMELL
+fsquid:S2629Ë"7Use the built-in formatting to construct this argument.(€‘ž´HíåRMAJORZ
+CODE_SMELL
+•squid:S3457¶"aNo need to call "toString()" method as formatting and string conversion is done by the Formatter.(ñÏè¿ýÿÿÿÿHîåRMAJORZ
+CODE_SMELL
+Xsquid:S2629¶"$Invoke method(s) only conditionally.(ñÏè¿ýÿÿÿÿHïåRMAJORZ
+CODE_SMELL
+`squid:S2093O"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿHðåRCRITICALZ
+CODE_SMELL
+ˆsquid:S1871è"MThis branch's code block is the same as the block for the branch on line 227.(Õ»’Úüÿÿÿÿ8É‚ÝÁƒ-HñåRMAJORZ
+CODE_SMELL
+‡squid:S1171ƒ"YMove the contents of this initializer to a standard constructor or to field initializers.(Ã ánHòåRMAJORZ
+CODE_SMELL

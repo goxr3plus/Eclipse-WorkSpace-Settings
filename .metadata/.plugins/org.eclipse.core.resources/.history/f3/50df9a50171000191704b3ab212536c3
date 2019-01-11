@@ -1,0 +1,75 @@
+package com.intralot.l10.ejk.manager.client;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import com.intralot.l10.ejk.clients.infostore.InfoStoreRestClient;
+import com.intralot.l10.ejk.model.subscriber.SubscriberDto;
+
+import reactor.core.publisher.Mono;
+
+//TODO FIX THE TEST FOR INIT METHOD
+//@RunWith(SpringRunner.class)
+//@ContextConfiguration(classes = { TestConfig.class, TestInfoStoreManager.Config.class })
+public class TestInfoStoreManager {
+
+	@Rule
+	public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+	@InjectMocks
+	private InfoStoreManager infoStoreManager;
+
+	@Mock
+	private InfoStoreRestClient infoStoreClient;
+
+//	@Autowired
+//	InfoStoreManager infoStoreManager2 = new InfoStoreManager();
+
+	@Test
+	public void subscribeToInfostore() {
+
+		final Mono<String> mono = Mono.just("Hello");
+		when(infoStoreClient.subscribe(any(SubscriberDto.class), anyInt())).thenReturn(mono);
+		ReflectionTestUtils.setField(infoStoreManager, "gameId", 1);
+		ReflectionTestUtils.setField(infoStoreManager, "issSubscriberBaseUrl", "http://ats.dev.intralot.com");
+
+		assert infoStoreManager.subscribeToInfostore(new SubscriberDto()) == mono;
+	}
+
+	@Test
+	public void testCheckInfostoreSubscription() {
+
+		final Mono<?> mono = Mono.just("Hello");
+		doReturn(mono).when(infoStoreClient).checkSubscription(anyString(), anyInt());
+
+		assertEquals(mono, infoStoreManager.checkInfostoreSubscription("path"));
+	}
+
+//	@Test
+//	public void testInit() throws NoSuchFieldException, SecurityException {
+//		infoStoreManager2.init();
+//	}
+//
+//	@Configuration
+//	static class Config {
+//
+//		@Bean(name = "InfoStoreManager")
+//		public InfoStoreManager infoStoreManager() {
+//
+//			return new InfoStoreManager();
+//		}
+//
+//	}
+}

@@ -1,0 +1,7 @@
+
+wsquid:S11924"FDefine a constant instead of duplicating this literal "UTF-8" 3 times.(öÓÙHäÑRCRITICALZ
+CODE_SMELL
+‘squid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(­¯‡ÛşÿÿÿÿHæÑRCRITICALZ
+CODE_SMELL
+_squid:S1135("2Complete the task associated to this TODO comment.(¨ŞûÓHåÑRINFOZ
+CODE_SMELL

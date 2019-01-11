@@ -1,0 +1,13 @@
+
+ksquid:S2629—"7Use the built-in formatting to construct this argument.(¯Ò¦®øÿÿÿÿH©êRMAJORZ
+CODE_SMELL
+tsquid:S3457G"AFormat specifiers should be used instead of string concatenation.(¯Ò¦®øÿÿÿÿHªêRMAJORZ
+CODE_SMELL
+usquid:S3457—"AFormat specifiers should be used instead of string concatenation.(¯Ò¦®øÿÿÿÿH«êRMAJORZ
+CODE_SMELL
+ksquid:S2629®"7Use the built-in formatting to construct this argument.(„ŒÉòúÿÿÿÿH¬êRMAJORZ
+CODE_SMELL
+jsquid:S2629G"7Use the built-in formatting to construct this argument.(¯Ò¦®øÿÿÿÿH­êRMAJORZ
+CODE_SMELL
+usquid:S3457®"AFormat specifiers should be used instead of string concatenation.(„ŒÉòúÿÿÿÿH®êRMAJORZ
+CODE_SMELL

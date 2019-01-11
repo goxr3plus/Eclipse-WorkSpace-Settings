@@ -1,0 +1,108 @@
+package com.intralot.l10.ats.manager.retrieve.document;
+
+import java.nio.file.Path;
+import java.sql.Timestamp;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import com.intralot.l10.ats.entity.RetrieveDocumentRequest;
+import com.intralot.l10.ats.entity.SubmitDocumentRequest;
+import com.intralot.l10.ats.enumeration.Operation;
+import com.intralot.l10.ats.manager.configuration.ConfigurationManager;
+import com.intralot.l10.ats.manager.evidence.EvidenceFileManager;
+import com.intralot.l10.ats.manager.file.FileCodecsManager;
+import com.intralot.l10.ats.manager.file.FileNamingManager;
+import com.intralot.l10.ats.manager.transform.AtsTransformationManager;
+import com.intralot.l10.ats.model.AtsRetrieveDocumentResponseDto;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class RetrieveDocumentProcessingManagerTest {
+
+	@InjectMocks
+	RetrieveDocumentProcessingManager retrieveDocumentProcessingManager;
+
+	@Mock
+	private ConfigurationManager configurationManager;
+
+	@Mock
+	private FileNamingManager fileNamingManager;
+
+	@Mock
+	private EvidenceFileManager evidenceFileManager;
+
+	@Mock
+	private FileCodecsManager fileCodecsManager;
+
+	@Mock
+	private RetrieveDocumentJPAManager retrieveDocumentJPAManager;
+
+	@Mock
+	private AtsTransformationManager atsTransformationManager;
+
+	private final RetrieveDocumentRequest retrieveDocumentRequest = new RetrieveDocumentRequest();
+
+	@Before
+	public void setup() {
+		final String temporaryPath = "./src/test/resources/tmp";
+		ReflectionTestUtils.setField(retrieveDocumentProcessingManager, "retrieveDirectory", temporaryPath);
+
+		retrieveDocumentRequest.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+		retrieveDocumentRequest.setDocumentHash("hash");
+		retrieveDocumentRequest.setFilePath("/path/");
+		retrieveDocumentRequest.setStatus(3);
+		retrieveDocumentRequest.setSystemId(5);
+		retrieveDocumentRequest.setDocumentTypeId(2);
+		retrieveDocumentRequest.setDocumentId("100100");
+	}
+
+	@Test
+	public void processRetrieveDocument() {
+
+		final SubmitDocumentRequest submitDocumentRequest = new SubmitDocumentRequest();
+		submitDocumentRequest.setGameId(1100);
+		submitDocumentRequest.setWinnersIncluded(true);
+		submitDocumentRequest.setDrawId(100100);
+
+		final AtsRetrieveDocumentResponseDto atsRetrieveDocumentResponseDto = new AtsRetrieveDocumentResponseDto();
+		atsRetrieveDocumentResponseDto.setHash("hash");
+		atsRetrieveDocumentResponseDto.setDocumentId("100100");
+		atsRetrieveDocumentResponseDto.setSystemId(5);
+
+		when(configurationManager.getCorrespondingSubmitDocRequest()).thenReturn(submitDocumentRequest);
+		when(fileNamingManager.evidenceDocumentNameForRetrieve(anyInt(), anyString(), anyInt())).thenReturn("path");
+		doAnswer((i) -> {
+			assertTrue(true);
+			return "";
+		}).when(evidenceFileManager).createEvidenceFile(anyInt(), anyInt(), anyBoolean(), any(Operation.class), any(Path.class));
+		when(fileCodecsManager.hashFile(anyString())).thenReturn("hash");
+		when(atsTransformationManager.transformRetrieveDocumentRequest(any(RetrieveDocumentRequest.class), anyString()))
+			.thenReturn(atsRetrieveDocumentResponseDto);
+
+		final AtsRetrieveDocumentResponseDto atsRetrieveDocumentResponseDto2 = retrieveDocumentProcessingManager
+			.processRetrieveDocument(retrieveDocumentRequest);
+
+		assertEquals(atsRetrieveDocumentResponseDto2.getHash(), "hash");
+		assertEquals(atsRetrieveDocumentResponseDto2.getDocumentId(), "100100");
+		assertEquals(5, (int) atsRetrieveDocumentResponseDto2.getSystemId());
+	}
+
+	@Test(expected = Exception.class)
+	public void processRetrieveDocumentException() {
+		retrieveDocumentProcessingManager.processRetrieveDocument(retrieveDocumentRequest);
+	}
+}

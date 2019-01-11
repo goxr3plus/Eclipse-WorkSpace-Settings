@@ -1,0 +1,114 @@
+package com.intralot.lotos10.messaging.entities;
+
+import java.util.Collection;
+import java.util.Objects;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "message_delivery_type")
+public class MessageDeliveryType {
+
+	private Long id;
+	private String descr;
+	private String name;
+	private Collection<Message> messagesById;
+	private Collection<MessageType> messageTypesById;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	public Long getId() {
+
+		return this.id;
+	}
+
+	public void setId(final Long id) {
+
+		this.id = id;
+	}
+
+	@Basic
+	@Column(name = "DESCR", nullable = true, insertable = true, updatable = true, length = 150)
+	public String getDescr() {
+
+		return this.descr;
+	}
+
+	public void setDescr(final String descr) {
+
+		this.descr = descr;
+	}
+
+	@Basic
+	@Column(name = "NAME", nullable = false, insertable = true, updatable = true, length = 50)
+	public String getName() {
+
+		return this.name;
+	}
+
+	public void setName(final String name) {
+
+		this.name = name;
+	}
+
+	@OneToMany(mappedBy = "messageDeliveryTypeByMessageDeliveryTypeFk", fetch = FetchType.LAZY)
+	public Collection<Message> getMessagesById() {
+
+		return this.messagesById;
+	}
+
+	public void setMessagesById(final Collection<Message> messagesById) {
+
+		this.messagesById = messagesById;
+	}
+
+	@OneToMany(mappedBy = "messageDeliveryTypeByMessageDeliveryTypeFk", fetch = FetchType.LAZY)
+	public Collection<MessageType> getMessageTypesById() {
+
+		return this.messageTypesById;
+	}
+
+	public void setMessageTypesById(final Collection<MessageType> messageTypesById) {
+
+		this.messageTypesById = messageTypesById;
+	}
+
+
+	@Override
+	public int hashCode() {
+	    return Objects.hash(descr, id, messageTypesById, messagesById, name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+	    if (this == obj)
+		return true;
+	    if (obj == null)
+		return false;
+	    if (getClass() != obj.getClass())
+		return false;
+	    MessageDeliveryType other = (MessageDeliveryType) obj;
+	    return Objects.equals(descr, other.descr) && Objects.equals(id, other.id) && Objects.equals(messageTypesById, other.messageTypesById) && Objects.equals(messagesById, other.messagesById)
+		    && Objects.equals(name, other.name);
+	}
+
+	@Override
+	public String toString() {
+
+		return "MessageDeliveryType{" +
+			"id=" + this.id +
+			", descr='" + this.descr + '\'' +
+			", name='" + this.name + '\'' +
+			", messagesById=" + this.messagesById +
+			", messageTypesById=" + this.messageTypesById +
+			'}';
+	}
+}

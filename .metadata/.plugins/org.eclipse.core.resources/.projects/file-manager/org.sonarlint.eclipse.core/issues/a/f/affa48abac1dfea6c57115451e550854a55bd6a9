@@ -1,0 +1,21 @@
+
+rsquid:S00107g"<Method has 8 parameters, which is greater than 7 authorized.(™˜Î8‰§¤Áú,H”¿RMAJORZ
+CODE_SMELL
+squid:CommentedOutCodeLine¥"<This block of commented-out lines of code should be removed.(üÔ¶ı8ùÇß›ø,H•¿RMAJORZ
+CODE_SMELL
+†squid:CommentedOutCodeLineš"<This block of commented-out lines of code should be removed.(º“‹–şÿÿÿÿ8‰§¤Áú,H–¿RMAJORZ
+CODE_SMELL
+fsquid:S1135_"2Complete the task associated to this TODO comment.(ÅÍå¹8¼îÜ»ù,H—¿RINFOZ
+CODE_SMELL
+bsquid:S1602³",Remove useless curly braces around statement(ÚŸßÓ8ÆÀ©âù,H˜¿RMINORZ
+CODE_SMELL
+lsquid:S1135™"2Complete the task associated to this TODO comment.(°±çàúÿÿÿÿ8¼îÜ»ù,H™¿RINFOZ
+CODE_SMELL
+‡squid:S00117‰"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ş¹ïq8‰§¤Áú,Hš¿RMINORZ
+CODE_SMELL
+‡squid:S00117‚"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(€·òs8‰§¤Áú,H›¿RMINORZ
+CODE_SMELL
+ksquid:S1135t"2Complete the task associated to this TODO comment.(Ş•¾åøÿÿÿÿ8‰§¤Áú,Hœ¿RINFOZ
+CODE_SMELL
+†squid:CommentedOutCodeLine¡"<This block of commented-out lines of code should be removed.(»†õÉúÿÿÿÿ8ùÇß›ø,H¿RMAJORZ
+CODE_SMELL

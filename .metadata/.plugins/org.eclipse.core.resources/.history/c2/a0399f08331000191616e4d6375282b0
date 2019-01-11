@@ -1,0 +1,136 @@
+package com.intralot.l10.ats.manager.file;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import com.intralot.l10.ats.entity.AtsConfiguration;
+import com.intralot.l10.ats.manager.configuration.ConfigurationManager;
+import com.intralot.l10.ats.manager.transform.AtsTransformationManager;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(LocalDateTime.class)
+public class FileNamingManagerTest {
+
+	@Rule
+	public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+	@InjectMocks
+	private FileNamingManager fileNamingManager;
+
+	@Mock
+	private ConfigurationManager configurationManager;
+
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+	}
+
+	@Mock
+	private AtsTransformationManager atsTransformationManager;
+
+	@Test
+	public void testEvidenceDocumentNameParticipationsNoRevision() {
+
+		/* Mock ATS configuration */
+		final AtsConfiguration atsConfiguration = new AtsConfiguration();
+		atsConfiguration.setSystemId(5);
+
+		when(configurationManager.getConfiguration()).thenReturn(atsConfiguration);
+		when(atsTransformationManager.getDocumentId(anyInt(), anyInt())).thenReturn("100100");
+
+		final String name = fileNamingManager.evidenceDocumentNameForSubmit(-9, -9, false);
+		assertThat(name, is("5-100100-1.TXT"));
+	}
+
+	@Test
+	public void testEvidenceDocumentNameParticipationsRevision() {
+
+		/* Mock ATS configuration */
+		final AtsConfiguration atsConfiguration = new AtsConfiguration();
+		atsConfiguration.setSystemId(5);
+
+		when(configurationManager.getConfiguration()).thenReturn(atsConfiguration);
+		when(atsTransformationManager.getDocumentId(anyInt(), anyInt())).thenReturn("100100-2");
+
+		final String name = fileNamingManager.evidenceDocumentNameForSubmit(-9, -9, false);
+		assertThat(name, is("5-100100-2-1.TXT"));
+	}
+
+	@Test
+	public void testEvidenceDocumentNameWinnersNoRevision() {
+
+		/* Mock ATS configuration */
+		final AtsConfiguration atsConfiguration = new AtsConfiguration();
+		atsConfiguration.setSystemId(5);
+
+		when(configurationManager.getConfiguration()).thenReturn(atsConfiguration);
+		when(atsTransformationManager.getDocumentId(anyInt(), anyInt())).thenReturn("100100");
+
+		final String name = fileNamingManager.evidenceDocumentNameForSubmit(-9, -9, true);
+		assertThat(name, is("5-100100-2.TXT"));
+	}
+
+	@Test
+	public void testEvidenceDocumentNameWinnersRevision() {
+
+		/* Mock ATS configuration */
+		final AtsConfiguration atsConfiguration = new AtsConfiguration();
+		atsConfiguration.setSystemId(5);
+
+		when(configurationManager.getConfiguration()).thenReturn(atsConfiguration);
+		when(atsTransformationManager.getDocumentId(anyInt(), anyInt())).thenReturn("100100-2");
+
+		final String name = fileNamingManager.evidenceDocumentNameForSubmit(-9, -9, true);
+		assertThat(name, is("5-100100-2-2.TXT"));
+	}
+
+	@Test
+	public void testParticipationsDocumentNameForSubmitNoRevision() {
+
+		final String winnersFileName = "5-100100-2.TXT";
+
+		final String participationsFileName = fileNamingManager.participationsBasedOnWinnersDocumentName(winnersFileName);
+		assertThat(participationsFileName, is("5-100100-1.TXT"));
+	}
+
+	@Test
+	public void testParticipationsDocumentNameForSubmitRevision() {
+
+		final String winnersFileName = "5-100100-4-2.TXT";
+
+		final String participationsFileName = fileNamingManager.participationsBasedOnWinnersDocumentName(winnersFileName);
+		assertThat(participationsFileName, is("5-100100-4-1.TXT"));
+	}
+
+	@Test
+	public void evidenceDocumentNameForRetrieve() {
+
+		/* Mock Static LocalDateTime.now() */
+		final LocalDateTime nowTime = LocalDateTime.of(2020, 5, 5, 1, 1);
+		PowerMockito.mockStatic(LocalDateTime.class);
+		BDDMockito.given(LocalDateTime.now()).willReturn(nowTime);
+
+		final String name = fileNamingManager.evidenceDocumentNameForRetrieve(5, "100100", 1);
+
+		// TODO Internal class is still using real LocalDateTime even after mocking it
+		// assertEquals(name, "5-100100-1-20181120102830.TXT");
+	}
+}

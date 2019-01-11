@@ -1,0 +1,21 @@
+
+ysquid:CommentedOutCodeLine)"<This block of commented-out lines of code should be removed.(â½ÂÅHô‚RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine/"<This block of commented-out lines of code should be removed.(ù‚¡øÿÿÿÿHï‚RMAJORZ
+CODE_SMELL
+„squid:S00116""URename this field "IfcManager" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÿ€ˆ¯Hõ‚RMINORZ
+CODE_SMELL
+ysquid:CommentedOutCodeLineK"<This block of commented-out lines of code should be removed.(â½ÂÅHî‚RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine1"<This block of commented-out lines of code should be removed.(±ñ€ÎùÿÿÿÿHò‚RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineQ"<This block of commented-out lines of code should be removed.(ú« ‹ûÿÿÿÿHí‚RMAJORZ
+CODE_SMELL
+ysquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(‰ÅÇHð‚RMAJORZ
+CODE_SMELL
+‹squid:S1488B"]Immediately return this expression instead of assigning it to the temporary variable "reply".(Ìõæ”Hó‚RMINORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine3"<This block of commented-out lines of code should be removed.(ºŠÎçÿÿÿÿÿHñ‚RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineS"<This block of commented-out lines of code should be removed.(¼„™ÝúÿÿÿÿHì‚RMAJORZ
+CODE_SMELL

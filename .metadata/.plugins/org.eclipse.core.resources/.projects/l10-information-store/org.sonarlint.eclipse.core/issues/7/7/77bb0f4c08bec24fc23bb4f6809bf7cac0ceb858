@@ -1,0 +1,13 @@
+
+Œsquid:S2293."YReplace the type specification in this constructor call with the diamond operator ("<>").(é©ùúÿÿÿÿH´•RMINORZ
+CODE_SMELL
+‡squid:S2293E"YReplace the type specification in this constructor call with the diamond operator ("<>").(¥ÑŠØHµ•RMINORZ
+CODE_SMELL
+~squid:CommentedOutCodeLinec"<This block of commented-out lines of code should be removed.(ºåõÌøÿÿÿÿH¶•RMAJORZ
+CODE_SMELL
+_squid:S1135e"2Complete the task associated to this TODO comment.(…ïœ†H·•RINFOZ
+CODE_SMELL
+\squid:S1604 "(Make this anonymous inner class a lambda(ù¡àùÿÿÿÿH¸•RMAJORZ
+CODE_SMELL
+wsquid:S00119"IRename this generic name to match the regular expression '^[A-Z][0-9]?$'.(”“¦LH¹•RMINORZ
+CODE_SMELL

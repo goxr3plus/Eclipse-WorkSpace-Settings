@@ -1,0 +1,120 @@
+package com.intralot.l10.ats.manager.submit;
+
+import java.util.Collections;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import com.intralot.l10.ats.entity.AtsConfiguration;
+import com.intralot.l10.ats.entity.SubmitDocumentRequest;
+import com.intralot.l10.ats.enumeration.DrawStatus;
+import com.intralot.l10.ats.exception.AtsGenericException;
+import com.intralot.l10.ats.manager.configuration.ConfigurationManager;
+import com.intralot.l10.ats.manager.transform.ModelTransformationManager;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class SubmitDocumentPreProcessingManagerTest {
+
+	@InjectMocks
+	private SubmitDocumentPreProcessingManager submitDocumentPreProcessingManager;
+
+	@Mock
+	private ConfigurationManager configurationManager;
+
+	@Mock
+	private ModelTransformationManager transformationManager;
+
+	@Mock
+	private SubmitDocumentRequestJPAManager submitDocumentRequestJPAManager;
+
+	private final SubmitDocumentRequest submitDocumentRequest = new SubmitDocumentRequest();
+
+	@Before
+	public void init() {
+		submitDocumentRequest.setRevisionNumber(1);
+		submitDocumentRequest.setDrawStatus(3);
+	}
+
+	@Test
+	public void shouldProcessSubmitDocument_DIST_CALCULATION() {
+
+		assertTrue(submitDocumentPreProcessingManager.shouldProcessSubmitDocument(1100, 100100,
+			DrawStatus.DIST_CALCULATION, null));
+	}
+
+	@Test
+	public void shouldProcessSubmitDocument_DIVIDENDS_VALIDATE() {
+
+		assertTrue(submitDocumentPreProcessingManager.shouldProcessSubmitDocument(1100, 100100,
+			DrawStatus.DIVIDENDS_VALIDATE, null));
+	}
+
+	@Test
+	public void shouldProcessSubmitDocument_DIVIDENDS_VALIDATE_NON_EMPTY() {
+
+		assertFalse(submitDocumentPreProcessingManager.shouldProcessSubmitDocument(1100, 100100,
+			DrawStatus.DIVIDENDS_VALIDATE, Collections.singletonList(submitDocumentRequest)));
+	}
+
+	@Test
+	public void shouldProcessSubmitDocument_WINNING_NUMBERS() {
+
+		assertFalse(submitDocumentPreProcessingManager.shouldProcessSubmitDocument(1100, 100100,
+			DrawStatus.WINNING_NUMBERS, null));
+	}
+
+	@Test
+	public void preProcessReplay() {
+
+		submitDocumentRequest.setStatus(1);
+
+		when(submitDocumentRequestJPAManager.get(anyLong())).thenReturn(submitDocumentRequest);
+		submitDocumentPreProcessingManager.preProcessReplay(5L);
+	}
+
+	@Test(expected = AtsGenericException.class)
+	public void preProcessReplay_Exception() {
+
+		submitDocumentRequest.setStatus(2);
+
+		when(submitDocumentRequestJPAManager.get(anyLong())).thenReturn(submitDocumentRequest);
+		submitDocumentPreProcessingManager.preProcessReplay(5L);
+	}
+
+	@Test
+	public void preProcessSubmitDocument() {
+
+		final AtsConfiguration atsConfiguration = new AtsConfiguration();
+		atsConfiguration.setGameId(1100);
+
+		when(configurationManager.getConfiguration()).thenReturn(atsConfiguration);
+		submitDocumentPreProcessingManager.preProcessSubmitDocument(1100, 100100, DrawStatus.WINNING_NUMBERS, System.currentTimeMillis(), true,
+			Collections.singletonList(submitDocumentRequest));
+	}
+
+	@Test
+	public void preProcessSubmitDocument_Empty() {
+
+		final AtsConfiguration atsConfiguration = new AtsConfiguration();
+		atsConfiguration.setGameId(1100);
+
+		when(configurationManager.getConfiguration()).thenReturn(atsConfiguration);
+		submitDocumentPreProcessingManager.preProcessSubmitDocument(1100, 100100, DrawStatus.WINNING_NUMBERS, System.currentTimeMillis(), true, null);
+	}
+
+	@Test(expected = Exception.class)
+	public void preProcessSubmitDocument_Exception() {
+
+		submitDocumentPreProcessingManager.preProcessSubmitDocument(1100, 100100, DrawStatus.WINNING_NUMBERS, System.currentTimeMillis(), true,
+			Collections.singletonList(submitDocumentRequest));
+	}
+}

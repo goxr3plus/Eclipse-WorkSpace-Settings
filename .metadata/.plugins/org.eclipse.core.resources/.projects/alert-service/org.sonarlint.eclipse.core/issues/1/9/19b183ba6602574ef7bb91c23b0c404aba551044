@@ -1,0 +1,13 @@
+
+ksquid:S34578"AFormat specifiers should be used instead of string concatenation.(–€‚ÓRMAJORZ
+CODE_SMELL
+asquid:S2629<"7Use the built-in formatting to construct this argument.(»ÑÇ∆RMAJORZ
+CODE_SMELL
+ksquid:S3457<"AFormat specifiers should be used instead of string concatenation.(»ÑÇ∆RMAJORZ
+CODE_SMELL
+psquid:S3457L"AFormat specifiers should be used instead of string concatenation.(•ˆÜèˇˇˇˇˇRMAJORZ
+CODE_SMELL
+ssquid:S2147F"DCombine this catch with the one at line 65, which has the same body.(Û≈Ÿˆ˛ˇˇˇˇRMINORZ
+CODE_SMELL
+vsquid:HiddenFieldCheck1"<Rename "endPoint" which hides the field declared at line 33.(õ™À“˛ˇˇˇˇRMAJORZ
+CODE_SMELL

@@ -1,0 +1,167 @@
+package com.intralot.l10.ejk.manager.template;
+
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.format.DateTimeFormatter;
+
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.ejk.enumeration.Party;
+import com.intralot.l10.ejk.manager.file.FileNamingManager;
+import com.intralot.l10.ejk.manager.file.FileOperationsManager;
+import com.intralot.l10.ejk.manager.message.MessageComposeManager;
+import com.intralot.l10.ejk.manager.message.TemplateManager;
+
+import freemarker.template.Configuration;
+import global.config.GlobalConfig;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { MessageComposeManager.class, TemplateManager.class, FileNamingManager.class,
+		FileOperationsManager.class, Configuration.class, GlobalConfig.class })
+public class MessageComposeManagerTest {
+
+	@Autowired
+	private MessageComposeManager messageComposeManager;
+	
+	@Autowired
+	private Configuration freemarkerConfiguration;
+
+
+	@Value("${file.base-path.outgoing-message}")
+	private String messageBasePath;
+
+	@Before
+	public void init() throws Exception {
+
+		System.out.println("Creating Base Dir=" + messageBasePath);
+		Files.createDirectories(Paths.get(messageBasePath));
+		freemarkerConfiguration.setClassForTemplateLoading(this.getClass(), "/templates/");
+	}
+
+	@After
+	public void destroy() throws Exception {
+
+		System.out.println("Deleting Base Dir=" + messageBasePath);
+
+		if (Files.exists(Paths.get(messageBasePath))) {
+
+			Files.walkFileTree(Paths.get(messageBasePath), new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+
+					Files.delete(file);
+					return FileVisitResult.CONTINUE;
+				}
+
+				@Override
+				public FileVisitResult postVisitDirectory(final Path dir, final IOException e) throws IOException {
+
+					if (e == null) {
+						Files.delete(dir);
+						return FileVisitResult.CONTINUE;
+					} else {
+						throw e;
+					}
+				}
+			});
+		}
+	}
+
+	@Test
+	public void composeRdyMessageTest() throws IOException {
+
+		final Path message = messageComposeManager.composeRdyMessage(Party.PCC);
+		assertTrue(this.xmlStreamsAreIdentical(this.getClass().getResourceAsStream("/testingTemplates/RDY.xml"),
+				new ByteArrayInputStream(Files.readAllBytes(message))));
+	}
+
+	@Test
+	public void composeSscMessageTest() throws IOException {
+
+		final Path message = messageComposeManager.composeSscMessage("2018265", 1, 60200.00,
+				"b0bee899f995977b38e69fb9121b0a8410d2ee3b", Party.PCC);
+		assertTrue(this.xmlStreamsAreIdentical(this.getClass().getResourceAsStream("/testingTemplates/SSC.xml"),
+				new ByteArrayInputStream(Files.readAllBytes(message))));
+
+	}
+
+	@Test
+	public void composeSnwMessageTest() throws IOException {
+
+		final Path message = messageComposeManager.composeSnwMessage("2018265", 1, "Yes", Party.PCC);
+		assertTrue(this.xmlStreamsAreIdentical(this.getClass().getResourceAsStream("/testingTemplates/SNW.xml"),
+				new ByteArrayInputStream(Files.readAllBytes(message))));
+	}
+
+	private boolean xmlStreamsAreIdentical(final InputStream xml1, final InputStream xml2) {
+
+		try {
+			final XMLInputFactory factory = XMLInputFactory.newInstance();
+			final XMLEventReader eventReader1 = factory.createXMLEventReader(xml1);
+			final XMLEventReader eventReader2 = factory.createXMLEventReader(xml2);
+
+			while (eventReader1.hasNext()) {
+				if (!eventReader2.hasNext()) {
+					return false;
+				}
+
+				final XMLEvent event1 = this.getNextNonEmptyEvent(eventReader1);
+				final XMLEvent event2 = this.getNextNonEmptyEvent(eventReader2);
+
+				if (!event1.toString().trim().equals(event2.toString().trim())
+						&& !this.isValidDate(event1.toString().trim())) {
+					return false;
+				}
+			}
+		} catch (final XMLStreamException e) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean isValidDate(final String inDate) {
+		try {
+			DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(inDate.trim());
+		} catch (final Exception pe) {
+			return false;
+		}
+		return true;
+	}
+
+	private XMLEvent getNextNonEmptyEvent(final XMLEventReader reader) throws XMLStreamException {
+
+		while (reader.hasNext()) {
+			final XMLEvent event = reader.nextEvent();
+
+			if (!event.toString().trim().equals("")) {
+				return event;
+			}
+		}
+
+		throw new XMLStreamException("End of stream");
+	}
+
+}

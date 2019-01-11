@@ -1,0 +1,26 @@
+package com.intralot.l10.ejk.manager.file;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.ejk.manager.integration.ScpManager;
+
+import static org.junit.Assert.assertTrue;
+
+@RunWith(SpringRunner.class)
+public class ScpManagerTest {
+
+	@Before
+	public void setUp() {
+		final ScpManager scpManager = new ScpManager();
+	}
+
+	@Test
+	public void testConnection() {
+		//boolean retCode = scpManager.testConnection();
+		assertTrue(Boolean.TRUE);
+	}
+
+}

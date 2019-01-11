@@ -1,0 +1,25 @@
+
+ysquid:S00100	"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÈÂå£RMINORZ
+CODE_SMELL
+ysquid:S00100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(šŞ÷£RMINORZ
+CODE_SMELL
+ysquid:S00100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ù¿œ°RMINORZ
+CODE_SMELL
+~squid:S00100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Á’¥šıÿÿÿÿRMINORZ
+CODE_SMELL
+~squid:S00100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(™œÒüÿÿÿÿRMINORZ
+CODE_SMELL
+ysquid:S00100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ï´€¦RMINORZ
+CODE_SMELL
+‡squid:S00116"WRename this field "collapse_key" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ã™ŞÃûÿÿÿÿRMINORZ
+CODE_SMELL
+Šsquid:S00116"ZRename this field "expiration_date" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ûÚ¼ûÿÿÿÿRMINORZ
+CODE_SMELL
+…squid:S00116"ZRename this field "delay_with_idle" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ïåê»RMINORZ
+CODE_SMELL
+|squid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(šŞ÷£RMINORZ
+CODE_SMELL
+squid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Á’¥šıÿÿÿÿRMINORZ
+CODE_SMELL
+|squid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ï´€¦RMINORZ
+CODE_SMELL

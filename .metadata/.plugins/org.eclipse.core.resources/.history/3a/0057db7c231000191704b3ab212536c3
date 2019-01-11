@@ -1,0 +1,103 @@
+#Server details
+server:
+ port: 8082
+
+config.ats.iss:
+ subscriber:  http://ats.dev.intralot.com
+ 
+ats.iss:
+ subscriber:  http://ats.dev.intralot.com
+ 
+ats.evidence:
+  creation.pageSize: 15
+  retrieve.hrs-to-live: 0
+
+#Logging
+logging:
+ level:
+   sun.rmi: warn
+   reactor.ipc: warn
+   org.hibernate: info
+   root: info
+   org.springframework: info
+   com.intralot: debug
+   io.swagger: warn
+#    root: info
+
+spring:
+
+ #Database
+ datasource:
+   #    url: jdbc:mysql://localhost:3306/l10?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&useSSL=false&rewriteBatchedStatements=true
+   #    username: root
+#       password: 1234
+       url: jdbc:mysql://localhost:3306/ats_local?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&useSSL=false&rewriteBatchedStatements=true
+       username: root
+       password: '!something!'
+
+    url: jdbc:mysql://10.70.9.25/opap_lottery?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&useSSL=false&rewriteBatchedStatements=true
+    username: l10
+    password: l10
+#    password: l10
+
+ #JPA
+ jpa:
+   show-sql: false
+
+ #Flyway
+ flyway:
+   enabled: true
+
+ats:
+ directory:
+   tmp: ./ats/data/tmp
+   data: ./ats/data
+   retrieve: ./ats/data/retrieve
+ submit:
+   zip: false
+ reporting:
+   range:
+     all: 24
+     kino: 24
+ file:
+   creation:
+     pageSize: 1000
+
+l5:
+ ftp:
+   host: 10.70.5.187
+   port: 11121
+   user: l10_ats
+   password: 123456q!
+
+l10:
+ ftp:
+   host: 10.70.7.236
+   port: 11121
+   user: l10_ats
+   password: 123456q!
+
+clients:
+ opap:
+   config:
+     url: https://pbsuat-ats.opap.gr/v2/SubmitDocService
+     name: opap
+     connectionTimeout: 2000
+     readTimeout: 10000
+     retries: 5
+
+ infostore:
+   config:
+     url: http://infostore.opap.pat.l10.intralot.com
+     name: infostore
+     connectionTimeout: 2000
+     readTimeout: 180000
+     retries: 5
+
+infostore:
+ config:
+   url: http://infostore.opap.pat.l10.intralot.com
+   name: infostore
+   connectionTimeout: 2000
+   readTimeout: 180000
+   retries: 5

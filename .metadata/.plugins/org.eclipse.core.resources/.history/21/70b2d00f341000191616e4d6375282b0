@@ -1,0 +1,284 @@
+package com.intralot.l10.ejk.manager.file;
+
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.validation.Validator;
+
+import org.dozer.Mapper;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.iif.core.utils.JsonMapper;
+import com.intralot.l10.ejk.enumeration.Game;
+import com.intralot.l10.ejk.enumeration.MessageType;
+import com.intralot.l10.ejk.enumeration.Party;
+import com.intralot.l10.ejk.model.MessageFileNameVO;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {FileNamingManager.class})
+public class FileNamingManagerTest {
+
+	private final static Logger LOGGER = LoggerFactory.getLogger(TestFileNamingManager.class);
+
+	@MockBean
+	JsonMapper jsonMapper;
+
+	@MockBean
+	Mapper dozer;
+
+	@MockBean
+	Validator validator;
+
+	@Autowired
+	FileNamingManager fileNamingManager;
+
+	@Test
+	public void getWLDrawTestFirstDayOfWeek() {
+		try {
+			final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			final Date parsedTimeStamp = formatter.parse("2018-01-01");
+			final Timestamp timestamp = new Timestamp(parsedTimeStamp.getTime());
+
+			final String wlDraw = fileNamingManager.getWlDrawByClosedDate(timestamp);
+
+			final String expectedWLDraw = "2018011";
+
+			assertEquals(expectedWLDraw, wlDraw);
+		} catch (final ParseException e) {
+			fail("Parse exception occurred");
+		}
+	}
+
+	@Test
+	public void getWLDrawTestSecondDayOfWeek() {
+		try {
+			final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			final Date parsedTimeStamp = formatter.parse("2018-01-02");
+			final Timestamp timestamp = new Timestamp(parsedTimeStamp.getTime());
+
+			final String wlDraw = fileNamingManager.getWlDrawByClosedDate(timestamp);
+
+			final String expectedWLDraw = "2018012";
+
+			assertEquals(expectedWLDraw, wlDraw);
+		} catch (final ParseException e) {
+			fail("Parse exception occurred");
+		}
+	}
+
+	@Test
+	public void getWLDrawTestThirdDayOfWeek() {
+		try {
+			final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			final Date parsedTimeStamp = formatter.parse("2018-01-03");
+			final Timestamp timestamp = new Timestamp(parsedTimeStamp.getTime());
+
+			final String wlDraw = fileNamingManager.getWlDrawByClosedDate(timestamp);
+
+			final String expectedWLDraw = "2018013";
+
+			assertEquals(expectedWLDraw, wlDraw);
+		} catch (final ParseException e) {
+			fail("Parse exception occurred");
+		}
+	}
+
+	@Test
+	public void getWLDrawTestFourthDayOfWeek() {
+		try {
+			final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			final Date parsedTimeStamp = formatter.parse("2018-01-04");
+			final Timestamp timestamp = new Timestamp(parsedTimeStamp.getTime());
+
+			final String wlDraw = fileNamingManager.getWlDrawByClosedDate(timestamp);
+
+			final String expectedWLDraw = "2018014";
+
+			assertEquals(expectedWLDraw, wlDraw);
+		} catch (final ParseException e) {
+			fail("Parse exception occurred");
+		}
+	}
+
+	@Test
+	public void getWLDrawTestFifthDayOfWeek() {
+		try {
+			final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			final Date parsedTimeStamp = formatter.parse("2018-01-05");
+			final Timestamp timestamp = new Timestamp(parsedTimeStamp.getTime());
+
+			final String wlDraw = fileNamingManager.getWlDrawByClosedDate(timestamp);
+
+			final String expectedWLDraw = "2018015";
+
+			assertEquals(expectedWLDraw, wlDraw);
+		} catch (final ParseException e) {
+			fail("Parse exception occurred");
+		}
+	}
+
+	@Test
+	public void getWLDrawTestSixthDayOfWeek() {
+		try {
+			final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			final Date parsedTimeStamp = formatter.parse("2018-01-06");
+			final Timestamp timestamp = new Timestamp(parsedTimeStamp.getTime());
+
+			final String wlDraw = fileNamingManager.getWlDrawByClosedDate(timestamp);
+
+			final String expectedWLDraw = "2018016";
+
+			assertEquals(expectedWLDraw, wlDraw);
+		} catch (final ParseException e) {
+			fail("Parse exception occurred");
+		}
+	}
+
+	@Test
+	public void getWLDrawTestSeventhDayOfWeek() {
+		try {
+			final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			final Date parsedTimeStamp = formatter.parse("2018-01-07");
+			final Timestamp timestamp = new Timestamp(parsedTimeStamp.getTime());
+
+			final String wlDraw = fileNamingManager.getWlDrawByClosedDate(timestamp);
+
+			final String expectedWLDraw = "2018017";
+
+			assertEquals(expectedWLDraw, wlDraw);
+		} catch (final ParseException e) {
+			fail("Parse exception occurred");
+		}
+	}
+
+	@Test
+	public void getWLDrawTestSecondWeekOfYear() {
+		try {
+			final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			final Date parsedTimeStamp = formatter.parse("2018-01-08");
+			final Timestamp timestamp = new Timestamp(parsedTimeStamp.getTime());
+
+			final String wlDraw = fileNamingManager.getWlDrawByClosedDate(timestamp);
+
+			final String expectedWLDraw = "2018021";
+
+			assertEquals(expectedWLDraw, wlDraw);
+		} catch (final ParseException e) {
+			fail("Parse exception occurred");
+		}
+	}
+
+	@Test
+	public void getWLDrawTestLastDayOfYearInFirstWeekOfNextYear() {
+		try {
+			// Based on ISO-8601, this scenario is correct
+			// since week number one of a week-based year contains the first Thursday of the calendary year
+			// and the first/last few days of a calendar year may appear in the previous/next week-based year.
+			final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			final Date parsedTimeStamp = formatter.parse("2018-12-31");
+			final Timestamp timestamp = new Timestamp(parsedTimeStamp.getTime());
+
+			final String wlDraw = fileNamingManager.getWlDrawByClosedDate(timestamp);
+
+			final String expectedWLDraw = "2019011";
+
+			assertEquals(expectedWLDraw, wlDraw);
+		} catch (final ParseException e) {
+			fail("Parse exception occurred");
+		}
+	}
+
+	@Test
+	public void getWLDrawTestLastWeekOfYear() {
+		try {
+			final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			final Date parsedTimeStamp = formatter.parse("2017-12-31");
+			final Timestamp timestamp = new Timestamp(parsedTimeStamp.getTime());
+
+			final String wlDraw = fileNamingManager.getWlDrawByClosedDate(timestamp);
+
+			final String expectedWLDraw = "2017527";
+
+			assertEquals(expectedWLDraw, wlDraw);
+		} catch (final ParseException e) {
+			fail("Parse exception occurred");
+		}
+	}
+
+	@Test
+	public void combinationFileNameTest() {
+		final String wlDraw = "2018424";
+		final String type = "COF";
+		final Party recipient = Party.PCC;
+		final Integer revision = 1;
+
+		final String combinationFileName = fileNamingManager.combinationFileName(wlDraw, recipient, revision, false);
+
+		assertEquals(combinationFileName, "2018424EULOCOFDELPCC1.CFL");
+	}
+
+	@Test
+	public void zippedCombinationFileNameTest() {
+		final String wlDraw = "2018424";
+		final String type = "COF";
+		final Party recipient = Party.PCC;
+		final Integer revision = 1;
+
+		final String combinationFileName = fileNamingManager.combinationFileName(wlDraw, recipient, revision, true);
+
+		assertEquals(combinationFileName, "2018424EULOCOFDELPCC1.CFL.bz2");
+	}
+
+	@Test
+	public void checksumFileNameTest() {
+		final String wlDraw = "2018424";
+		final String type = "COF";
+		final Party recipient = Party.PCC;
+		final Integer revision = 1;
+
+		final String checksumFileName = fileNamingManager.checksumFileName(wlDraw, recipient, revision);
+
+		assertEquals(checksumFileName, "2018424EULOCOFDELPCC1.CHK");
+	}
+
+	@Test
+	public void messageFileNameTest() {
+		final String wlDraw = "2018424";
+		final MessageType type = MessageType.SNW;
+		final Party recipient = Party.PCC;
+		final Integer revision = 1;
+
+		final String messageFileName = fileNamingManager.messageFileName(wlDraw, type, recipient, revision);
+
+		assertEquals(messageFileName, "2018424EULOSNWDELPCC1.XML");
+	}
+
+	@Test
+	public void decomposeMessageFileName() {
+		final String messageFileName = "2018424EULOACKPCCDEL1";
+
+		final MessageFileNameVO messageFileNameVO = fileNamingManager.decomposeMessageFileName(messageFileName);
+		assertEquals(messageFileNameVO.getDraw(), "2018424");
+		assertEquals(messageFileNameVO.getGame(), Game.EULO);
+		assertEquals(messageFileNameVO.getType(), MessageType.ACK);
+		assertEquals(messageFileNameVO.getSender(), Party.PCC);
+		assertEquals(messageFileNameVO.getReceiver(), Party.DEL);
+
+	}
+
+	@Test
+	public void evaluateMessageFileName() {
+	}
+}

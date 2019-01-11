@@ -1,0 +1,15 @@
+package com.intralot.lotos10.messaging.repositories;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.intralot.lotos10.messaging.entities.MessageDeliveryType;
+import com.intralot.lotos10.messaging.model.MessageTypeDTO;
+
+public interface IMessageDeliveryTypeRepo extends JpaRepository<MessageDeliveryType, Long> {
+
+	@Query("select new com.intralot.lotos10.messaging.model.MessageTypeDTO(t.id, t.name, t.descr, c.id, c.name, a.id, a.name, b.id, b.name) from MessageType")
+	List<MessageTypeDTO> findAllDTO();
+}

@@ -1,0 +1,9 @@
+package guru.springframework;
+
+public class Dollar {
+
+    public Dollar(int i) {
+	// TODO Auto-generated constructor stub
+    }
+
+}

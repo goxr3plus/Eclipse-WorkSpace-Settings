@@ -1,0 +1,47 @@
+package com.intralot.l10.ejk.manager.file;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.intralot.l10.ejk.exception.EjkGenericException;
+
+import global.config.GlobalConfig;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {FileCodecsManager.class,GlobalConfig.class})
+public class FileCodecsManagerTest {
+	private String testFileHash;
+
+	@Autowired
+	FileCodecsManager fileCodecsManager;
+
+	@Before
+	public void initialize() {
+		this.testFileHash = SystemUtils.IS_OS_LINUX ? "0e5b0f60905e29374133d8d6bbb179c8e7944b9d" : "11fd90c41bdaa43d595014ca623ea762e1d84a6c";
+	}
+
+	@Test
+	public void hashFileTest() {
+		final Path currentDir = Paths.get("./src/test/resources/evidence-file/test-hash.txt");
+
+		assertThat(fileCodecsManager.hashFile(currentDir), is(this.testFileHash));
+	}
+
+	@Test(expected = EjkGenericException.class)
+	public void hashFileNotExistTest() {
+		final Path currentDir = Paths.get("./src/test/resources/evidence-file/test-hash-1.txt");
+		assertThat(fileCodecsManager.hashFile(currentDir), is(this.testFileHash));
+	}
+
+}

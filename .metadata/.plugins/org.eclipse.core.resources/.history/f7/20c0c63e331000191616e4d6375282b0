@@ -1,0 +1,83 @@
+package com.intralot.l10.ats.manager.submit;
+
+import java.sql.Date;
+import java.util.Collections;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import com.intralot.l10.ats.entity.SubmitDocumentRequest;
+import com.intralot.l10.ats.model.SubmitDocumentDto;
+import com.intralot.l10.ats.repository.AtsSubmitDocumentRepository;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class SubmitDocumentRequestJPAManagerTest {
+
+	@InjectMocks
+	private SubmitDocumentRequestJPAManager submitDocumentRequestJPAManager;
+
+	@Mock
+	private AtsSubmitDocumentRepository atsSubmitDocumentRepository;
+
+	private SubmitDocumentRequest submitDocumentRequest;
+
+	private SubmitDocumentDto submitDocumentDto;
+
+	@Before
+	public void init() {
+
+		submitDocumentRequest = new SubmitDocumentRequest();
+		submitDocumentRequest.setGameId(5);
+		submitDocumentRequest.setDrawId(100100);
+		submitDocumentRequest.setWinnersIncluded(true);
+		submitDocumentRequest.setRevisionNumber(1);
+
+		submitDocumentDto = new SubmitDocumentDto(100100, new Date(0), 1);
+
+	}
+
+	@Test
+	public void findByGameIdAndDrawIdTest() {
+
+		when(atsSubmitDocumentRepository.findByGameIdAndDrawId(anyInt(), anyInt()))
+			.thenReturn(Collections.singletonList(submitDocumentRequest));
+
+		submitDocumentRequestJPAManager.findByGameIdAndDrawId(5, 100100);
+	}
+
+	@Test
+	public void findByGameIdAndDrawIdAndWinnersIncludedTest() {
+
+		when(atsSubmitDocumentRepository.findByGameIdAndDrawIdAndWinnersIncluded(anyInt(), anyInt(), anyBoolean()))
+			.thenReturn(Collections.singletonList(submitDocumentRequest));
+
+		submitDocumentRequestJPAManager.findByGameIdAndDrawIdAndWinnersIncluded(5, 100100, true);
+	}
+
+	@Test
+	public void findByGameIdAndDrawIdAndRevisionNumberAndWinnersIncludedTest() {
+
+		when(atsSubmitDocumentRepository.findByGameIdAndDrawIdAndRevisionNumberAndWinnersIncluded(anyInt(), anyInt(),
+			anyInt(), anyBoolean())).thenReturn(submitDocumentRequest);
+
+		submitDocumentRequestJPAManager.findByGameIdAndDrawIdAndRevisionNumberAndWinnersIncluded(5, 100100, 1, true);
+	}
+
+	@Test
+	public void findByGameIdAndWinnersIncludedBetweenDatesTest() {
+
+		when(atsSubmitDocumentRepository.findByGameIdAndWinnersIncludedBetweenDates(anyInt(), anyBoolean(),
+			any(Date.class), any(Date.class))).thenReturn(Collections.singletonList(submitDocumentDto));
+
+		submitDocumentRequestJPAManager.findByGameIdAndWinnersIncludedBetweenDates(5, true, new Date(0), new Date(0));
+	}
+}

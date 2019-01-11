@@ -1,0 +1,40 @@
+package com.intralot.l10.ejk.manager.config;
+
+import javax.validation.Validator;
+
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intralot.iif.core.utils.JsonMapper;
+import com.intralot.iif.core.validation.DefaultValidatorAdapter;
+
+@TestConfiguration
+public class GlobalConfig {
+
+	@Bean(name = "JsonMapper")
+	public JsonMapper jsonMapper() {
+
+		return new JsonMapper();
+	}
+
+	@Bean(name = "ObjectMapper")
+	public ObjectMapper objectMapper() {
+
+		return new ObjectMapper();
+	}
+
+	@Bean(name = "Mapper")
+	public Mapper dozer() {
+
+		return new DozerBeanMapper();
+	}
+
+	@Bean(name = "Validator")
+	public Validator validator() {
+
+		return new DefaultValidatorAdapter();
+	}
+}

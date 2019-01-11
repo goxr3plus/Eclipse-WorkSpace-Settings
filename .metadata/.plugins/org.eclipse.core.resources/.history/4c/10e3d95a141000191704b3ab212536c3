@@ -1,0 +1,79 @@
+package com.intralot.l10.ats.manager.retrieve.documents;
+
+import java.util.Collections;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.context.ContextConfiguration;
+
+import com.intralot.l10.ats.entity.RetrieveDocumentsRequest;
+import com.intralot.l10.ats.manager.config.TestConfig;
+import com.intralot.l10.ats.repository.AtsRetrieveDocumentsRepository;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+@ContextConfiguration(classes = {TestConfig.class})
+public class RetrieveDocumentsJPAManagerTest {
+
+	@InjectMocks
+	RetrieveDocumentsJPAManager retrieveDocumentsJPAManager;
+
+	@Mock
+	AtsRetrieveDocumentsRepository atsRetrieveDocumentsRepository;
+
+	private RetrieveDocumentsRequest retrieveDocumentsRequest;
+
+	@Before
+	public void init() {
+
+		retrieveDocumentsRequest = new RetrieveDocumentsRequest();
+
+	}
+
+	@Test
+	public void getPendingRetrieveDocumentsRequests() {
+		when(atsRetrieveDocumentsRepository.findBySystemIdAndDocumentTypeIdAndStatus(anyInt(), anyInt(), anyInt()))
+			.thenReturn(Collections.singletonList(retrieveDocumentsRequest));
+
+		retrieveDocumentsJPAManager.getPendingRetrieveDocumentsRequests(5, 1, 3);
+
+	}
+
+	@Test
+	public void getPendingRetrieveDocumentsRequestsEmpty() {
+		when(atsRetrieveDocumentsRepository.findBySystemIdAndDocumentTypeIdAndStatus(anyInt(), anyInt(), anyInt()))
+			.thenReturn(Collections.emptyList());
+
+		retrieveDocumentsJPAManager.getPendingRetrieveDocumentsRequests(5, 1, 3);
+
+	}
+
+	@Test
+	public void findById() {
+		when(atsRetrieveDocumentsRepository.findById(anyLong()))
+			.thenReturn(Optional.ofNullable(retrieveDocumentsRequest));
+
+		retrieveDocumentsJPAManager.findByReportId(5L);
+
+	}
+
+	//TODO
+	@Ignore
+	@Test
+	public void updateFailedRetrieveDocuments() {
+		when(retrieveDocumentsJPAManager.register(any(RetrieveDocumentsRequest.class))).thenReturn(new RetrieveDocumentsRequest());
+
+		retrieveDocumentsJPAManager.updateFailedRetrieveDocuments(new RetrieveDocumentsRequest(), "error message");
+	}
+
+}

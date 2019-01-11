@@ -1,0 +1,28 @@
+package com.intralot.l10.nam.manager.jpa;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import java.util.Optional;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import com.intralot.l10.nam.entity.CreditLimitRequest;
+import com.intralot.l10.nam.repository.jpa.CreditLimitRepository;
+
+@RunWith(MockitoJUnitRunner.class)
+public class CreditLimitJPAManagerTest {
+
+	@InjectMocks
+	private CreditLimitJPAManager creditLimitJPAManager;
+
+	@Mock
+	private CreditLimitRepository creditLimitRepository;
+
+	@Test
+	public void transactionIdExists() {
+		when(creditLimitRepository.findByTransactionId(anyLong())).thenReturn(Optional.of(new CreditLimitRequest()));
+		creditLimitJPAManager.transactionIdExists(9L);
+	}
+}

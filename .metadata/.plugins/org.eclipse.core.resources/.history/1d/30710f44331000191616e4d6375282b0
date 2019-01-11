@@ -1,0 +1,136 @@
+package com.intralot.l10.ats.manager.transform;
+
+import java.sql.Timestamp;
+import java.util.Collections;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import com.intralot.l10.ats.entity.AtsConfiguration;
+import com.intralot.l10.ats.entity.RetrieveDocumentRequest;
+import com.intralot.l10.ats.entity.RetrieveDocumentsReport;
+import com.intralot.l10.ats.entity.RetrieveDocumentsRequest;
+import com.intralot.l10.ats.entity.SubmitDocumentRequest;
+import com.intralot.l10.ats.manager.configuration.ConfigurationManager;
+import com.intralot.l10.ats.manager.file.FileCodecsManager;
+import com.intralot.l10.ats.model.AtsRetrieveDocumentResponseDto;
+import com.intralot.l10.ats.model.AtsSubmitDocumentDto;
+import com.intralot.l10.ats.model.RetrieveDocumentsStatusCompleteDto;
+import com.intralot.l10.ats.model.RetrieveDocumentsStatusPendingDto;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class AtsTransformationManagerTest {
+
+	@InjectMocks
+	private AtsTransformationManager atsTransformationManager;
+
+	@Mock
+	private ConfigurationManager configurationManager;
+
+	@Mock
+	private FileCodecsManager fileCodecsManager;
+
+	@Test
+	public void transformSubmitDocumentRequest() {
+
+		when(configurationManager.getConfiguration()).thenReturn(new AtsConfiguration());
+
+		final SubmitDocumentRequest submitDocumentRequest = new SubmitDocumentRequest();
+		submitDocumentRequest.setGameId(5);
+		submitDocumentRequest.setDrawId(100100);
+		submitDocumentRequest.setWinnersIncluded(true);
+		submitDocumentRequest.setRevisionNumber(1);
+		submitDocumentRequest.setL10Path("/l10path");
+		submitDocumentRequest.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+		final AtsSubmitDocumentDto atsSubmitDocumentDto = atsTransformationManager
+			.transformSubmitDocumentRequest(submitDocumentRequest);
+
+		// TODO assert?
+	}
+
+	@Test
+	public void transformSubmitDocumentRequestRevision2() {
+
+		when(configurationManager.getConfiguration()).thenReturn(new AtsConfiguration());
+
+		final SubmitDocumentRequest submitDocumentRequest = new SubmitDocumentRequest();
+		submitDocumentRequest.setGameId(5);
+		submitDocumentRequest.setDrawId(100100);
+		submitDocumentRequest.setWinnersIncluded(true);
+		submitDocumentRequest.setRevisionNumber(2);
+		submitDocumentRequest.setL10Path("/l10path");
+		submitDocumentRequest.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+		final AtsSubmitDocumentDto atsSubmitDocumentDto = atsTransformationManager
+			.transformSubmitDocumentRequest(submitDocumentRequest);
+
+		// TODO assert?
+	}
+
+	@Test
+	public void transformRetrieveDocumentRequest() {
+
+		final SubmitDocumentRequest submitDocumentRequest = new SubmitDocumentRequest();
+		submitDocumentRequest.setDrawClosedDate(new Timestamp(System.currentTimeMillis()));
+		when(configurationManager.getCorrespondingSubmitDocRequest()).thenReturn(submitDocumentRequest);
+
+		final RetrieveDocumentRequest retrieveDocumentRequest = new RetrieveDocumentRequest();
+		retrieveDocumentRequest.setDocumentHash("hash");
+		retrieveDocumentRequest.setSystemId(5);
+		retrieveDocumentRequest.setEcid("ecid");
+		retrieveDocumentRequest.setDocumentId("100100");
+		retrieveDocumentRequest.setDocumentTypeId(1);
+		retrieveDocumentRequest.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+		final AtsRetrieveDocumentResponseDto atsSubmitDocumentDto = atsTransformationManager
+			.transformRetrieveDocumentRequest(retrieveDocumentRequest, "hash");
+
+		assertEquals(5, (int) atsSubmitDocumentDto.getSystemId());
+		assertEquals("hash", atsSubmitDocumentDto.getHash());
+		assertEquals("100100", atsSubmitDocumentDto.getDocumentId());
+		assertEquals(1, (int) atsSubmitDocumentDto.getDocumentTypeId());
+	}
+
+	@Test
+	public void transformRetrieveDocumentsRequestPending() {
+
+		final RetrieveDocumentsStatusPendingDto retrieveDocumentsStatusPendingDto = atsTransformationManager
+			.transformRetrieveDocumentsRequestPending(5L);
+		assertEquals(5, (long) retrieveDocumentsStatusPendingDto.getId());
+	}
+
+	@Test
+	public void transformRetrieveDocumentsRequestCompleted() {
+
+		final RetrieveDocumentsRequest retrieveDocumentsRequest = new RetrieveDocumentsRequest();
+		retrieveDocumentsRequest.setSystemId(5);
+		retrieveDocumentsRequest.setEcid("ecid");
+		retrieveDocumentsRequest.setDocumentTypeId(1);
+		retrieveDocumentsRequest.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+		final RetrieveDocumentsReport retrieveDocumentsReport = new RetrieveDocumentsReport();
+		retrieveDocumentsReport.setDrawId(100100);
+		retrieveDocumentsReport.setSchemaVersion(1);
+		retrieveDocumentsReport.setRevisionNumber(1);
+		retrieveDocumentsReport.setHashCreationTimestamp(new Timestamp(System.currentTimeMillis()));
+		retrieveDocumentsReport.setDocumentDate(new Timestamp(System.currentTimeMillis()));
+		retrieveDocumentsReport.setDocumentHash("hash");
+
+		retrieveDocumentsRequest.setRetrieveDocumentsReports(Collections.singletonList(retrieveDocumentsReport));
+
+		final RetrieveDocumentsStatusCompleteDto retrieveDocumentsStatusCompleteDto = atsTransformationManager
+			.transformRetrieveDocumentsRequestCompleted(retrieveDocumentsRequest);
+		assertEquals("100100", retrieveDocumentsStatusCompleteDto.getDocumentHashes().get(0).getDocumentId());
+		assertEquals(1, (int) retrieveDocumentsStatusCompleteDto.getDocumentHashes().get(0).getDocumentTypeId());
+		assertEquals(5, (int) retrieveDocumentsStatusCompleteDto.getDocumentHashes().get(0).getSystemId());
+		assertEquals("hash", retrieveDocumentsStatusCompleteDto.getDocumentHashes().get(0).getHash());
+	}
+
+}

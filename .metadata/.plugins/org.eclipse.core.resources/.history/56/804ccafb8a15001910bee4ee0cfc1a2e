@@ -1,0 +1,265 @@
+package com.intralot.lotos10.alerting.services;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Locale;
+import java.util.Scanner;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
+import org.elasticsearch.client.Response;
+import org.elasticsearch.client.RestClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+import com.google.common.primitives.Ints;
+import com.intralot.lotos10.alerting.clients.elasticsearch.ESHTTPClient;
+import com.intralot.lotos10.alerting.common.GlobalVariables;
+import com.intralot.lotos10.alerting.controller.model.AlertEventInput;
+import com.intralot.lotos10.alerting.domain.AltEvent;
+import com.intralot.lotos10.alerting.domain.AltQuery;
+import com.intralot.lotos10.alerting.domain.AltRule;
+import com.intralot.lotos10.alerting.domain.AltType;
+import com.intralot.lotos10.alerting.repositories.AltQueryRepo;
+import com.intralot.lotos10.alerting.repositories.AltRuleRepo;
+import com.intralot.lotos10.commons.health.dto.Metrics;
+
+import static com.intralot.lotos10.alerting.common.GlobalVariables.QUERY_STRING;
+
+@Service
+public class AlertQueryExecutor {
+
+	@Value("${elastic.ip}")
+	private String elasticIp;
+
+	@Value("${elastic.port}")
+	private int elasticPort;
+
+	@Value("${elastic.cluster}")
+	private String elasticCluster;
+
+	@Autowired
+	private AltQueryRepo altQueryRepo;
+
+	@Autowired
+	private AltRuleRepo altRule;
+
+	@Autowired
+	private AltEventService altEventService;
+
+	@Autowired
+	private ExecuteSearchService executeSearchService;
+
+	@Autowired
+	ESHTTPClient httpESClient;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AlertQueryExecutor.class);
+
+	@Async
+	public void executeAlertQuery(final AltQuery altQuery) throws IOException {
+		this.httpESClient = new ESHTTPClient();
+		final RestClient client = this.httpESClient.getClient(this.elasticIp, this.elasticPort);
+
+		try {
+			final String query = altQuery.getQuery();
+			final Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+
+			final long totalHits;
+
+			Timestamp lastExecution = altQuery.getLastExecutionDate();
+
+			if (lastExecution == null) {
+				final Metrics tmp = Metrics.getInstance();
+				final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+				final LocalDateTime date = LocalDateTime.parse(tmp.getBuiltWhen(), dtf);
+				final Instant instant = date.atZone(ZoneId.systemDefault()).toInstant();
+				final Date newdate = Date.from(instant);
+				lastExecution = new Timestamp(newdate.getTime());
+			}
+
+			final String queryWithTimestamps = addTimestampRange(query, lastExecution, currentTime);
+
+			final Response response = client.performRequest("GET", "/_search", new Hashtable<>(), new StringEntity(queryWithTimestamps), new BasicHeader("Content-Type", "application/json"));
+
+			//parse the stream, get the text, get the total hits from the json
+			final Scanner scanner = new Scanner(response.getEntity().getContent(), StandardCharsets.UTF_8.name());
+			scanner.useDelimiter("\\A");
+			final String text = scanner.next();
+			final JSONObject jsonReturned = new JSONObject(text);
+
+			totalHits = jsonReturned.getJSONObject("hits").getLong("total");
+
+			//Update last execution
+			altQuery.setLastExecutionDate(currentTime);
+
+			final int totalIntHits = longToIntHits(totalHits);
+
+			//Update last results
+			altQuery.setLastExecutionResult(totalIntHits);
+			//Store altQuery
+			this.altQueryRepo.saveAndFlush(altQuery);
+
+			applyAlertRules(altQuery, safeLongToInt(totalIntHits));
+
+		} catch (final Exception e) {
+			LOGGER.error("executeAlertQuery Error", e);
+			throw e;
+		} finally {
+			client.close();
+		}
+	}
+
+	private static int safeLongToInt(final long l) {
+		return Ints.checkedCast(l);
+	}
+
+	private static int longToIntHits(final Long totalHits) {
+		int totalIntHits;
+		try {
+			totalIntHits = safeLongToInt(totalHits);
+
+		} catch (final IllegalArgumentException e) {
+			LOGGER.error("IllegalArgumentException Error safeLongToInt {}", e);
+			totalIntHits = Ints.saturatedCast(totalHits);
+			LOGGER.debug("saturatedCast {} into {}", totalHits, totalIntHits);
+		}
+		return totalIntHits;
+	}
+
+	/**
+	 * Add Timestamp Range in query
+	 *
+	 * @param query, lastExecutionDate, currentTime
+	 *
+	 * @return String query
+	 */
+	private static String addTimestampRange(final String query, final Timestamp lastExecutionDate, final Timestamp currentTime) {
+
+		final JSONObject queryJson = new JSONObject(query);
+
+		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+		final JSONObject timestamp = new JSONObject();
+		timestamp.put("gte", formatter.format(new Date(lastExecutionDate.getTime())));
+		timestamp.put("lt", formatter.format(new Date(currentTime.getTime())));
+
+		final JSONObject range = new JSONObject();
+		range.put("@timestamp", timestamp);
+
+		final JSONObject must = new JSONObject();
+		must.put("range", range);
+
+		final JSONArray currentMust = queryJson.getJSONObject(QUERY_STRING).getJSONObject("bool").getJSONArray("must");
+		int foundRange = -1;
+		for (int i = 0; i < currentMust.length(); i++) {
+			final JSONObject node = (JSONObject) currentMust.get(i);
+			if (node.has("range")) {
+				foundRange = i;
+				break;
+			}
+		}
+		if (foundRange >= 0) {
+			currentMust.remove(foundRange);
+		}
+
+		queryJson.getJSONObject(QUERY_STRING).getJSONObject("bool").append("must", must);
+		LOGGER.debug("addTimestampRange to query: {}", queryJson.toString());
+		return queryJson.toString();
+	}
+
+	/**
+	 * Query Validation
+	 *
+	 * @param query
+	 * @throws Exception if not valid
+	 */
+
+	/**
+	 * Apply alert rules based on alertType, hits
+	 *
+	 * @param altQuery, hits,guid
+	 *
+	 * @result raises an alert based on applying rules
+	 */
+	private void applyAlertRules(final AltQuery altQuery, final int hits) {
+		// results are string we need integer. logic is right if result is
+		// integer
+		LOGGER.debug("Apply Alert Rules for Query Id:" + altQuery.getId() + " with resulted hits: " + hits);
+		final List<AltRule> rules = this.altRule.findRulesByAltQuery(altQuery);
+		AlertEventInput alertEventInput = null;
+		if (!rules.isEmpty()) {
+			for (final AltRule rule : rules) {
+				final Integer lowThreshold = rule.getlThres();
+				final Integer upThreshold = rule.getuThres();
+				alertEventInput = applyRules(lowThreshold, upThreshold, hits, rule, rule.getAltTypeByAlertTypeFk());
+			}
+			if (alertEventInput != null) {
+				LOGGER.debug("Apply Alert Rules - AlertEvent Input: {}", alertEventInput);
+				AltEvent alert = this.altEventService.createAlert(alertEventInput);
+				alert = this.altEventService.saveAlert(alert);
+				this.altEventService.checkAndSendAlert(alert);
+				LOGGER.debug("Apply Alert Rules - Create alert: {}", alert);
+			}
+
+		}
+	}
+
+	private static AlertEventInput applyRules(final Integer lowThreshold, final Integer upThreshold, final Integer hits, final AltRule rule, final AltType alertType) {
+
+		AlertEventInput alertEventInput = null;
+
+		if (hitsBetweenThresholds(lowThreshold, upThreshold, hits)) {
+			alertEventInput = createAlertEventInput(alertType, rule, hits);
+		} else if (hitsUnderUpThreshold(lowThreshold, upThreshold, hits)) {
+			alertEventInput = createAlertEventInput(alertType, rule, hits);
+
+		} else if (hitsOverLowThreshold(lowThreshold, upThreshold, hits)) {
+			alertEventInput = createAlertEventInput(alertType, rule, hits);
+		}
+		return alertEventInput;
+	}
+
+	private static boolean hitsBetweenThresholds(final Integer lowThreshold, final Integer upThreshold, final Integer hits) {
+		return lowThreshold != null && upThreshold != null && hits >= lowThreshold && hits <= upThreshold;
+	}
+
+	private static boolean hitsUnderUpThreshold(final Integer lowThreshold, final Integer upThreshold, final Integer hits) {
+		return lowThreshold == null && upThreshold != null && hits <= upThreshold;
+	}
+
+	private static boolean hitsOverLowThreshold(final Integer lowThreshold, final Integer upThreshold, final Integer hits) {
+		return upThreshold == null && lowThreshold != null && hits >= lowThreshold;
+	}
+
+	private static AlertEventInput createAlertEventInput(final AltType alertType, final AltRule rule, final int hits) {
+
+		final AlertEventInput alertEventInput = new AlertEventInput();
+		alertEventInput.setCriticality(rule.getAltTypeCriticalityByCriticalityFk().getId());
+		alertEventInput.setAlertType(alertType.getId());
+		alertEventInput.setName(alertType.getName());
+		alertEventInput.setDescription(alertType.getDescr());
+		alertEventInput.setOrigin(GlobalVariables.ELASTIC_SEARCH_ORIGIN);
+		alertEventInput.setNotification(rule.getAltNotificationTypeByNotifTypeFk().getId());
+		alertEventInput.setDataElements(new HashMap<String, String>() {{
+			put("ALERT_QUERY_HITS", Integer.valueOf(hits).toString());
+		}});
+		return alertEventInput;
+	}
+
+}

@@ -1,0 +1,9 @@
+
+wsquid:S4488<"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(Ì¹‘ƒúÿÿÿÿRMINORZ
+CODE_SMELL
+rsquid:S4488k"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(§ƒ†½RMINORZ
+CODE_SMELL
+rsquid:S4488~"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(¿ÇœµRMINORZ
+CODE_SMELL
+xsquid:S4488"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(šÕÕ³úÿÿÿÿRMINORZ
+CODE_SMELL

@@ -1,0 +1,9 @@
+
+squid:ModifiersOrderCheck"EReorder the modifiers to comply with the Java Language Specification.(‹÷’Hè‚RMINORZ
+CODE_SMELL
+Xsquid:S00108")Either remove or fill this block of code.(ôºğëHê‚RMAJORZ
+CODE_SMELL
+esquid:S1854"7Remove this useless assignment to local variable "xxx".(ïÌÀÀHë‚RMAJORZ
+CODE_SMELL
+[squid:S1481"(Remove this unused "xxx" local variable.(¨Å€ÉúÿÿÿÿHé‚RMINORZ
+CODE_SMELL

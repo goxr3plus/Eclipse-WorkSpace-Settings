@@ -1,0 +1,32 @@
+
+Wsquid:S2629?"$Invoke method(s) only conditionally.(Ç¬ÏÈüÿÿÿÿHĞÏRMAJORZ
+CODE_SMELL
+Xsquid:S2629ª"$Invoke method(s) only conditionally.(Ê–™şÿÿÿÿHÑÏRMAJORZ
+CODE_SMELL
+Xsquid:S2629¿"$Invoke method(s) only conditionally.(ˆ›–²úÿÿÿÿHÒÏRMAJORZ
+CODE_SMELL
+osquid:S1193¯"@Replace the usage of the "instanceof" operator by a catch block.(¨ÂÔ§HÓÏRMAJORZ
+CODE_SMELL
+osquid:S1193Ä"@Replace the usage of the "instanceof" operator by a catch block.(¨ÂÔ§HÔÏRMAJORZ
+CODE_SMELL
+msquid:S3725"":Replace this with a call to the "toFile().exists()" method(ÌïÎÀıÿÿÿÿHÕÏRMAJORZ
+CODE_SMELL
+gsquid:S37251":Replace this with a call to the "toFile().exists()" method(ÄçÇ!HÖÏRMAJORZ
+CODE_SMELL
+msquid:S3725>":Replace this with a call to the "toFile().exists()" method(ÌïÎÀıÿÿÿÿH×ÏRMAJORZ
+CODE_SMELL
+gsquid:S3725Q":Replace this with a call to the "toFile().exists()" method(ÄçÇ!HØÏRMAJORZ
+CODE_SMELL
+isquid:S3725Ñ":Replace this with a call to the "toFile().exists()" method(ÌëÛşHÙÏRMAJORZ
+CODE_SMELL
+isquid:S3725Ö":Replace this with a call to the "toFile().exists()" method(ÌëÛşHÚÏRMAJORZ
+CODE_SMELL
+vsquid:S2095z"MUse try-with-resources or close this "ZipOutputStream" in a "finally" clause.(·°ÃHÛÏRBLOCKERZBUG
+”squid:S3457?"aNo need to call "toString()" method as formatting and string conversion is done by the Formatter.(Ç¬ÏÈüÿÿÿÿHÜÏRMAJORZ
+CODE_SMELL
+Lsquid:S3457m"3rd argument is not used.(¬¬¼áûÿÿÿÿHİÏRMAJORZ
+CODE_SMELL
+•squid:S3457ª"aNo need to call "toString()" method as formatting and string conversion is done by the Formatter.(Ê–™şÿÿÿÿHŞÏRMAJORZ
+CODE_SMELL
+•squid:S3457¿"aNo need to call "toString()" method as formatting and string conversion is done by the Formatter.(ˆ›–²úÿÿÿÿHßÏRMAJORZ
+CODE_SMELL

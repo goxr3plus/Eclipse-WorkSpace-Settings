@@ -1,0 +1,17 @@
+AbstractTextEditor.Color.Background.SystemDefault=false
+AbstractTextEditor.Color.SelectionBackground.SystemDefault=false
+AbstractTextEditor.Color.SelectionForeground.SystemDefault=false
+currentIPColor=183,255,201
+eclipse.preferences.version=1
+fullcoverage_color=181,255,181
+fullcoverage_overviewRuler=true
+fullcoverage_stylePreferences=NONE
+fullcoverage_text=false
+nocoverage_color=255,217,217
+nocoverage_stylePreferences=NONE
+nocoverage_text=false
+overviewRuler_migration=migrated_3.1
+partialcoverage_color=255,255,0
+partialcoverage_stylePreferences=NONE
+partialcoverage_text=false
+secondaryIPColor=0,255,255

@@ -1,0 +1,88 @@
+package com.intralot.l10.ats.manager.validation;
+
+import static org.mockito.Mockito.when;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import com.intralot.l10.ats.entity.AtsConfiguration;
+import com.intralot.l10.ats.enumeration.DocumentType;
+import com.intralot.l10.ats.exception.AtsOpapException;
+import com.intralot.l10.ats.manager.configuration.ConfigurationManager;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ValidationManagerTest {
+
+	@InjectMocks
+	private ValidationManager validationManager;
+
+	@Mock
+	private ConfigurationManager configurationManager;
+
+	// ---------------- ValidateSystemId ----------------//
+
+	@Test
+	public void testValidateSystemId() {
+
+		final AtsConfiguration atsConfiguration = new AtsConfiguration();
+		atsConfiguration.setGameId(5);
+		when(configurationManager.getConfiguration()).thenReturn(atsConfiguration);
+
+		assert validationManager.validateSystemId(5) == 5;
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void testValidateSystemIdException() {
+
+		when(configurationManager.getConfiguration()).thenReturn(null);
+
+		validationManager.validateSystemId(5);
+	}
+
+	// ---------------- ValidateDocumentTypeId ----------------//
+
+	@Test
+	public void testValidateDocumentTypeId() {
+
+		assert validationManager.validateDocumentTypeId(1) == DocumentType.PARTICIPATION;
+	}
+
+	@Test(expected = AtsOpapException.class)
+	public void testValidateDocumentTypeIdException() {
+
+		validationManager.validateDocumentTypeId(null);
+	}
+
+	// ---------------- ValidateAuthorization ----------------//
+
+	@Test
+	public void testValidateAuthorization() {
+
+		final String authorizationCode = "105e9723-be50-4d15-a04e-841d6b513836";
+
+		final AtsConfiguration atsConfiguration = new AtsConfiguration();
+		when(configurationManager.getConfiguration()).thenReturn(atsConfiguration);
+		atsConfiguration.setRetrieveDocAuthorization(authorizationCode);
+
+		validationManager.validateAuthorization("Bearer" + " " + authorizationCode);
+	}
+	
+	@Test(expected = AtsOpapException.class)
+	public void testValidateAuthorizationException1() {
+
+		final String authorizationCode = "105e9723-be50-4d15-a04e-841d6b513836";
+
+
+		validationManager.validateAuthorization("Bearer" + " " );
+	}
+	
+	@Test(expected = AtsOpapException.class)
+	public void testValidateAuthorizationException2() {
+
+		final String authorizationCode = "105e9723-be50-4d15-a04e-841d6b513836";
+
+
+		validationManager.validateAuthorization("Bearer" + " " + authorizationCode);
+	}
+}

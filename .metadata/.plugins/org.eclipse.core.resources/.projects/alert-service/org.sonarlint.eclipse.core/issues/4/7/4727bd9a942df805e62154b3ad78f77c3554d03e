@@ -1,0 +1,15 @@
+
+ksquid:S34572"AFormat specifiers should be used instead of string concatenation.(‰³¥μRMAJORZ
+CODE_SMELL
+Ssquid:S2629X"$Invoke method(s) only conditionally.(•ΰϊÿÿÿÿRMAJORZ
+CODE_SMELL
+jsquid:S3457;"AFormat specifiers should be used instead of string concatenation.(¤βRMAJORZ
+CODE_SMELL
+ksquid:S34574"AFormat specifiers should be used instead of string concatenation.(Φ·¤RMAJORZ
+CODE_SMELL
+squid:S3457X"aNo need to call "toString()" method as formatting and string conversion is done by the Formatter.(•ΰϊÿÿÿÿRMAJORZ
+CODE_SMELL
+asquid:S26292"7Use the built-in formatting to construct this argument.(‰³¥μRMAJORZ
+CODE_SMELL
+Ο%squid:RedundantThrowsDeclarationCheck+"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(‡θέRMINORZ
+CODE_SMELL

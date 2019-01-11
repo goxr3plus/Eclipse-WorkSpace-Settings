@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<runner version="1.0.0">
+<category expanded="true" name="Uncategorized">
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="CourseRepositoryTest"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="CourseRepositoryTest.deleteById_basic"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="CourseSpringDataRepositoryTest"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="CourseSpringDataRepositoryTest.pagination"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="CourseSpringDataRepositoryTest.sort"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="CourseSpringDataRepositoryTest.testFindAll"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="DemoApplication"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="ISADORA"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="JdbcDemoApplication"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="JunkyTest.test"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="Main"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="Main (1)"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="Main (2)"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="MessageDeliveryTypeTest"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="MoneyTest.test"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="PAIN002-0045-20180522-04.xml"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="StudentRepositoryTest.NPlusOenProblem"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="StudentRepositoryTest.retrieveStudentAndSetAddress"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="StudentRepositoryTest.solvingNPlusOenProblem_EntityGraph"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="StudentRepositoryTest.solvingNPlusOenProblem_JOIN_FETCH"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestAcnDynamicClientManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestCreditLimitJPAManager.transactionIdExists"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestCreditLimitPreProcessingManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestCreditLimitPreProcessingManager.preProcess"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestCreditLimitPreProcessingManager.preProcess_exception"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestCreditLimitProcessingManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestCreditLimitProcessingManager.process_exception_2"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestFileCodecsManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestFileOperationsManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestFileOperationsManager (1)"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestGamingBalanceProcessingManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestInfoStoreManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestInfoStoreManager (1)"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestManualCreditLimitPreProcessingManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestManualCreditLimitPreProcessingManager.preProcess"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestManualCreditLimitPreProcessingManager.preProcess2"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestManualCreditLimitPreProcessingManager.preProcess_exception"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestManualCreditLimitPreProcessingManager.preProcess_exception2"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestManualCreditLimitProcessingManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestMessageComposeManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestMessageComposeManager.composeRdyMessageTest"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestRetrieveDocumentJPAManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestRetrieveDocumentPreProcessingManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestRetrieveDocumentsReportJPAManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestSubmitDocumentManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestSubmitDocumentPostProcessingManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestSubmitDocumentProcessingManager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="TestXMLParser"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="apigatewayj - ApiGatewayApplication"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="ats-service"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="ats-service - AtsServiceApplication"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="demo - DemoApplication"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="devtools-client[file-manager]"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="ejk-adaptor"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="ejk-adaptor - EjkAdaptorApplication"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="file-manager"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="file-manager - fmApplication"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="messaging"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="messaging - App"/>
+<launchConfiguration bookmark="false" defaultLaunchMode="run" name="nam"/>
+</category>
+</runner>

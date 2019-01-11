@@ -1,0 +1,38 @@
+package guru.springframework;
+
+import java.util.Objects;
+
+public class Dollar {
+
+    private final int amount;
+
+    public Dollar(final int ammount) {
+	this.amount = ammount;
+    }
+
+    public Dollar times(final int multiplier) {
+	return new Dollar(amount * multiplier);
+    }
+
+    public int getAmount() {
+	return amount;
+    }
+
+    @Override
+    public int hashCode() {
+	return Objects.hash(amount);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+	if (this == obj)
+	    return true;
+	if (obj == null)
+	    return false;
+	if (getClass() != obj.getClass())
+	    return false;
+	Dollar other = (Dollar) obj;
+	return amount == other.amount;
+    }
+
+}

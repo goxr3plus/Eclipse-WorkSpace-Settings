@@ -1,0 +1,9 @@
+package guru.springframework;
+
+public class mEME {
+
+    
+    public void meme2() {
+	
+    }
+}

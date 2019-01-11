@@ -1,0 +1,22 @@
+package com.intralot.l10.core.jpa;
+
+import org.hibernate.dialect.MySQL57Dialect;
+import org.hibernate.dialect.function.SQLFunctionTemplate;
+import org.hibernate.dialect.function.StandardSQLFunction;
+import org.hibernate.type.DateType;
+import org.hibernate.type.StandardBasicTypes;
+
+ class MySqlDialect extends MySQL57Dialect {
+
+	public MySqlDialect() {
+		super();
+
+		registerFunction("json_length", new StandardSQLFunction("json_length"));
+		registerFunction("json_extract", new StandardSQLFunction("json_extract"));
+		registerFunction("str_to_date", new StandardSQLFunction("str_to_date", StandardBasicTypes.TIMESTAMP));
+		registerFunction("date_add_interval", new SQLFunctionTemplate(
+				DateType.INSTANCE, "date_add(?1, INTERVAL ?2 ?3)"));
+		
+	}
+
+}

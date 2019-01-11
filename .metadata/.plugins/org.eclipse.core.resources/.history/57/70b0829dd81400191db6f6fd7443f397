@@ -1,0 +1,207 @@
+CREATE TABLE `alt_application_elements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_element_id` int(11) DEFAULT NULL,
+  `description` varchar(45) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `url` text CHARACTER SET utf8 COLLATE utf8_bin,
+  `resource_id` varchar(45) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `order_number` int(11) DEFAULT NULL,
+  `icon_class` varchar(45) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `app_key` varchar(45) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `script_name` varchar(60) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `addnew_url` text CHARACTER SET utf8 COLLATE utf8_bin,
+  `element_type_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `alt_event_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `descr` varchar(150) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `alt_languages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(45) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `display_name` varchar(60) DEFAULT NULL,
+  `is_enabled` tinyint(1) NOT NULL,
+  `culture` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `alerting_languages_un` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `alt_lookups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` int(11) NOT NULL,
+  `key` int(11) DEFAULT NULL,
+  `value` varchar(45) NOT NULL,
+  `resource_key` varchar(45) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `alt_notification_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `descr` varchar(150) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `alt_query_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `descr` varchar(150) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `alt_rcp_group` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) NOT NULL,
+  `descr` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `alt_settings` (
+  `key` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `value` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE `alt_type_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `descr` varchar(150) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `alt_type_criticality` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `descr` varchar(150) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `alt_resources` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(45) NOT NULL,
+  `language_code` int(11) NOT NULL,
+  `translation_text` varchar(90) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `alerting_resources_alerting_languages_fk` (`code`),
+  KEY `trans_resources_trans_languages_fk` (`language_code`) USING BTREE,
+  CONSTRAINT `language_code_fk` FOREIGN KEY (`language_code`) REFERENCES `alt_languages` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=318 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `alt_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ack` varchar(1) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `descr` varchar(400) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `name` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `snooze_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `suppress_time` int(11) DEFAULT NULL,
+  `category_fk` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `alt_type_alt_type_criticality_fk` (`category_fk`),
+  CONSTRAINT `alt_type_alt_type_category_fk` FOREIGN KEY (`category_fk`) REFERENCES `alt_type_category` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `alt_query` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `descr` varchar(400) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `name` varchar(150) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `query` varchar(500) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `category_fk` int(11) NOT NULL,
+  `last_execution_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_execution_result` int(11) DEFAULT NULL,
+  `cron_expression` varchar(120) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `alt_query_alt_query_category_fk` (`category_fk`),
+  CONSTRAINT `alt_query_alt_query_category_fk` FOREIGN KEY (`category_fk`) REFERENCES `alt_query_category` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `alt_rcp_group_entry` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `value` varchar(300) NOT NULL,
+  `notif_type_fk` int(11) NOT NULL,
+  `group_id_fk` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `alt_rcp_group_entry_alt_rcp_group_fk` (`group_id_fk`),
+  KEY `alt_rcp_group_entry_alt_notification_type_fk` (`notif_type_fk`),
+  CONSTRAINT `alt_rcp_group_entry_alt_notification_type_fk` FOREIGN KEY (`notif_type_fk`) REFERENCES `alt_notification_type` (`id`),
+  CONSTRAINT `alt_rcp_group_entry_alt_rcp_group_fk` FOREIGN KEY (`group_id_fk`) REFERENCES `alt_rcp_group` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `alt_recipients` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `alt_rcp_group_fk` int(11) NOT NULL,
+  `criticality_fk` int(11) NOT NULL,
+  `alert_type_fk` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `alt_recipients_alt_type_criticality_fk` (`criticality_fk`),
+  KEY `alt_recipients_alt_rcp_group_fk` (`alt_rcp_group_fk`),
+  CONSTRAINT `alt_recipients_alt_rcp_group_fk` FOREIGN KEY (`alt_rcp_group_fk`) REFERENCES `alt_rcp_group` (`id`),
+  CONSTRAINT `alt_recipients_alt_type_criticality_fk` FOREIGN KEY (`criticality_fk`) REFERENCES `alt_type_criticality` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `alt_msg_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message_type_fk` int(11) NOT NULL,
+  `notification_type_fk` int(11) NOT NULL,
+  `alert_type_fk` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `alt_msg_type_alt_notification_type_fk` (`notification_type_fk`),
+  KEY `alt_msg_type_alt_type_fk` (`alert_type_fk`),
+  CONSTRAINT `alt_msg_type_alt_notification_type_fk` FOREIGN KEY (`notification_type_fk`) REFERENCES `alt_notification_type` (`id`) ON UPDATE RESTRICT,
+  CONSTRAINT `alt_msg_type_alt_type_fk` FOREIGN KEY (`alert_type_fk`) REFERENCES `alt_type` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `alt_event` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ack_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `descr` text NOT NULL,
+  `name` text NOT NULL,
+  `origin` text NOT NULL,
+  `recipients` text,
+  `status_fk` int(11) NOT NULL,
+  `notif_type_fk` int(11) DEFAULT NULL,
+  `type_fk` int(11) DEFAULT NULL,
+  `criticality_fk` int(11) DEFAULT NULL,
+  `user_ack` text,
+  `data_elements` text,
+  `issue_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `alt_event_alt_type_fk` (`type_fk`),
+  KEY `alt_event_alt_event_status_fk` (`status_fk`),
+  KEY `alt_event_alt_type_criticality_fk` (`criticality_fk`),
+  KEY `alt_event_alt_notification_type_fk` (`notif_type_fk`),
+  CONSTRAINT `alt_event_alt_event_status_fk` FOREIGN KEY (`status_fk`) REFERENCES `alt_event_status` (`id`),
+  CONSTRAINT `alt_event_alt_notification_type_fk` FOREIGN KEY (`notif_type_fk`) REFERENCES `alt_notification_type` (`id`),
+  CONSTRAINT `alt_event_alt_type_criticality_fk` FOREIGN KEY (`criticality_fk`) REFERENCES `alt_type_criticality` (`id`),
+  CONSTRAINT `alt_event_alt_type_fk` FOREIGN KEY (`type_fk`) REFERENCES `alt_type` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5657 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `alt_rule` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `l_thres` int(11) NOT NULL,
+  `u_thres` int(11) NOT NULL,
+  `notif_type_fk` int(11) DEFAULT NULL,
+  `alert_type_fk` int(11) NOT NULL,
+  `criticality_fk` int(11) NOT NULL,
+  `alt_query_fk` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `alt_rule_alt_notification_type_fk` (`notif_type_fk`),
+  KEY `alt_rule_alt_type_fk` (`alert_type_fk`),
+  KEY `alt_rule_alt_type_criticality_fk` (`criticality_fk`),
+  KEY `alt_rule_alt_query_fk` (`alt_query_fk`),
+  CONSTRAINT `alt_rule_alt_notification_type_fk` FOREIGN KEY (`notif_type_fk`) REFERENCES `alt_notification_type` (`id`),
+  CONSTRAINT `alt_rule_alt_query_fk` FOREIGN KEY (`alt_query_fk`) REFERENCES `alt_query` (`id`),
+  CONSTRAINT `alt_rule_alt_type_criticality_fk` FOREIGN KEY (`criticality_fk`) REFERENCES `alt_type_criticality` (`id`),
+  CONSTRAINT `alt_rule_alt_type_fk` FOREIGN KEY (`alert_type_fk`) REFERENCES `alt_type` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

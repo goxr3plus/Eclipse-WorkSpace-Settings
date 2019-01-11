@@ -1,0 +1,84 @@
+package com.intralot.l10.nam.manager.process;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import com.intralot.l10.nam.entity.ManualCreditLimitRequest;
+import com.intralot.l10.nam.exception.NamL10GenericException;
+import com.intralot.l10.nam.manager.jpa.ManualCreditLimitJPAManager;
+import com.intralot.l10.nam.manager.transform.ModelTransformationManager;
+import com.intralot.l10.nam.model.ManualCreditLimitRequestDto;
+import com.intralot.l10.nam.model.RetailerAmount;
+import com.intralot.l10.nam.repository.jdbc.RetailerRepository;
+
+//TODO Maybe add asserts?
+@RunWith(MockitoJUnitRunner.class)
+public class ManualCreditLimitPreProcessingManagerTest {
+
+	@InjectMocks
+	private ManualCreditLimitPreProcessingManager manualCreditLimitPreProcessingManager;
+
+	@Mock
+	private RetailerRepository retailerRepository;
+
+	@Mock
+	private ManualCreditLimitJPAManager manualCreditLimitJPAManager;
+
+	@Mock
+	private ModelTransformationManager modelTransformationManager;
+
+	private ManualCreditLimitRequestDto manualCreditLimitRequestDto;
+
+	@Before
+	public void init() {
+
+		manualCreditLimitRequestDto = new ManualCreditLimitRequestDto();
+		manualCreditLimitRequestDto.setFilename("filename");
+
+		/* List */
+		RetailerAmount retailer = new RetailerAmount();
+		retailer.setCreditLimit(5L);
+		retailer.setRetailer(1);
+		List<RetailerAmount> list = Collections.singletonList(retailer);
+		manualCreditLimitRequestDto.setRetailers(list);
+	}
+
+	@Test(expected = Exception.class)
+	public void preProcess_no_retailer_ids() {
+
+		manualCreditLimitPreProcessingManager.preProcess(manualCreditLimitRequestDto);
+	}
+
+	@Test
+	public void preProcess_with_retailer_ids() {
+
+		when(retailerRepository.getNotCancelledRetailerIds()).thenReturn(Collections.singletonList(1));
+
+		manualCreditLimitPreProcessingManager.preProcess(manualCreditLimitRequestDto);
+	}
+
+	@Test(expected = NamL10GenericException.class)
+	public void preProcess_exception() {
+
+		ManualCreditLimitRequest manualCreditLimitRequest = new ManualCreditLimitRequest();
+		manualCreditLimitRequest.setId(1L);
+		when(manualCreditLimitJPAManager.register(any(ManualCreditLimitRequest.class)))
+				.thenReturn(manualCreditLimitRequest);
+		when(modelTransformationManager
+				.transformManualCreditLimitRequestDtoToEntity(any(ManualCreditLimitRequestDto.class)))
+						.thenReturn(manualCreditLimitRequest);
+
+		manualCreditLimitPreProcessingManager.preProcess(manualCreditLimitRequestDto);
+	}
+
+}

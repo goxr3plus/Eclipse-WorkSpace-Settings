@@ -1,0 +1,28 @@
+package com.intralot.l10.nam.manager.jpa;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import java.util.Optional;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import com.intralot.l10.nam.entity.DailyBalanceRequest;
+import com.intralot.l10.nam.repository.jpa.DailyBalanceRepository;
+
+@RunWith(MockitoJUnitRunner.class)
+public class DailyBalanceJPAManagerTest {
+
+	@InjectMocks
+	private DailyBalanceJPAManager dailyBalanceJPAManager;
+
+	@Mock
+	private DailyBalanceRepository dailyBalanceRepository;
+
+	@Test
+	public void transactionIdExists() {
+		when(dailyBalanceRepository.findByTransactionId(anyLong())).thenReturn(Optional.of(new DailyBalanceRequest()));
+		dailyBalanceJPAManager.transactionIdExists(9L);
+	}
+}

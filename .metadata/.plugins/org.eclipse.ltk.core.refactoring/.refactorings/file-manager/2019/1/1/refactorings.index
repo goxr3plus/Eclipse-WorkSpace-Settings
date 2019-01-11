@@ -1,0 +1,14 @@
+1546521875973	Copy compilation unit
+1546521968733	Rename method 'getRetailerName'
+1546522006579	Copy compilation unit
+1546522194216	Rename type 'RetailerUserBankMapper'
+1546522238791	Rename type 'RetailerHRRepository'
+1546522257170	Rename type 'RetailerUserMapper'
+1546522927603	Rename local variable 'iban'
+1546614898049	Rename type 'BankFilesResponseProcessorTest'
+1546614902749	Rename type 'DocumentParsingManagerTest'
+1546614908470	Rename type 'MessagePersistManagerTest'
+1546614933343	Rename type 'TestConfig'
+1546614936128	Move compilation unit
+1546614956691	Delete element
+1546614959295	Delete element

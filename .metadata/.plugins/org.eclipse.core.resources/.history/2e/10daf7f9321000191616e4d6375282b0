@@ -1,0 +1,82 @@
+package com.intralot.l10.ats.manager.configuration;
+
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import com.intralot.iif.core.ctx.L10RuntimeContext;
+import com.intralot.iif.core.ctx.L10RuntimeContextFactory;
+import com.intralot.l10.ats.entity.AtsConfiguration;
+import com.intralot.l10.ats.entity.SubmitDocumentRequest;
+import com.intralot.l10.ats.manager.submit.SubmitDocumentRequestJPAManager;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(L10RuntimeContextFactory.class)
+public class ConfigurationManagerTest {
+
+	@InjectMocks
+	private ConfigurationManager configurationManager;
+
+	@Mock
+	private ConfigurationJPAManager configurationJPAManager;
+
+	@Mock
+	private SubmitDocumentRequestJPAManager submitDocumentRequestJPAManager;
+
+	/* Mock ATS configuration */
+	private AtsConfiguration atsConfiguration;
+
+	@Before
+	public void init() {
+		atsConfiguration = new AtsConfiguration();
+		atsConfiguration.setGameId(100100);
+		atsConfiguration.setSystemId(5);
+
+		PowerMockito.mockStatic(L10RuntimeContextFactory.class);
+		when(L10RuntimeContextFactory.getCurrentContext()).thenReturn(new L10RuntimeContext("guid", null));
+	}
+
+	@Test
+	public void testSetConfigurationByGameId() {
+
+		when(configurationJPAManager.getConfigurationByGameId(anyInt())).thenReturn(atsConfiguration);
+
+		configurationManager.setConfigurationByGameId(5);
+	}
+
+	@Test
+	public void testSetConfigurationBySystemId() {
+
+		when(configurationJPAManager.getConfigurationBySystemId(anyInt())).thenReturn(atsConfiguration);
+
+		configurationManager.setConfigurationBySystemId(5);
+	}
+
+	@Test
+	public void testGetConfiguration() {
+
+		configurationManager.getConfiguration();
+	}
+
+	@Test
+	public void testSetCorrespondingSubmitDocRequest() {
+
+		when(submitDocumentRequestJPAManager.findByGameIdAndDrawIdAndRevisionNumberAndWinnersIncluded(anyInt(),
+				anyInt(), anyInt(), anyBoolean())).thenReturn(new SubmitDocumentRequest());
+		configurationManager.setCorrespondingSubmitDocRequest(5, 100100, 1, true);
+
+	}
+
+	@Test
+	public void testGetCorrespondingSubmitDocRequest() {
+		configurationManager.getCorrespondingSubmitDocRequest();
+	}
+
+}
